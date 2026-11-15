@@ -10,9 +10,19 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 
 | Module | Lane | Requires | Keep when |
 |---|---|---|---|
+| `mobile` | mobile | - | ['a Gate or Rubric asks for an app', 'a Beat needs a device capability a PWA does badly', 'the idea is mobile-first'] |
 | `pitch` | pitch | - | never pruned |
 
 ## Features
 
 | Feature | Module | Gives | Entry | Keep when | State |
 |---|---|---|---|---|---|
+| `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
+| `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
+| `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
+| `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | on |
+| `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
+| `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | on |
+| `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | on |
+| `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | on |
+| `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | on |
