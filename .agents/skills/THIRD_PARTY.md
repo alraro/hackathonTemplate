@@ -8,6 +8,9 @@ Pinned version: **v1.3.1** (https://github.com/mattpocock/skills). Adapted skill
 
 | Skill | Upstream path | Adapted by issue |
 | --- | --- | --- |
+| hackathon-tickets | skills/engineering/to-tickets/SKILL.md | #100 |
+| hackathon-questionnaire | skills/productivity/to-questionnaire/SKILL.md | #100 |
+| hackathon-diagnose | skills/engineering/diagnosing-bugs/SKILL.md | #100 |
 
 Each issue that adapts a skill adds its row.
 
