@@ -65,6 +65,58 @@ services:
       - ./web:/app
       - ./features.json:/app/features.json:ro
       - web_node_modules:/app/node_modules
+
+  # Presenting mode (`make demo` / `make share`): built web via `vite preview`, no HMR overlay.
+  preview:
+    build:
+      context: web
+    profiles: [preview, share, share-ngrok]
+    command: sh -c "npm run build && npm run preview -- --host 0.0.0.0 --port 4173"
+    environment:
+      VITE_API_MODE: ${VITE_API_MODE:-live}
+    volumes:
+      - ./web:/app
+      - ./features.json:/app/features.json:ro
+      - web_node_modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4173/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 10s
+
+  # Single entry point in front of preview: /api/* goes to the backend (HTTP and WebSocket).
+  edge:
+    image: caddy:2-alpine
+    profiles: [preview, share, share-ngrok]
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        printf ':80 {\n\thandle /api/* {\n\t\treverse_proxy backend:8000\n\t}\n\thandle {\n\t\treverse_proxy preview:4173 {\n\t\t\theader_up Host localhost\n\t\t}\n\t}\n}\n' > /tmp/Caddyfile
+        exec caddy run --config /tmp/Caddyfile --adapter caddyfile
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    depends_on:
+      preview:
+        condition: service_healthy
+
+  # Public tunnels, `make share` only. Both reach only `edge`.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles: [share]
+    command: tunnel --no-autoupdate --url http://edge:80
+    depends_on:
+      - edge
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    profiles: [share-ngrok]
+    command: http edge:80 --log stdout
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:-}
+    depends_on:
+      - edge
   # <<< module:web
 
   # >>> module:llm
