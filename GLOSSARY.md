@@ -58,6 +58,18 @@ _Avoid_: Orchestrator, main skill
 The fixed closing line of a Phase that tells the user whether to continue in this session or open a fresh one and run `/hackathon`.
 _Avoid_: Next steps, wrap-up
 
+**Change**:
+A free-form message, at any point of the event, that alters something already recorded (the event, a Requirement, the team, the idea, a Module or Feature, an issue, the design, a Contract), handled by the Router rather than by running the next Phase.
+_Avoid_: Change request, update, edit
+
+**Patch**:
+A Change that adjusts earlier decisions and the later artifacts that cite them in place, without redoing any Phase.
+_Avoid_: Hotfix, amendment
+
+**Pivot**:
+A Change that redoes a Phase's decision from scratch: that Phase reopens and every later artifact is marked stale and redone in order.
+_Avoid_: Restart, rollback
+
 **Research question**:
 One concrete investigation (lens × topic) assigned to a teammate as an issue during Research.
 _Avoid_: Research task, topic
