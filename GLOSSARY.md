@@ -138,6 +138,10 @@ _Avoid_: Scope, ownership
 An issue's size from 1 to 3, judged from observable traits, never hours.
 _Avoid_: Points, estimate, size
 
+**Tier**:
+The model capability an agent has or an issue needs: `strong`, `mid` or `weak`, named after Claude reference models and matched to their equivalents from other vendors; an issue may also be `any`.
+_Avoid_: Level, model class, plan
+
 **Spine pass**:
 The first round of issues, which gets every Beat showing something believable on screen as early as possible, Wow moment first.
 _Avoid_: MVP, skeleton pass
