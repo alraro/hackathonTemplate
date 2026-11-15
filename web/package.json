@@ -10,7 +10,7 @@
     "check": "tsc --noEmit && node scripts/contrast.mjs && vite build",
     "design-lint": "echo 'design-lint: not built yet (see backlog)'",
     "api-client": "echo 'api-client: not built yet (see backlog)'",
-    "theme": "echo 'theme: not built yet (see backlog)'"
+    "theme": "node scripts/gen-theme.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.6",
