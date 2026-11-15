@@ -11,6 +11,9 @@ Pinned version: **v1.3.1** (https://github.com/mattpocock/skills). Adapted skill
 | hackathon-tickets | skills/engineering/to-tickets/SKILL.md | #100 |
 | hackathon-questionnaire | skills/productivity/to-questionnaire/SKILL.md | #100 |
 | hackathon-diagnose | skills/engineering/diagnosing-bugs/SKILL.md | #100 |
+| hackathon-grilling | skills/productivity/grilling/SKILL.md | #99 |
+| hackathon-prototype | skills/engineering/prototype/SKILL.md (+ LOGIC.md, UI.md) | #99 |
+| hackathon-wait-what | skills/productivity/wait-what/SKILL.md | #99 |
 
 Each issue that adapts a skill adds its row.
 
@@ -18,7 +21,7 @@ Each issue that adapts a skill adds its row.
 
 MIT License
 
-Copyright (c) 2025 Matt Pocock
+Copyright (c) 2026 Matt Pocock
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
