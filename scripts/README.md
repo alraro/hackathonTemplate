@@ -11,5 +11,5 @@ One line per script. Makefile targets already call the final command lines; a mi
 - `share.py` (`make share`): expose the stack through ngrok.
 - `demo.py` (`make demo`): demo mode.
 - `mobile.py` (`make mobile`, `make mobile-tunnel`): Expo launcher.
-- `invite.py` (`make invite`): invite helper.
+- `setup.py invite` (`make invite users=a,b`): invite helper.
 - `theme.py` (`make theme`): generate design tokens for web, mobile, pitch.

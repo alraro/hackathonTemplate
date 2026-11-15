@@ -6,6 +6,8 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
+PYTHON ?= python3
+
 -include .env
 COMPOSE_PROFILES ?= web,api
 WEB_PORT ?= 5173
@@ -16,17 +18,17 @@ EMBED_PROVIDER ?= gemini
 comma := ,
 PROFILES_BASE := $(if $(only),$(only),$(COMPOSE_PROFILES))
 PROFILES := $(PROFILES_BASE)$(if $(filter ollama,$(EMBED_PROVIDER)),$(comma)ollama)
-VISION := $(shell python3 -c "import json;print(str(json.load(open('features.json')).get('vision',False)).lower())" 2>/dev/null || echo false)
+VISION := $(shell $(PYTHON) -c "import json;print(str(json.load(open('features.json')).get('vision',False)).lower())" 2>/dev/null || echo false)
 DC := COMPOSE_PROFILES=$(PROFILES) VISION=$(VISION) docker compose
 
 # --- core ---
 
 .PHONY: help doctor up down restart logs ps sh add-py add-web clean prune check setup invite lint-docs sync share demo theme
 help: ## list every target — run first, or when you forget a command
-	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z0-9_-]+:.*## / {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@if [ -f scripts/make_help.py ]; then $(PYTHON) scripts/make_help.py; else awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z0-9_-]+:.*## / {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST); fi
 
 doctor: ## check Docker, ports and .env — run when something does not start
-	python scripts/doctor.py # TODO: filled by the backlog issue that creates scripts/doctor.py
+	$(PYTHON) scripts/doctor.py
 
 up: ## start the stack detached and print URLs — run to begin work (only=web for one Module)
 	$(DC) up -d --wait
@@ -59,31 +61,31 @@ clean: ## remove containers AND volumes after y/N confirm — run to reset all d
 	if [ "$$a" = "y" ] || [ "$$a" = "Y" ]; then docker compose down -v; else echo "aborted"; fi
 
 prune: ## remove Modules you do not need — run once at the Prune phase
-	python scripts/prune.py # TODO: filled by the backlog issue that creates scripts/prune.py
+	$(PYTHON) scripts/prune.py # TODO: filled by the backlog issue that creates scripts/prune.py
 
 check: ## run all repo checks — run before every commit and PR
-	python scripts/check.py # TODO: filled by the backlog issue that creates scripts/check.py
+	$(PYTHON) scripts/check.py
 
 setup: ## create .env and SECRET_KEY — run once after cloning
-	python scripts/setup.py # TODO: filled by the backlog issue that creates scripts/setup.py
+	$(PYTHON) scripts/setup.py
 
 invite: ## print teammate invite steps — run when adding a teammate
-	python scripts/invite.py # TODO: filled by the backlog issue that creates scripts/invite.py
+	$(PYTHON) scripts/setup.py invite $(users)
 
 lint-docs: ## lint MODULE.md and docs — run after editing docs
-	python scripts/lint_docs.py # TODO: filled by the backlog issue that creates scripts/lint_docs.py
+	$(PYTHON) scripts/lint_docs.py
 
 sync: ## regenerate catalog and derived files — run after adding a Module or Feature
-	python scripts/sync.py # TODO: filled by the backlog issue that creates scripts/sync.py
+	$(PYTHON) scripts/sync.py
 
 share: ## expose the stack with ngrok — run to demo from your phone
-	python scripts/share.py # TODO: filled by the backlog issue that creates scripts/share.py
+	$(PYTHON) scripts/share.py # TODO: filled by the backlog issue that creates scripts/share.py
 
 demo: ## switch to demo mode with seeded data — run before presenting
-	python scripts/demo.py # TODO: filled by the backlog issue that creates scripts/demo.py
+	$(PYTHON) scripts/demo.py # TODO: filled by the backlog issue that creates scripts/demo.py
 
 theme: ## regenerate design tokens for web, mobile, pitch — run after editing theme.json
-	python scripts/theme.py # TODO: filled by the backlog issue that creates scripts/theme.py
+	$(PYTHON) scripts/theme.py # TODO: filled by the backlog issue that creates scripts/theme.py
 
 # >>> module:api
 # --- api ---
@@ -95,7 +97,7 @@ db-reset: ## drop and recreate the database schema — run when migrations get m
 	docker compose exec backend python -m backend.db_reset # TODO: filled by the backlog issue that creates backend/db_reset.py
 
 openapi: ## export backend/openapi.json — run after changing API routes
-	docker compose exec backend python -m backend.openapi # TODO: filled by the backlog issue that creates backend/openapi.py
+	docker compose exec backend python -m backend.api.openapi
 
 fake: ## generate fake records — run to fill the UI with data
 	docker compose exec backend python -m backend.fake # TODO: filled by the backlog issue that creates backend/fake.py
@@ -134,10 +136,10 @@ eda: ## explore a dataset with skrub TableReport — run before choosing a pipel
 # --- mobile ---
 .PHONY: mobile mobile-tunnel
 mobile: ## start Expo on the LAN — run to test on a phone on the same wifi
-	python scripts/mobile.py # TODO: filled by the backlog issue that creates scripts/mobile.py
+	$(PYTHON) scripts/mobile.py # TODO: filled by the backlog issue that creates scripts/mobile.py
 
 mobile-tunnel: ## start Expo through a tunnel — run when the phone is on another network
-	python scripts/mobile.py --tunnel # TODO: filled by the backlog issue that creates scripts/mobile.py
+	$(PYTHON) scripts/mobile.py --tunnel # TODO: filled by the backlog issue that creates scripts/mobile.py
 # <<< module:mobile
 
 # >>> module:pitch
