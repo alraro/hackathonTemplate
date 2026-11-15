@@ -82,3 +82,10 @@ Offered from the Polish checkpoint to whoever runs `/hackathon` and has tokens. 
 **Ask**: none.
 
 Handoff: `Polish audit done and polish issues dispatched. Open a fresh session and run /hackathon.` Speak it in the teammate's chat language; keep `/hackathon` literal.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->
