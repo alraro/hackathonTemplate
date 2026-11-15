@@ -1,0 +1,48 @@
+[project]
+name = "backend"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlmodel",
+    "psycopg[binary]>=3",
+    "pydantic-settings",
+    "pwdlib[argon2]",
+    "pyjwt",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+llm = ["openai", "anthropic", "pypdf", "pgvector"]
+data = [
+    "pandas>=3",
+    "scikit-learn",
+    "skrub~=0.11",
+    "statsforecast",
+    "openpyxl",
+    "joblib",
+]
+vision = [
+    "torch",
+    "open_clip_torch",
+    "transformers",
+    "opencv-python-headless",
+]
+
+[dependency-groups]
+dev = ["ruff"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff]
+line-length = 100
