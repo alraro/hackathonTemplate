@@ -1,0 +1,8 @@
+.env
+node_modules
+.venv
+backend/llm/.cache/
+backend/uploads/
+backend/data/outputs/*/model.joblib
+backend/data/outputs/*/predictions.csv
+.claude/worktrees/

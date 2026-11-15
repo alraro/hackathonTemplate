@@ -1,0 +1,18 @@
+{
+  "landing": true,
+  "auth": true,
+  "dashboard": true,
+  "crud": true,
+  "settings": true,
+  "showcase": true,
+  "chat": true,
+  "rag": true,
+  "upload": true,
+  "realtime": true,
+  "notifications": true,
+  "map": true,
+  "qr": true,
+  "voice": true,
+  "vision": false,
+  "reports": true
+}
