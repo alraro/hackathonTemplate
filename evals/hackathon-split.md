@@ -24,5 +24,5 @@
 - [ ] Every Build issue body follows `issue-template.md` and carries a `Tier:` field and a `tier:` label; blocking edges are native (`blocked-by`); no issue has the `blocked` label.
 - [ ] *Integrate & Polish* exists unassigned; *Demo* is assigned to `ana-gh`.
 - [ ] The `hackathon/setup` → `main` PR is merged.
-- [ ] The final output is the exact Handoff line: `The build is split and setup is on `main`. Every teammate: pull `main`, open a fresh session and run `/hackathon` to start your first issue.`
+- [ ] The final output is the exact Handoff line: `✅ Task split saved to hackathon/09-split.md: <N> issues created. Everyone: pull main, open a fresh session and run /hackathon.` with `<N>` equal to the Build issue count.
 - [ ] One commit per step exists (`git log --oneline`).

@@ -106,6 +106,6 @@ Consult these in steps 2 and 3; they are decided, apply them as written.
 **Do**:
 1. Set `status: done`, tick the checklist, commit and push `hackathon/setup`.
 2. Open a PR `hackathon/setup` → `main` with `gh pr create` and merge it with `gh pr merge --squash`.
-3. Print the Handoff line, spoken in the teammate's chat language (`/hackathon` and paths stay literal): "The build is split and setup is on `main`. Every teammate: pull `main`, open a fresh session and run `/hackathon` to start your first issue."
+3. Print the Handoff line, with `<N>` the number of Build issues, spoken in the teammate's chat language (`/hackathon` and paths stay literal): `✅ Task split saved to hackathon/09-split.md: <N> issues created. Everyone: pull main, open a fresh session and run /hackathon.`
 **Done when**: the PR is merged, `status: done` is on `main`, and the Handoff line is the last output.
 **Ask**: none.
