@@ -8,3 +8,4 @@ backend/data/outputs/*/predictions.csv
 .claude/worktrees/
 .expo/
 mobile/.expo/
+backend/.cache/
