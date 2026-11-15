@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Hackathon App",
+    "slug": "hackathon-app",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "hackathonapp",
+    "userInterfaceStyle": "automatic",
+    "plugins": [["expo-router", { "root": "app" }], "expo-font"],
+    "android": { "package": "com.hackathon.app" },
+    "ios": { "bundleIdentifier": "com.hackathon.app" },
+    "experiments": { "typedRoutes": true }
+  }
+}
