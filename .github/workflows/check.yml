@@ -1,0 +1,30 @@
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build images with GHA cache
+        run: |
+          docker buildx bake -f docker-compose.yml \
+            --set '*.cache-from=type=gha' --set '*.cache-to=type=gha,mode=max' \
+            --load
+        env:
+          COMPOSE_PROFILES: web,api
+      - name: make check
+        run: make check
+
+  sync:
+    if: github.repository == 'alraro/hackathonTemplate'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: sync --check
+        run: python3 scripts/sync.py --check
