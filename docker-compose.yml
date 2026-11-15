@@ -1,0 +1,99 @@
+# Dev stack. Profiles: one per Module (web, api) plus extras (ollama, speech).
+# COMPOSE_PROFILES in .env picks what `docker compose up` starts.
+# Prune markers: `# >>> module:<x>` ... `# <<< module:<x>` around each Module's services/volumes.
+# Every image below is multi-arch (amd64 + arm64).
+
+services:
+  # >>> module:api
+  db:
+    image: pgvector/pgvector:pg17
+    profiles: [api]
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: backend
+      args:
+        VISION: ${VISION:-false}
+    profiles: [api]
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://app:app@db:5432/app}
+      WATCHFILES_FORCE_POLLING: ${DEV_POLLING:-false}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./features.json:/app/features.json:ro
+      - backend_venv:/app/backend/.venv
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  # <<< module:api
+
+  # >>> module:web
+  web:
+    build:
+      context: web
+    profiles: [web]
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    environment:
+      DEV_POLLING: ${DEV_POLLING:-false}
+      VITE_API_MODE: ${VITE_API_MODE:-fixtures}
+    ports:
+      - "${WEB_PORT:-5173}:5173"
+    volumes:
+      - ./web:/app
+      - ./features.json:/app/features.json:ro
+      - web_node_modules:/app/node_modules
+  # <<< module:web
+
+  # >>> module:llm
+  ollama:
+    image: ollama/ollama:latest
+    profiles: [ollama]
+    # Compose network only: no host port.
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 3 && ollama pull embeddinggemma && wait"]
+
+  speech:
+    image: ghcr.io/speaches-ai/speaches:latest
+    profiles: [speech]
+    # Compose network only: no host port.
+    volumes:
+      - speech_cache:/home/ubuntu/.cache/huggingface/hub
+  # <<< module:llm
+
+volumes:
+  # >>> module:api
+  db_data:
+  backend_venv:
+  # <<< module:api
+  # >>> module:web
+  web_node_modules:
+  # <<< module:web
+  # >>> module:llm
+  ollama_data:
+  speech_cache:
+  # <<< module:llm
