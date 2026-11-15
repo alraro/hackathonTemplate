@@ -1,0 +1,10 @@
+[
+  {"name": "lane:web", "color": "1d76db", "description": "Web app work (React, Vite)"},
+  {"name": "lane:mobile", "color": "5319e7", "description": "Mobile app work (Expo)"},
+  {"name": "lane:api", "color": "0e8a16", "description": "Backend API work (FastAPI, database)"},
+  {"name": "lane:llm", "color": "fbca04", "description": "LLM, RAG, speech work"},
+  {"name": "lane:data", "color": "006b75", "description": "Data pipelines and ML work"},
+  {"name": "lane:pitch", "color": "d93f0b", "description": "Pitch deck and demo work"},
+  {"name": "blocked", "color": "b60205", "description": "Waiting on another issue or a person"},
+  {"name": "research", "color": "c5def5", "description": "Investigation, no code expected"}
+]
