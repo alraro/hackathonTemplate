@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "preset.schema.json",
+  "title": "Design preset / theme tokens",
+  "type": "object",
+  "required": ["name", "fonts", "colors", "radius", "shadow", "motion", "focus", "effects"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string" },
+    "fonts": {
+      "type": "object",
+      "required": ["display", "body", "mono"],
+      "additionalProperties": false,
+      "properties": {
+        "display": { "$ref": "#/$defs/font" },
+        "body": { "$ref": "#/$defs/font" },
+        "mono": { "$ref": "#/$defs/font" }
+      }
+    },
+    "colors": {
+      "type": "object",
+      "required": ["light"],
+      "additionalProperties": false,
+      "properties": {
+        "light": { "$ref": "#/$defs/palette" },
+        "dark": { "$ref": "#/$defs/palette" }
+      }
+    },
+    "radius": { "type": "string", "description": "Base radius, a CSS length such as 0.625rem" },
+    "shadow": {
+      "type": "object",
+      "required": ["sm", "md", "lg"],
+      "additionalProperties": { "type": "string" }
+    },
+    "motion": {
+      "type": "object",
+      "required": ["duration", "easing", "spring"],
+      "additionalProperties": false,
+      "properties": {
+        "duration": {
+          "type": "object",
+          "required": ["fast", "base", "slow"],
+          "additionalProperties": { "type": "number", "minimum": 0, "description": "milliseconds" }
+        },
+        "easing": {
+          "type": "object",
+          "required": ["standard", "emphasized"],
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "cubic-bezier control points"
+          }
+        },
+        "spring": {
+          "type": "object",
+          "required": ["stiffness", "damping", "mass"],
+          "additionalProperties": false,
+          "properties": {
+            "stiffness": { "type": "number" },
+            "damping": { "type": "number" },
+            "mass": { "type": "number" }
+          }
+        }
+      }
+    },
+    "focus": {
+      "type": "object",
+      "required": ["width", "offset"],
+      "additionalProperties": false,
+      "properties": {
+        "width": { "type": "string" },
+        "offset": { "type": "string" }
+      }
+    },
+    "reducedMotion": {
+      "type": "object",
+      "description": "Overrides applied under prefers-reduced-motion",
+      "additionalProperties": false,
+      "properties": {
+        "duration": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } },
+        "spring": { "type": "object", "additionalProperties": { "type": "number" } }
+      }
+    },
+    "effects": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  },
+  "$defs": {
+    "font": {
+      "type": "object",
+      "required": ["family", "package"],
+      "additionalProperties": false,
+      "properties": {
+        "family": { "type": "string", "description": "CSS/native font family name" },
+        "package": { "type": "string", "description": "@fontsource package name" }
+      }
+    },
+    "oklch": {
+      "type": "string",
+      "pattern": "^oklch\\(\\s*[0-9.]+%?\\s+[0-9.]+\\s+[0-9.]+(deg)?(\\s*/\\s*[0-9.]+%?)?\\s*\\)$"
+    },
+    "palette": {
+      "type": "object",
+      "required": [
+        "background", "foreground", "card", "card-foreground", "popover", "popover-foreground",
+        "primary", "primary-foreground", "secondary", "secondary-foreground", "muted", "muted-foreground",
+        "accent", "accent-foreground", "destructive", "border", "input", "ring"
+      ],
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/oklch" }
+    }
+  }
+}
