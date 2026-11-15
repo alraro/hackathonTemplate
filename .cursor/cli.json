@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": ["Shell(*)", "Read(**)", "Write(**)", "WebFetch(*)", "Mcp(*:*)"],
+    "deny": [
+      "Shell(git push --force)",
+      "Shell(git push -f)",
+      "Shell(git push origin main)",
+      "Shell(rm -rf /)",
+      "Shell(rm -rf ~)"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+# Allow everything with network on. Codex has no per-command deny list in config.toml:
+# the denials (force-push, push to main, rm -rf outside the repo) are enforced by AGENTS.md.
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true

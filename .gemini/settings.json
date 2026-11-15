@@ -1,0 +1,12 @@
+{
+  "tools": {
+    "allowed": ["run_shell_command", "write_file", "replace", "read_file", "read_many_files", "web_fetch", "google_web_search", "mcp_*"],
+    "exclude": [
+      "run_shell_command(git push --force)",
+      "run_shell_command(git push -f)",
+      "run_shell_command(git push origin main)",
+      "run_shell_command(rm -rf /)",
+      "run_shell_command(rm -rf ~)"
+    ]
+  }
+}
