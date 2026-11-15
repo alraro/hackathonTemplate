@@ -60,8 +60,8 @@ clean: ## remove containers AND volumes after y/N confirm — run to reset all d
 	@read -r -p "This deletes the database and node_modules volumes. Continue? [y/N] " a; \
 	if [ "$$a" = "y" ] || [ "$$a" = "Y" ]; then docker compose down -v; else echo "aborted"; fi
 
-prune: ## remove Modules you do not need — run once at the Prune phase
-	$(PYTHON) scripts/prune.py # TODO: filled by the backlog issue that creates scripts/prune.py
+prune: ## remove a Module: m=<name> [or m="--dry-run <name>"] — run once at the Prune phase
+	$(PYTHON) scripts/prune.py $(m)
 
 check: ## run all repo checks — run before every commit and PR
 	$(PYTHON) scripts/check.py
