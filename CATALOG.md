@@ -29,8 +29,8 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
 | `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | off |
 | `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
-| `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | off |
-| `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | off |
+| `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | on |
+| `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | on |
 | `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | off |
 | `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | off |
 | `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | off |
@@ -39,14 +39,14 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
 | `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | on |
 | `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
-| `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | off |
-| `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | off |
+| `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | on |
+| `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | on |
 | `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | off |
 | `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | off |
 | `auth` | `api` | users, JWT login, demo users | backend/api/resources/auth | the product has accounts or roles | on |
 | `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |
 | `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |
-| `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | off |
+| `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | on |
 | `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | off |
 | `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | on |
 | `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | off |
