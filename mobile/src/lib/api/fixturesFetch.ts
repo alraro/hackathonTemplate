@@ -56,7 +56,8 @@ export async function fixturesFetch(input: Request | string | URL, init?: Reques
     }
     if (method === "POST") {
       const next = rows.reduce((m, r) => Math.max(m, Number(r.id) || 0), 0) + 1
-      const row = { ...((await request.json()) as Row), id: next }
+      const now = new Date().toISOString()
+      const row = { created_at: now, updated_at: now, ...((await request.json()) as Row), id: next }
       rows.push(row)
       return json(row, 201)
     }
@@ -67,7 +68,7 @@ export async function fixturesFetch(input: Request | string | URL, init?: Reques
   if (i < 0) return notFound()
   if (method === "GET") return json(rows[i])
   if (method === "PATCH" || method === "PUT") {
-    rows[i] = { ...rows[i], ...((await request.json()) as Row), id: rows[i].id }
+    rows[i] = { ...rows[i], ...((await request.json()) as Row), id: rows[i].id, updated_at: new Date().toISOString() }
     return json(rows[i])
   }
   if (method === "DELETE") {

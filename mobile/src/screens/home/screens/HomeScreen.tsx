@@ -1,17 +1,20 @@
-import { EmptyState } from "../../../components/common/EmptyState";
-import { Button, Card, Screen, Text } from "../../../components/ui";
+import { useRouter, type Href } from "expo-router";
+import { TABS } from "../../../app/tabs";
+import { Card, ListItem, Screen, Text } from "../../../components/ui";
 
-// TODO(#92): replace this placeholder with the real HomeScreen.
+/** Home: one row per enabled tab (from `src/app/tabs.ts`), so it follows `features.json`. */
 export default function HomeScreen() {
+  const router = useRouter();
+  const links = TABS.filter((t) => t.enabled && t.name !== "index");
   return (
     <Screen scroll>
       <Text variant="display">Home</Text>
+      <Text muted>Pick a screen to start.</Text>
       <Card>
-        <Text variant="title">Placeholder</Text>
-        <Text muted>Built with the theme primitives.</Text>
-        <Button label="Primary" onPress={() => {}} />
+        {links.map(({ name, title }) => (
+          <ListItem key={name} title={title} onPress={() => router.push(`/${name}` as Href)} />
+        ))}
       </Card>
-      <EmptyState title="Nothing here yet" />
     </Screen>
   );
 }

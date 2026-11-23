@@ -8,18 +8,30 @@ export default function DetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const itemId = Number(id);
-  const query = useItem(Number.isFinite(itemId) ? itemId : undefined);
+  const validId = !!id && Number.isInteger(itemId);
+  const query = useItem(validId ? itemId : undefined);
   const del = useDeleteItem();
 
   const confirmDelete = () =>
     Alert.alert("Delete item?", "This cannot be undone.", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => del.mutate(itemId, { onSuccess: () => router.back() }) },
+      { text: "Delete", style: "destructive", onPress: () =>
+          del.mutate(itemId, {
+            onSuccess: () => router.back(),
+            onError: (e) => Alert.alert("Could not delete", e instanceof Error ? e.message : "Try again."),
+          }),
+      },
     ]);
 
   return (
     <Screen scroll>
       <Button label="Back" variant="ghost" onPress={() => router.back()} />
+      {!validId ? (
+        <Card>
+          <Text variant="title">Item not found</Text>
+          <Text muted>"{id}" is not a valid item id.</Text>
+        </Card>
+      ) : (
       <QueryState query={query} isEmpty={() => false}>
         {(item: Item) => (
           <>
@@ -37,6 +49,7 @@ export default function DetailScreen() {
           </>
         )}
       </QueryState>
+      )}
     </Screen>
   );
 }
