@@ -36,6 +36,6 @@ class RagChunk(SQLModel, table=True):
 
 
 @event.listens_for(SQLModel.metadata, "before_create")
-def _create_vector_extension(target, connection, **_):  # noqa: ANN001
+def _create_vector_extension(target, connection, **_):
     """Runs for any create_all (app startup included), so the vector type exists first."""
     connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
