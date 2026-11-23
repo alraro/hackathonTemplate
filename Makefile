@@ -18,6 +18,8 @@ PROFILES_BASE := $(if $(only),$(only),$(COMPOSE_PROFILES))
 PROFILES := $(PROFILES_BASE)$(if $(filter ollama,$(EMBED_PROVIDER)),$(comma)ollama)
 VISION := $(shell $(PYTHON) -c "import json;print(str(json.load(open('features.json')).get('vision',False)).lower())" 2>/dev/null || echo false)
 DC := COMPOSE_PROFILES=$(PROFILES) VISION=$(VISION) docker compose
+# All profiles: down/restart/logs/ps/sh must also reach demo/share services (preview, edge, tunnels).
+DCALL := VISION=$(VISION) docker compose --profile '*'
 
 # --- core ---
 
@@ -33,24 +35,24 @@ up: ## start the stack detached and print URLs — run to begin work (only=web f
 	@echo "web: http://localhost:$(WEB_PORT)"
 	@echo "api: http://localhost:$(API_PORT)/docs"
 
-down: ## stop the stack, keep data — run when you are done for the day
-	docker compose down
+down: ## stop every service incl. demo/share, keep data — run when you are done for the day
+	$(DCALL) down --remove-orphans
 
 restart: ## restart services (svc= for one) — run after changing env or compose
-	docker compose restart $(svc)
+	$(DCALL) restart $(svc)
 
 logs: ## follow logs (svc= for one) — run to debug a service
-	docker compose logs -f --tail=100 $(svc)
+	$(DCALL) logs -f --tail=100 $(svc)
 
 ps: ## list running services and health — run to see what is up
-	docker compose ps
+	$(DCALL) ps
 
 sh: ## shell into a service (svc=backend by default) — run to poke around inside
-	docker compose exec $(or $(svc),backend) sh
+	$(DCALL) exec $(or $(svc),backend) sh
 
 clean: ## remove containers AND volumes after y/N confirm — run to reset all data
 	@read -r -p "This deletes the database and node_modules volumes. Continue? [y/N] " a; \
-	if [ "$$a" = "y" ] || [ "$$a" = "Y" ]; then docker compose down -v; else echo "aborted"; fi
+	if [ "$$a" = "y" ] || [ "$$a" = "Y" ]; then $(DCALL) down -v; else echo "aborted"; fi
 
 prune: ## remove a Module: m=<name> [or m="--dry-run <name>"] — run once at the Prune phase
 	$(PYTHON) scripts/prune.py $(m)
@@ -58,10 +60,10 @@ prune: ## remove a Module: m=<name> [or m="--dry-run <name>"] — run once at th
 check: ## run all repo checks — run before every commit and PR
 	$(PYTHON) scripts/check.py
 
-setup: ## create .env and SECRET_KEY — run once after cloning
+setup: ## create .env and SECRET_KEY, labels, repo settings, branch — run once after cloning
 	$(PYTHON) scripts/setup.py
 
-invite: ## print teammate invite steps — run when adding a teammate
+invite: ## invite teammates to the repo (users=a,b) — run when adding a teammate
 	$(PYTHON) scripts/setup.py invite $(users)
 
 lint-docs: ## lint MODULE.md and docs — run after editing docs
@@ -76,6 +78,11 @@ share: ## expose the stack on a public URL (via=ngrok optional) — run to demo 
 demo: ## switch to demo mode with seeded data — run before presenting
 	$(PYTHON) scripts/demo.py
 
+.PHONY: theme
+theme: ## regenerate design tokens for web, mobile, pitch — run after editing theme.json
+	@if [ -d web ]; then docker compose run --rm -T --no-deps $(foreach d,mobile pitch,$(if $(wildcard $(d)/),-v ./$(d):/$(d))) web npm run theme; \
+	else echo "theme: web/ is pruned, so the generator is gone; edit pitch/theme.css by hand"; exit 1; fi
+
 # >>> module:api
 # --- api ---
 .PHONY: seed db-reset openapi fake simulate add-py
@@ -89,9 +96,11 @@ openapi: ## export backend/openapi.json — run after changing API routes
 	docker compose run --rm -T backend python -m backend.api.openapi
 
 fake: ## regenerate seed.json with fake rows: resource= [n=20] — run to fill the UI with data
+	@test -n "$(resource)" || { echo "usage: make fake resource=<name> [n=20]"; exit 2; }
 	docker compose exec backend python -m backend.api.fake --resource $(resource) --n $(or $(n),20)
 
 simulate: ## stream simulated rows over realtime: scenario= — run to demo live dashboards
+	@test -n "$(scenario)" || { echo "usage: make simulate scenario=<name>"; exit 2; }
 	docker compose exec backend python -m backend.api.simulate --scenario $(scenario)
 
 add-py: ## add a Python package: pkg= [extra=] — run instead of pip install
@@ -100,15 +109,12 @@ add-py: ## add a Python package: pkg= [extra=] — run instead of pip install
 
 # >>> module:web
 # --- web ---
-.PHONY: api-client design-lint theme add-web
+.PHONY: api-client design-lint add-web
 api-client: ## regenerate the typed API client and fixtures — run after make openapi
 	$(PYTHON) scripts/api_client.py
 
 design-lint: ## check design tokens and contrast (warn-only) — run after editing theme.json
 	docker compose exec web npm run design-lint
-
-theme: ## regenerate design tokens for web, mobile, pitch — run after editing theme.json
-	docker compose run --rm -T --no-deps $(foreach d,mobile pitch,$(if $(wildcard $(d)/),-v ./$(d):/$(d))) web npm run theme
 
 add-web: ## add an npm package: pkg= — run instead of npm install
 	docker compose exec web npm install $(pkg)
@@ -127,6 +133,7 @@ rag-ingest: ## embed docs into pgvector — run after adding documents to ingest
 data-run: ## run a data pipeline: run= — run to produce reports and models
 	docker compose exec backend python -m backend.data run $(run)
 eda: ## explore a dataset with skrub TableReport: CSV= — run before choosing a pipeline
+	@test -n "$(CSV)" || { echo "usage: make eda CSV=<path>"; exit 2; }
 	docker compose exec backend python -m backend.data eda $(CSV)
 # <<< module:data
 
@@ -146,6 +153,6 @@ mobile-tunnel: ## start Expo through a tunnel — run when the phone is on anoth
 slides: ## serve the Slidev deck — run to edit the pitch
 	cd pitch && npm install --no-audit --no-fund && npx slidev
 
-slides-pdf: ## export the deck to PDF — run before submitting
-	cd pitch && npm install --no-audit --no-fund && npx slidev export --output slides-export.pdf
+slides-pdf: ## export the deck to PDF (installs Chromium on first run) — run before submitting
+	cd pitch && npm install --no-audit --no-fund && { npx playwright-chromium install chromium || { echo "slides-pdf: Chromium install failed; run: cd pitch && npx playwright-chromium install chromium"; exit 1; }; } && npx slidev export --output slides-export.pdf
 # <<< module:pitch

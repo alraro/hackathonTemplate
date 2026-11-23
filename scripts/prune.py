@@ -6,8 +6,8 @@
     python scripts/prune.py --restore <module> --sha <sha>
                                                       bring a Module back from the pre-Prune SHA
 
-Manifest keys used: `module`, `lane`, `requires`, `profile` (str, list or null; defaults to the
-module name), optional `paths` (defaults to the Module directory), optional `extras`/`extra` (pyproject
+Manifest keys used: `module`, `lane`, `requires`, `profile`/`docker_compose_profile` (str, list or null; defaults to the
+module name), optional `paths` (defaults to the Module directory), optional `extras`/`extra`/`pyproject_extra` (pyproject
 extras, default the module name) and optional
 `npm_deps` ({package.json path: [names]}). `pitch` is never pruned. Features are never pruned.
 """
@@ -40,7 +40,7 @@ def module_paths(m: dict) -> list[str]:
 
 
 def module_profiles(m: dict) -> list[str]:
-    p = m.get("profile", m["module"])
+    p = m.get("profile", m.get("docker_compose_profile", m["module"]))
     if p is None:
         return []
     return [p] if isinstance(p, str) else list(p)
@@ -138,7 +138,7 @@ def extra_span(lines: list[str], name: str) -> tuple[int, int] | None:
 
 def module_extras(m: dict) -> list[str]:
     """pyproject extras a Module owns: `extras` (list), `extra` (str), else its own name."""
-    e = m.get("extras", m.get("extra", m["module"]))
+    e = m.get("extras", m.get("extra", m.get("pyproject_extra", m["module"])))
     return [e] if isinstance(e, str) else list(e or [])
 
 

@@ -4,31 +4,13 @@
 Usage: make demo [mode=live|fixtures]   (mode defaults to live; read from the environment or argv)
 Host-side, stdlib only. Docker does all the work.
 """
-import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-
-
-def read_env():
-    env = {}
-    path = ROOT / ".env"
-    if path.exists():
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if "=" in line and not line.lstrip().startswith("#"):
-                k, v = line.split("=", 1)
-                env[k.strip()] = v.strip()
-    return env
-
-
-def vision():
-    try:
-        return str(json.loads((ROOT / "features.json").read_text()).get("vision", False)).lower()
-    except (OSError, ValueError):
-        return "false"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _env import ROOT, read_env, vision  # noqa: E402
 
 
 def main(argv):
@@ -56,7 +38,7 @@ def main(argv):
     print(f"\ndemo ({mode}): http://localhost:{port}")
     if mode == "live":
         print(f"api: http://localhost:{port}/api/health")
-    print("stop with: make down")
+    print("stop with: make down (then `make up` brings the dev server back)")
     return 0
 
 

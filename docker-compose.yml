@@ -105,14 +105,14 @@ services:
 
   # Public tunnels, `make share` only. Both reach only `edge`.
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: cloudflare/cloudflared:2025.11.1
     profiles: [share]
     command: tunnel --no-autoupdate --url http://edge:80
     depends_on:
       - edge
 
   ngrok:
-    image: ngrok/ngrok:latest
+    image: ngrok/ngrok:3
     profiles: [share-ngrok]
     command: http edge:80 --log stdout
     environment:
@@ -123,7 +123,7 @@ services:
 
   # >>> module:llm
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.12.9
     profiles: [ollama]
     # Compose network only: no host port.
     volumes:

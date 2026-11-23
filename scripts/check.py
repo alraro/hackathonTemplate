@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DC = ["docker", "compose"]
-MISSING_MARKERS = ("No module named", "Missing script", "missing script", "ModuleNotFoundError")
+MISSING_MARKERS = ("Missing script", "missing script")  # npm: script not defined yet. A broken import in a present Module must FAIL.
 
 
 @dataclass

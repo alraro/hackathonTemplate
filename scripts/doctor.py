@@ -9,7 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _env import ROOT, read_env  # noqa: E402
 failed = False
 
 
@@ -29,15 +30,6 @@ def run(cmd):
         return subprocess.run(cmd, capture_output=True, text=True, timeout=20)
     except (OSError, subprocess.TimeoutExpired):
         return None
-
-
-def read_env():
-    env = {}
-    for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines():
-        if "=" in line and not line.lstrip().startswith("#"):
-            k, v = line.split("=", 1)
-            env[k.strip()] = v.strip()
-    return env
 
 
 def check_docker():
@@ -87,13 +79,20 @@ def port_free(port):
         return s.connect_ex(("127.0.0.1", port)) != 0
 
 
+def own_stack_holds(port):
+    """True when a container of this repo's compose project publishes the port."""
+    r = run(["docker", "ps", "--filter", f"publish={port}", "--format", '{{.Label "com.docker.compose.project"}}'])
+    names = set(r.stdout.split()) if r and r.returncode == 0 else set()
+    return bool(names & {re.sub(r"[^a-z0-9_-]", "", ROOT.name.lower()), os.environ.get("COMPOSE_PROJECT_NAME", "")})
+
+
 def check_ports():
     if not (ROOT / ".env").exists():
         return
     env = read_env()
     for name, default in (("WEB_PORT", "5173"), ("API_PORT", "8000"), ("DB_PORT", "5433")):
         port = int(env.get(name) or default)
-        report(port_free(port), f"port {port} ({name}) is free",
+        report(port_free(port) or own_stack_holds(port), f"port {port} ({name}) is free",
                f"stop whatever uses it, or change {name} in .env")
 
 
