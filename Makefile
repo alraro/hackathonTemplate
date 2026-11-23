@@ -129,7 +129,7 @@ rag-ingest: ## embed docs into pgvector — run after adding documents to ingest
 data-run: ## run a data pipeline: run= — run to produce reports and models
 	docker compose exec backend python -m backend.data run $(run) # TODO: filled by the backlog issue that creates backend/data
 eda: ## explore a dataset with skrub TableReport — run before choosing a pipeline
-	docker compose exec backend python -m backend.data eda # TODO: filled by the backlog issue that creates backend/data
+	docker compose exec backend python -m backend.data eda $(CSV)
 # <<< module:data
 
 # >>> module:mobile
