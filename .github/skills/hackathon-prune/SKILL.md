@@ -53,7 +53,7 @@ Accept free-form changes to this artifact in place (for example "keep mobile", "
 
 **Read**: the dry-run plan.
 **Do**:
-1. Run `make prune m="<modules to prune>"`.
+1. Run `make prune m="<modules to prune>"`, then `make openapi api-client` if `api` is kept (pruned routes change the Contract).
 2. Run `make check`; fix each leftover it reports, then rerun until green. A leftover that needs a file outside the Prune plan goes to the Driver as a question.
 3. Fill `## Check result` with the final `make check` outcome.
 4. Commit and push.

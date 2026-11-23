@@ -48,6 +48,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+      # First start installs the Python deps into the venv volume (several minutes).
+      start_period: 15m
   # <<< module:api
 
   # >>> module:web

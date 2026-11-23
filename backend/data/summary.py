@@ -24,7 +24,7 @@ def build_summary(report: Report, explain: bool = False) -> str:
     if not explain:
         return text
     try:
-        from backend.llm.helpers import summarize  # module:llm
+        from backend.llm.helpers import summarize  # llm pruned -> ImportError
 
         narration = summarize(
             f"Explain these model results to a non-technical audience, in the event language: {text}",

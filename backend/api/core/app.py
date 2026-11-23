@@ -49,7 +49,8 @@ def health() -> dict[str, str]:
 FEATURES: dict[str, bool] = json.loads((Path(__file__).resolve().parents[3] / "features.json").read_text())
 
 # >>> routers
-# One import + gated include per router. The trailing `# module:<x>` is the Prune marker.
+# One import + gated include per router. Prune markers: a trailing `# module:<x>` removes one line,
+# so a multi-line statement (an `if` and its body) sits in a `# >>> module:<x>` block.
 from backend.api.resources._example.router import router as example_router  # module:api
 from backend.api.resources.auth.router import router as auth_router  # module:api
 from backend.api.resources.chat.router import router as chat_router  # module:llm
@@ -69,23 +70,29 @@ if FEATURES.get("upload"):
     app.include_router(files_router)  # module:api
 if FEATURES.get("realtime"):
     app.include_router(ws_router)  # module:api
+# >>> module:llm
 if FEATURES.get("chat"):
-    app.include_router(chat_router)  # module:llm
+    app.include_router(chat_router)
 if FEATURES.get("rag"):
-    app.include_router(rag_router)  # module:llm
+    app.include_router(rag_router)
 if FEATURES.get("voice"):
-    app.include_router(transcribe_router)  # module:llm
+    app.include_router(transcribe_router)
+# <<< module:llm
+# >>> module:data
 if FEATURES.get("reports"):
-    app.include_router(data_reports_router)  # module:data
+    app.include_router(data_reports_router)
+# <<< module:data
 # <<< routers
 
 # Global exception handler slot: LLMError -> 503 {detail}. Guarded so it works when llm is pruned.
+# >>> module:llm
 try:
-    from backend.llm.errors import LLMError  # module:llm
-except ImportError:  # llm pruned, or errors module not built yet
-    LLMError = None  # module:llm
-if LLMError is not None:  # module:llm
+    from backend.llm.errors import LLMError
+except ImportError:  # errors module not built yet
+    LLMError = None
+if LLMError is not None:
 
-    @app.exception_handler(LLMError)  # module:llm
-    async def llm_error_handler(_: Request, exc: Exception) -> JSONResponse:  # module:llm
-        return JSONResponse(status_code=503, content={"detail": str(exc)})  # module:llm
+    @app.exception_handler(LLMError)
+    async def llm_error_handler(_: Request, exc: Exception) -> JSONResponse:
+        return JSONResponse(status_code=503, content={"detail": str(exc)})
+# <<< module:llm

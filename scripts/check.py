@@ -36,7 +36,7 @@ def build_checks() -> list[Check]:
     if (ROOT / "web").is_dir():
         checks.append(Check("web", "npm run check", in_service("web", "npm", "run", "check"), needs="web/package.json"))
         checks.append(Check("web", "design-lint", in_service("web", "npm", "run", "design-lint"), blocking=False, needs="web/package.json"))
-    if (ROOT / "backend").is_dir():
+    if (ROOT / "backend" / "api").is_dir():
         checks.append(Check("api", "backend.api.check", in_service("backend", "python", "-m", "backend.api.check"), needs="backend/api/check.py"))
         checks.append(Check("api", "ruff", in_service("backend", "ruff", "check", "."), blocking=False, needs="backend/pyproject.toml"))
         if (ROOT / "backend" / "llm").is_dir():
@@ -46,7 +46,7 @@ def build_checks() -> list[Check]:
             checks.append(Check("data", "data validate", in_service("backend", "python", "-m", "backend.data", "validate"), needs="backend/data/__main__.py"))
     if (ROOT / "mobile").is_dir() and shutil.which("npm"):
         checks.append(Check("mobile", "tsc (npm run check)", ["npm", "--prefix", "mobile", "run", "check"], needs="mobile/node_modules/.bin/tsc"))
-        checks.append(Check("mobile", "expo-doctor", ["npx", "--prefix", "mobile", "expo-doctor"], blocking=False, needs="mobile/node_modules/.bin/tsc"))
+        checks.append(Check("mobile", "expo-doctor", ["sh", "-c", "cd mobile && npx expo-doctor"], blocking=False, needs="mobile/node_modules/.bin/tsc"))
     if (ROOT / "scripts" / "sync.py").exists():
         checks.append(Check("skills", "sync --check", [sys.executable, "scripts/sync.py", "--check"]))
     if (ROOT / "scripts" / "lint_docs.py").exists():
@@ -80,7 +80,7 @@ def stale_checks() -> list[tuple[str, str, str, str]]:
     targets: list[tuple[str, list[str]]] = []
     if (ROOT / "backend" / "openapi.json").exists():
         targets.append(("backend/openapi.json", ["make", "openapi"]))
-    for schema in sorted(ROOT.glob("*/schema.d.ts")):
+    for schema in sorted(ROOT.glob("*/src/lib/api/schema.d.ts")):
         targets.append((str(schema.relative_to(ROOT)), ["make", "api-client"]))
     rows = []
     for rel, cmd in targets:

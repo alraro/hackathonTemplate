@@ -66,7 +66,7 @@ The only skill teammates know. You read the recorded state, never the previous c
 | 5 | Brainstorm | `hackathon-brainstorm` | `hackathon/04-ideas.md` | 3 |
 | 6 | Pick & Pitch | `hackathon-pitch` | `hackathon/05-pitch.md` | 3 |
 | 7 | Prune | `hackathon-prune` | `hackathon/06-prune.md` | 3 |
-| 8 | Design | `hackathon-design` (pending) | `hackathon/07-design.md` | 4 |
+| 8 | Design | `hackathon-design` | `hackathon/07-design.md` | 4 |
 | 9 | Contracts | `hackathon-contracts` | `hackathon/08-contracts.md` | 5 |
 | 10 | Task split | `hackathon-split` | `hackathon/09-split.md` | 5 |
 | 11 | Build | `hackathon-build` | GitHub issues and PRs | 6 (one fresh session per issue) |

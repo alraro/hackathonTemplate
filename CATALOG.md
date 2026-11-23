@@ -34,15 +34,15 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `map` | `web` | interactive map with markers | web/src/screens/map/ | data has a location | on |
 | `qr` | `web` | QR code generation and scanning | web/src/components/common/QrCode.tsx | the demo hands off to a phone or scans codes | on |
 | `voice` | `web` | voice input and spoken output controls | web/src/components/common/VoiceButton.tsx | the product is used hands-free or by speech | on |
-| `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
-| `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
-| `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
-| `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | on |
-| `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
-| `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | on |
-| `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | on |
-| `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | on |
-| `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | on |
+| `auth` | `mobile` | sign-in screens and session storage | mobile/src/screens/auth | the app has user accounts | on |
+| `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/screens/crud | the idea manages records | on |
+| `settings` | `mobile` | settings tab | mobile/src/screens/settings | the app has user preferences | on |
+| `showcase` | `mobile` | demo tab of UI components | mobile/src/screens/showcase | a demo of the design system helps the pitch | on |
+| `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/components/common/ImagePick.tsx | users add photos or files | on |
+| `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/lib/realtime | the idea shows live data | on |
+| `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/components/common/NotificationBell.tsx | the app alerts users | on |
+| `map` | `mobile` | map tab (mobile part) | mobile/src/screens/map | the idea is location-based | on |
+| `qr` | `mobile` | QR scanning (mobile part) | mobile/src/components/common/QrScanner.tsx | the flow scans or shows QR codes | on |
 | `auth` | `api` | users, JWT login, demo users | backend/api/resources/auth | the product has accounts or roles | on |
 | `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |
 | `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |

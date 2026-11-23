@@ -49,10 +49,10 @@ async def create(
     session.refresh(f)
     if ingest:
         try:
-            from backend.llm import rag  # module:llm
+            from backend.llm import rag  # llm pruned -> ImportError -> 501
         except ImportError:
             raise HTTPException(501, "RAG is not available") from None
-        rag.ingest_file(UPLOAD_DIR / rel, f.name)  # module:llm
+        rag.ingest_file(UPLOAD_DIR / rel, f.name)
     return _read(f)
 
 
