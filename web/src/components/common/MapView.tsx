@@ -180,7 +180,8 @@ export function MapView<T>({ items, getLatLng, onSelect, center, zoom = 11 }: Ma
 
   return (
     <div className="relative h-[28rem] w-full overflow-hidden rounded-lg border">
-      <div ref={box} className="absolute inset-0" />
+      {/* h-full, not absolute inset-0: maplibre-gl.css sets .maplibregl-map { position: relative }, which would collapse it to 0px. */}
+      <div ref={box} className="h-full w-full" />
       {failed && (
         <div className="absolute inset-0 grid place-items-center bg-muted p-6 text-center text-sm text-muted-foreground">
           The map needs WebGL2, which this browser does not provide. {failed.split(".")[0]}.
