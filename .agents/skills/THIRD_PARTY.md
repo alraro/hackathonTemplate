@@ -40,3 +40,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## slidevjs/slidev
+
+Vendored unmodified: the official agent skill `skills/slidev/` (`SKILL.md` and `references/`) of https://github.com/slidevjs/slidev v53.1.0, in `.agents/skills/slidev/`. Added by issue #96. MIT licence, same text as above with "Copyright (c) 2020-PRESENT Anthony Fu".
