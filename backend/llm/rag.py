@@ -114,17 +114,19 @@ def _embed_all(texts: list[str]) -> list[list[float]]:
     return out
 
 
-def _ingest(path: Path, title: str, force: bool) -> int:
+def _ingest(path: Path, title: str, force: bool, key: str | None = None) -> int:
     """Ingest one file; return the chunk count stored (0 when unchanged and skipped)."""
     from backend.llm.rag_models import RagChunk, RagDocument
 
     ensure_schema()
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     # Relative to the corpus when inside it, so same-named files in subfolders differ.
-    try:
-        source = path.resolve().relative_to(CORPUS_DIR.resolve()).as_posix()
-    except ValueError:
-        source = path.name
+    source = key
+    if source is None:
+        try:
+            source = path.resolve().relative_to(CORPUS_DIR.resolve()).as_posix()
+        except ValueError:
+            source = path.name
     with _session() as session:
         existing = session.exec(select(RagDocument).where(RagDocument.source == source)).all()
         if not force and any(d.hash == digest for d in existing):
@@ -156,9 +158,12 @@ def ingest_path(path: str | Path = CORPUS_DIR, force: bool = False) -> int:
     return total
 
 
-def ingest_file(path: str | Path, title: str) -> int:
-    """Ingest a single file (used by upload); return chunk count."""
-    return _ingest(Path(path), title, force=False)
+def ingest_file(path: str | Path, title: str, key: str | None = None) -> int:
+    """Ingest a single file (used by upload); return chunk count.
+
+    `key` identifies the document (uploads pass `upload:<file id>`); default: the file name.
+    """
+    return _ingest(Path(path), title, force=False, key=key)
 
 
 def search(query: str, k: int = 5) -> list[Chunk]:

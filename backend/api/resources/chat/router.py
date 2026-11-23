@@ -41,21 +41,12 @@ _END = object()  # queue sentinel: the worker finished (normally or not)
 _feature = enabled
 
 
-def _citations(req: ChatRequest) -> list[ChatCitation]:
-    """Chunks `chat(use_rag=True)` grounds on: the same `search` of the last user message."""
-    from backend.llm import rag
-
-    query = next((m.content for m in reversed(req.messages) if m.role == "user"), "")
-    return [ChatCitation(**vars(c)) for c in rag.search(query)]
-
-
 def _worker(req: ChatRequest, put: Any, stop: threading.Event) -> None:
     """Thread body: stream `chat()` into `put(frame)`, ending with done/error then `_END`."""
     from backend.llm.helpers import chat
 
     use_rag = req.use_rag and _feature("rag")
     try:
-        citations = _citations(req) if use_rag else []
         stream = chat([m.model_dump() for m in req.messages], use_rag=use_rag)
         try:
             for text in stream:
@@ -64,7 +55,7 @@ def _worker(req: ChatRequest, put: Any, stop: threading.Event) -> None:
                 put(Delta(text=text))
         finally:
             stream.close()  # on stop: closes the provider's HTTP stream; nothing is cached
-        put(Done(citations=citations))
+        put(Done(citations=[ChatCitation(**vars(c)) for c in stream.citations]))
     except LLMError as e:
         put(ChatError(detail=str(e)))
     except Exception:

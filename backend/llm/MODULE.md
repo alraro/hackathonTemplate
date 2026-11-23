@@ -90,7 +90,7 @@ Missing keys raise `LLMError` with the variable to set; the API returns it as th
 | `rag` (on) | answers must come from the team's documents | `POST /api/rag/ask`; put documents in `backend/llm/corpus/`, then `make rag-ingest` |
 | `voice` (off) | a Beat uses spoken input or output | `POST /api/llm/transcribe` and `/api/llm/speak` |
 
-Chat uses RAG per request: send `use_rag: true` and `chat()` adds the top `rag.search` chunks to the system prompt; the `done` frame carries them as `citations`. It applies only while Feature `rag` is on and the corpus is ingested. Switch a Feature in `features.json`, then `make sync`.
+Chat uses RAG per request: send `use_rag: true` and `chat()` adds the top `rag.search` chunks to the system prompt; `chat()` returns a `ChatStream` whose `.citations` the `done` frame carries (one search per turn). It applies only while Feature `rag` is on and the corpus is ingested. Switch a Feature in `features.json`, then `make sync`.
 
 Done when the Feature's endpoint answers in `/docs` (REST) or in a socket client (chat).
 
@@ -117,3 +117,13 @@ No helper wraps tools yet; call the provider client directly inside a new helper
 4. Add the tool functions to the resource, not to `backend/llm`.
 
 Done when one question needing a tool returns an answer that uses the tool's result, on the provider in `.env`.
+
+## Embeddings
+
+Models: `gemini-embedding-2` (Gemini, asked for 768 dims via `dimensions`/`outputDimensionality`) and `embeddinggemma` (Ollama, 768 native); both IDs checked as existing on 2026-11-23. The vector column is 768 wide for both. Switching from the older `gemini-embedding-001` / `nomic-embed-text` makes stored vectors incomparable: run `make db-reset` (or delete the rag tables) and `make rag-ingest` again. Uploads are keyed `upload:<file id>` plus content hash; corpus files by relative path plus hash.
+
+## Known gaps
+
+- `summarize` cuts over-long output after the call (last sentence inside `max_words`, else a hard cut plus "…"); the prompt hint stays.
+- Cached answers from before an embedding or prompt change are not invalidated; delete `backend/llm/.cache/llm.sqlite`.
+- No tool-calling helper yet (see the recipe).

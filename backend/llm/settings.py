@@ -72,7 +72,7 @@ def output_language() -> str | None:
     return os.environ.get("OUTPUT_LANGUAGE") or None
 
 
-EMBED_MODELS = {"gemini": "gemini-embedding-001", "ollama": "nomic-embed-text"}
+EMBED_MODELS = {"gemini": "gemini-embedding-2", "ollama": "embeddinggemma"}
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 
