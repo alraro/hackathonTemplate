@@ -69,7 +69,7 @@ def create(
         # >>> module:llm
         from backend.llm import rag
 
-        rag.ingest_file(UPLOAD_DIR / rel, f.name)
+        rag.ingest_file(UPLOAD_DIR / rel, f.name, key=f"upload:{f.id}")
         return _read(f)
         # <<< module:llm
         raise HTTPException(501, "RAG is not available")  # reached only when llm is pruned

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 from typing import Literal
 
@@ -69,7 +70,39 @@ def summarize(
     def call() -> str:
         return settings.get_provider().complete(msgs, model=m)
 
-    return cache.cached_call(_key("summarize", m, {"prompt": prompt}), call)
+    out = cache.cached_call(_key("summarize", m, {"prompt": prompt}), call)
+    return _limit_words(out, max_words)
+
+
+def _limit_words(text: str, max_words: int) -> str:
+    """Cut `text` to `max_words` words: at the last sentence end inside the limit, else hard."""
+    words = text.split()
+    if max_words < 1 or len(words) <= max_words:
+        return text
+    head = " ".join(words[:max_words])
+    ends = [m.end() for m in re.finditer(r"[.!?](?=\s|$)", head)]
+    if ends:
+        return head[: ends[-1]]
+    return head + "…"
+
+
+class ChatStream:
+    """Iterator of answer text chunks; `.citations` lists the chunks the answer is grounded on."""
+
+    def __init__(self, stream: Iterator[str], citations: list) -> None:
+        self._stream = stream
+        self.citations = citations
+
+    def __iter__(self) -> ChatStream:
+        return self
+
+    def __next__(self) -> str:
+        return next(self._stream)
+
+    def close(self) -> None:
+        close = getattr(self._stream, "close", None)
+        if close:
+            close()
 
 
 def chat(
@@ -78,15 +111,20 @@ def chat(
     system: str | None = None,
     use_rag: bool = False,
     model: str | None = None,
-) -> Iterator[str]:
-    """Stream a chat answer on the smart tier; `use_rag` grounds it in ingested documents."""
+) -> ChatStream:
+    """Stream a chat answer on the smart tier; `use_rag` grounds it in ingested documents.
+
+    The result iterates text chunks; `.citations` holds the chunks used (empty without RAG).
+    """
     m = _model(model, "smart")
     extra = system or ""
+    found: list = []
     if use_rag:
         from backend.llm import rag
 
         query = next((x["content"] for x in reversed(messages) if x.get("role") == "user"), "")
-        context = "\n\n".join(f"[{c.source}] {c.text}" for c in rag.search(query))
+        found = rag.search(query)
+        context = "\n\n".join(f"[{c.source}] {c.text}" for c in found)
         if context:
             extra += f"\nAnswer using this context and cite sources in brackets:\n{context}"
     sys_prompt = render("chat_system", extra=extra)
@@ -95,7 +133,7 @@ def chat(
     def gen() -> Iterator[str]:
         return settings.get_provider().stream(messages, model=m, system=sys_prompt)
 
-    return cache.cached_stream(key, gen)
+    return ChatStream(cache.cached_stream(key, gen), found)
 
 
 def embed(texts: list[str]) -> list[list[float]]:
