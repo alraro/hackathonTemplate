@@ -1,0 +1,5 @@
+[
+  {"title": "Plan the demo", "description": "Walk through the main flow end to end", "status": "doing", "category": "demo", "created_at": "2026-01-10T09:00:00Z"},
+  {"title": "Write the pitch", "description": "Three slides, one story", "status": "todo", "category": "pitch", "created_at": "2026-01-11T09:00:00Z"},
+  {"title": "Seed the database", "description": "Replace these rows with your domain data", "status": "done", "category": "data", "created_at": "2026-01-12T09:00:00Z"}
+]
