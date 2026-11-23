@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/common/PageHeader"
 import { QueryState } from "@/components/common/QueryState"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { PAGE_SIZE, STATUSES, useDeleteItem, useItems, type Item } from "../api"
+import { PAGE_SIZE, STATUSES, fetchAllItems, useDeleteItem, useItems, type Item } from "../api"
 import { DeleteDialog } from "../components/DeleteDialog"
 
 // Screen pattern: filters live in the URL (shareable, back-button safe), data comes from a query hook,
@@ -115,6 +115,7 @@ export default function ListPage() {
           <DataTable
             columns={columns}
             data={data.items}
+            exportAll={() => fetchAllItems({ q, status, category })}
             getRowId={(r) => String(r.id)}
             onRowClick={(r) => void navigate(`/items/${r.id}`)}
             pagination={{ offset, limit: PAGE_SIZE, total: data.total, onOffsetChange: (o) => setParam("offset", o ? String(o) : "") }}

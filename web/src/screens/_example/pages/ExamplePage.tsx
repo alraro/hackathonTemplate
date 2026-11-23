@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/common/PageHeader"
 import { QueryState } from "@/components/common/QueryState"
 import { Card, CardContent } from "@/components/ui/card"
-import { useExamples } from "./api"
+import { useExamples } from "../api"
 
 // The screen pattern in one page. Not registered as a route: copy this folder to
 // screens/<your-screen>/ (page under pages/), then add one entry to screenRoutes in app/routes.tsx.
