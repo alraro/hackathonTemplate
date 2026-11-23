@@ -32,8 +32,8 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | on |
 | `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | on |
 | `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | on |
-| `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | off |
-| `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | off |
+| `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | on |
+| `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | on |
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
 | `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
 | `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
@@ -42,14 +42,14 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | on |
 | `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | on |
 | `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | on |
-| `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | off |
+| `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | on |
 | `auth` | `api` | users, JWT login, demo users | backend/api/resources/auth | the product has accounts or roles | on |
 | `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |
 | `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |
 | `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | on |
 | `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | off |
 | `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | on |
-| `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | off |
+| `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | on |
 | `tabular` | `data` | tabular models on a dataset | backend/data | the idea predicts from a table | off |
 | `cluster` | `data` | clustering of records | backend/data | the idea groups similar records | off |
 | `forecast` | `data` | time-series forecasting | backend/data | the idea predicts future values | off |

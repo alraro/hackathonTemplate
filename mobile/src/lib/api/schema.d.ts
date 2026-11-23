@@ -220,6 +220,46 @@ export interface paths {
         patch: operations["items_update"];
         trace?: never;
     };
+    "/api/llm/speak": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Speak
+         * @description Server TTS audio. 204 when TTS_PROVIDER=browser (the web speaks with speechSynthesis).
+         */
+        post: operations["transcribe_speak"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/llm/transcribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Transcribe
+         * @description Speech-to-text for one audio clip (multipart field `file`).
+         */
+        post: operations["transcribe_transcribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/rag/ask": {
         parameters: {
             query?: never;
@@ -278,6 +318,11 @@ export interface components {
         };
         /** Body_files_create */
         Body_files_create: {
+            /** File */
+            file: string;
+        };
+        /** Body_transcribe_transcribe */
+        Body_transcribe_transcribe: {
             /** File */
             file: string;
         };
@@ -519,6 +564,11 @@ export interface components {
             /** Password */
             password: string;
         };
+        /** SpeakRequest */
+        SpeakRequest: {
+            /** Text */
+            text: string;
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -529,6 +579,11 @@ export interface components {
              */
             token_type: string;
             user: components["schemas"]["UserPublic"];
+        };
+        /** TranscribeResponse */
+        TranscribeResponse: {
+            /** Text */
+            text: string;
         };
         /** UserPublic */
         UserPublic: {
@@ -1196,6 +1251,82 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ItemRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    transcribe_speak: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SpeakRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "audio/mpeg": unknown;
+                };
+            };
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    transcribe_transcribe: {
+        parameters: {
+            query?: {
+                language?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_transcribe_transcribe"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TranscribeResponse"];
                 };
             };
             /** @description Validation Error */

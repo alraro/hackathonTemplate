@@ -11,8 +11,8 @@
   "realtime": true,
   "notifications": true,
   "map": true,
-  "qr": false,
-  "voice": false,
+  "qr": true,
+  "voice": true,
   "vision": false,
   "reports": true
 }

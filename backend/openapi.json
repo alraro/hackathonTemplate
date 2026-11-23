@@ -50,6 +50,20 @@
         "title": "Body_files_create",
         "type": "object"
       },
+      "Body_transcribe_transcribe": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_transcribe_transcribe",
+        "type": "object"
+      },
       "Chart": {
         "properties": {
           "data": {
@@ -606,6 +620,21 @@
         "title": "SignupRequest",
         "type": "object"
       },
+      "SpeakRequest": {
+        "properties": {
+          "text": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "SpeakRequest",
+        "type": "object"
+      },
       "TokenResponse": {
         "properties": {
           "access_token": {
@@ -626,6 +655,19 @@
           "user"
         ],
         "title": "TokenResponse",
+        "type": "object"
+      },
+      "TranscribeResponse": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "TranscribeResponse",
         "type": "object"
       },
       "UserPublic": {
@@ -1629,6 +1671,110 @@
         "summary": "Update",
         "tags": [
           "items"
+        ]
+      }
+    },
+    "/api/llm/speak": {
+      "post": {
+        "description": "Server TTS audio. 204 when TTS_PROVIDER=browser (the web speaks with speechSynthesis).",
+        "operationId": "transcribe_speak",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpeakRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "audio/mpeg": {}
+            },
+            "description": "Successful Response"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Speak",
+        "tags": [
+          "transcribe"
+        ]
+      }
+    },
+    "/api/llm/transcribe": {
+      "post": {
+        "description": "Speech-to-text for one audio clip (multipart field `file`).",
+        "operationId": "transcribe_transcribe",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "language",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Language"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_transcribe_transcribe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Transcribe",
+        "tags": [
+          "transcribe"
         ]
       }
     },
