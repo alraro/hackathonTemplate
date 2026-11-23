@@ -6,7 +6,7 @@
   "settings": true,
   "showcase": true,
   "chat": false,
-  "rag": false,
+  "rag": true,
   "upload": true,
   "realtime": false,
   "notifications": false,

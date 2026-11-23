@@ -99,4 +99,5 @@ def chat(
 
 
 def embed(texts: list[str], *, model: str | None = None) -> list[list[float]]:
-    raise NotImplementedError  # TODO(#57)
+    """Embed texts with the configured EMBED_PROVIDER (768 dimensions)."""
+    return settings.embed_backend().embed(texts)

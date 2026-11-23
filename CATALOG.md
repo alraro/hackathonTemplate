@@ -13,7 +13,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `web` | web | - | the product has a browser UI (works in fixtures mode without the api) |
 | `mobile` | mobile | - | ['a Gate or Rubric asks for an app', 'a Beat needs a device capability a PWA does badly', 'the idea is mobile-first'] |
 | `api` | api | - | ['the product needs persistence, accounts or server-side logic', 'a Gate or Rubric asks for a real backend'] |
-| `llm` | llm | api | ['the product calls a language model, embeddings or speech'] **(no Feature implemented yet: Prune may drop it)** |
+| `llm` | llm | api | ['the product calls a language model, embeddings or speech'] |
 | `data` | data | api | ['the product analyses tabular data, forecasts or classifies images'] **(no Feature implemented yet: Prune may drop it)** |
 | `pitch` | pitch | - | never pruned |
 
@@ -48,7 +48,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |
 | `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | off |
 | `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | off |
-| `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | off |
+| `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | on |
 | `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | off |
 | `tabular` | `data` | tabular models on a dataset | backend/data | the idea predicts from a table | off |
 | `cluster` | `data` | clustering of records | backend/data | the idea groups similar records | off |
