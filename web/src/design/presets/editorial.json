@@ -1,0 +1,92 @@
+{
+  "name": "editorial",
+  "fonts": {
+    "display": { "family": "Fraunces Variable", "package": "@fontsource-variable/fraunces" },
+    "body": { "family": "Source Serif 4 Variable", "package": "@fontsource-variable/source-serif-4" },
+    "mono": { "family": "IBM Plex Mono", "package": "@fontsource/ibm-plex-mono" }
+  },
+  "colors": {
+    "light": {
+      "background": "oklch(0.97 0.012 85)",
+      "foreground": "oklch(0.19 0.015 60)",
+      "card": "oklch(0.985 0.008 85)",
+      "card-foreground": "oklch(0.19 0.015 60)",
+      "popover": "oklch(0.985 0.008 85)",
+      "popover-foreground": "oklch(0.19 0.015 60)",
+      "primary": "oklch(0.5 0.19 29)",
+      "primary-foreground": "oklch(0.985 0.008 85)",
+      "secondary": "oklch(0.92 0.018 80)",
+      "secondary-foreground": "oklch(0.19 0.015 60)",
+      "muted": "oklch(0.93 0.015 80)",
+      "muted-foreground": "oklch(0.45 0.02 60)",
+      "accent": "oklch(0.9 0.06 88)",
+      "accent-foreground": "oklch(0.19 0.015 60)",
+      "destructive": "oklch(0.47 0.18 18)",
+      "border": "oklch(0.82 0.015 75)",
+      "input": "oklch(0.6 0.015 70)",
+      "ring": "oklch(0.5 0.19 29)"
+    },
+    "dark": {
+      "background": "oklch(0.17 0.01 60)",
+      "foreground": "oklch(0.93 0.015 85)",
+      "card": "oklch(0.21 0.01 60)",
+      "card-foreground": "oklch(0.93 0.015 85)",
+      "popover": "oklch(0.21 0.01 60)",
+      "popover-foreground": "oklch(0.93 0.015 85)",
+      "primary": "oklch(0.72 0.15 34)",
+      "primary-foreground": "oklch(0.17 0.01 60)",
+      "secondary": "oklch(0.27 0.01 60)",
+      "secondary-foreground": "oklch(0.93 0.015 85)",
+      "muted": "oklch(0.25 0.01 60)",
+      "muted-foreground": "oklch(0.74 0.015 80)",
+      "accent": "oklch(0.32 0.035 75)",
+      "accent-foreground": "oklch(0.93 0.015 85)",
+      "destructive": "oklch(0.7 0.17 22)",
+      "border": "oklch(0.93 0.015 85 / 14%)",
+      "input": "oklch(0.93 0.015 85 / 30%)",
+      "ring": "oklch(0.72 0.15 34)"
+    }
+  },
+  "radius": "0.125rem",
+  "shadow": {
+    "sm": "0 1px 0 0 oklch(0.19 0.015 60 / 12%)",
+    "md": "0 0 0 1px oklch(0.19 0.015 60 / 14%)",
+    "lg": "0 3px 0 0 oklch(0.19 0.015 60 / 16%), 0 0 0 1px oklch(0.19 0.015 60 / 14%)"
+  },
+  "motion": {
+    "duration": {
+      "fast": 160,
+      "base": 320,
+      "slow": 640
+    },
+    "easing": {
+      "standard": [0.25, 0.1, 0.25, 1],
+      "emphasized": [0.65, 0, 0.35, 1]
+    },
+    "spring": {
+      "stiffness": 120,
+      "damping": 26,
+      "mass": 1
+    }
+  },
+  "focus": {
+    "width": "2px",
+    "offset": "3px"
+  },
+  "reducedMotion": {
+    "duration": {
+      "fast": 0,
+      "base": 0,
+      "slow": 0
+    },
+    "spring": {
+      "stiffness": 1000,
+      "damping": 100
+    }
+  },
+  "effects": [
+    "SplitTextReveal",
+    "DrawnUnderline",
+    "ScrollProgressRule"
+  ]
+}

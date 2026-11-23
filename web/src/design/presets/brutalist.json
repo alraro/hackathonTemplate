@@ -1,0 +1,92 @@
+{
+  "name": "brutalist",
+  "fonts": {
+    "display": { "family": "Archivo Black", "package": "@fontsource/archivo-black" },
+    "body": { "family": "Space Mono", "package": "@fontsource/space-mono" },
+    "mono": { "family": "Space Mono", "package": "@fontsource/space-mono" }
+  },
+  "colors": {
+    "light": {
+      "background": "oklch(0.99 0 0)",
+      "foreground": "oklch(0 0 0)",
+      "card": "oklch(1 0 0)",
+      "card-foreground": "oklch(0 0 0)",
+      "popover": "oklch(1 0 0)",
+      "popover-foreground": "oklch(0 0 0)",
+      "primary": "oklch(0.91 0.19 105)",
+      "primary-foreground": "oklch(0 0 0)",
+      "secondary": "oklch(0.66 0.24 32)",
+      "secondary-foreground": "oklch(0 0 0)",
+      "muted": "oklch(0.93 0 0)",
+      "muted-foreground": "oklch(0.36 0 0)",
+      "accent": "oklch(0.46 0.27 264)",
+      "accent-foreground": "oklch(1 0 0)",
+      "destructive": "oklch(0.55 0.23 28)",
+      "border": "oklch(0 0 0)",
+      "input": "oklch(0 0 0)",
+      "ring": "oklch(0.46 0.27 264)"
+    },
+    "dark": {
+      "background": "oklch(0.13 0 0)",
+      "foreground": "oklch(1 0 0)",
+      "card": "oklch(0.13 0 0)",
+      "card-foreground": "oklch(1 0 0)",
+      "popover": "oklch(0.13 0 0)",
+      "popover-foreground": "oklch(1 0 0)",
+      "primary": "oklch(0.91 0.19 105)",
+      "primary-foreground": "oklch(0 0 0)",
+      "secondary": "oklch(0.68 0.23 32)",
+      "secondary-foreground": "oklch(0 0 0)",
+      "muted": "oklch(0.23 0 0)",
+      "muted-foreground": "oklch(0.8 0 0)",
+      "accent": "oklch(0.72 0.16 250)",
+      "accent-foreground": "oklch(0 0 0)",
+      "destructive": "oklch(0.7 0.2 27)",
+      "border": "oklch(1 0 0)",
+      "input": "oklch(1 0 0)",
+      "ring": "oklch(0.91 0.19 105)"
+    }
+  },
+  "radius": "0px",
+  "shadow": {
+    "sm": "2px 2px 0 0 var(--foreground)",
+    "md": "4px 4px 0 0 var(--foreground)",
+    "lg": "8px 8px 0 0 var(--foreground)"
+  },
+  "motion": {
+    "duration": {
+      "fast": 60,
+      "base": 100,
+      "slow": 180
+    },
+    "easing": {
+      "standard": [0, 0, 1, 1],
+      "emphasized": [0.9, 0, 0.1, 1]
+    },
+    "spring": {
+      "stiffness": 900,
+      "damping": 40,
+      "mass": 0.6
+    }
+  },
+  "focus": {
+    "width": "3px",
+    "offset": "0px"
+  },
+  "reducedMotion": {
+    "duration": {
+      "fast": 0,
+      "base": 0,
+      "slow": 0
+    },
+    "spring": {
+      "stiffness": 1000,
+      "damping": 100
+    }
+  },
+  "effects": [
+    "Marquee",
+    "HardShadowPress",
+    "GlitchText"
+  ]
+}

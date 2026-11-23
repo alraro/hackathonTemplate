@@ -1,0 +1,93 @@
+{
+  "name": "dark-tech",
+  "fonts": {
+    "display": { "family": "Space Grotesk Variable", "package": "@fontsource-variable/space-grotesk" },
+    "body": { "family": "Manrope Variable", "package": "@fontsource-variable/manrope" },
+    "mono": { "family": "JetBrains Mono Variable", "package": "@fontsource-variable/jetbrains-mono" }
+  },
+  "colors": {
+    "light": {
+      "background": "oklch(0.15 0.012 250)",
+      "foreground": "oklch(0.94 0.01 250)",
+      "card": "oklch(0.19 0.015 250)",
+      "card-foreground": "oklch(0.94 0.01 250)",
+      "popover": "oklch(0.19 0.015 250)",
+      "popover-foreground": "oklch(0.94 0.01 250)",
+      "primary": "oklch(0.89 0.21 135)",
+      "primary-foreground": "oklch(0.15 0.012 250)",
+      "secondary": "oklch(0.25 0.02 250)",
+      "secondary-foreground": "oklch(0.94 0.01 250)",
+      "muted": "oklch(0.22 0.015 250)",
+      "muted-foreground": "oklch(0.71 0.02 250)",
+      "accent": "oklch(0.27 0.045 145)",
+      "accent-foreground": "oklch(0.89 0.21 135)",
+      "destructive": "oklch(0.68 0.2 25)",
+      "border": "oklch(0.94 0.01 250 / 10%)",
+      "input": "oklch(0.94 0.01 250 / 18%)",
+      "ring": "oklch(0.89 0.21 135)"
+    },
+    "dark": {
+      "background": "oklch(0.15 0.012 250)",
+      "foreground": "oklch(0.94 0.01 250)",
+      "card": "oklch(0.19 0.015 250)",
+      "card-foreground": "oklch(0.94 0.01 250)",
+      "popover": "oklch(0.19 0.015 250)",
+      "popover-foreground": "oklch(0.94 0.01 250)",
+      "primary": "oklch(0.89 0.21 135)",
+      "primary-foreground": "oklch(0.15 0.012 250)",
+      "secondary": "oklch(0.25 0.02 250)",
+      "secondary-foreground": "oklch(0.94 0.01 250)",
+      "muted": "oklch(0.22 0.015 250)",
+      "muted-foreground": "oklch(0.71 0.02 250)",
+      "accent": "oklch(0.27 0.045 145)",
+      "accent-foreground": "oklch(0.89 0.21 135)",
+      "destructive": "oklch(0.68 0.2 25)",
+      "border": "oklch(0.94 0.01 250 / 10%)",
+      "input": "oklch(0.94 0.01 250 / 18%)",
+      "ring": "oklch(0.89 0.21 135)"
+    }
+  },
+  "radius": "0.375rem",
+  "shadow": {
+    "sm": "0 0 0 1px oklch(0.94 0.01 250 / 8%)",
+    "md": "0 0 0 1px oklch(0.89 0.21 135 / 25%), 0 0 12px -2px oklch(0.89 0.21 135 / 22%)",
+    "lg": "0 0 0 1px oklch(0.89 0.21 135 / 35%), 0 0 28px -4px oklch(0.89 0.21 135 / 28%)"
+  },
+  "motion": {
+    "duration": {
+      "fast": 100,
+      "base": 180,
+      "slow": 300
+    },
+    "easing": {
+      "standard": [0.2, 0, 0, 1],
+      "emphasized": [0.05, 0.7, 0.1, 1]
+    },
+    "spring": {
+      "stiffness": 500,
+      "damping": 40,
+      "mass": 1
+    }
+  },
+  "focus": {
+    "width": "2px",
+    "offset": "2px"
+  },
+  "reducedMotion": {
+    "duration": {
+      "fast": 0,
+      "base": 0,
+      "slow": 0
+    },
+    "spring": {
+      "stiffness": 1000,
+      "damping": 100
+    }
+  },
+  "effects": [
+    "GridBackground",
+    "SpotlightCard",
+    "DecryptText",
+    "BorderBeam"
+  ]
+}
