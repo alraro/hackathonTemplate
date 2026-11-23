@@ -28,7 +28,9 @@ def _persist(out, pipe, model, X) -> None:
     try:
         joblib.dump(model, out / "model.joblib")
     except Exception as e:  # noqa: BLE001 - e.g. a model holding a torch module
-        print(f"note: model not saved ({type(e).__name__}: {e}); predict() unavailable for this run")
+        print(
+            f"note: model not saved ({type(e).__name__}: {e}); predict() unavailable for this run"
+        )
     make_predictions = getattr(pipe, "predictions", None)
     if make_predictions is not None:
         make_predictions(model, X).to_csv(out / "predictions.csv", index=False)

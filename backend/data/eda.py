@@ -16,8 +16,17 @@ def eda(csv: Path) -> Path:
     from skrub import TableReport
 
     csv = Path(csv)
-    if not csv.is_absolute():  # repo-relative (backend/data/datasets/x.csv) or data-relative (datasets/x.csv)
-        csv = next((b / csv for b in (Path.cwd(), DATA_DIR.parent.parent, DATA_DIR) if (b / csv).is_file()), csv)
+    if (
+        not csv.is_absolute()
+    ):  # repo-relative (backend/data/datasets/x.csv) or data-relative (datasets/x.csv)
+        csv = next(
+            (
+                b / csv
+                for b in (Path.cwd(), DATA_DIR.parent.parent, DATA_DIR)
+                if (b / csv).is_file()
+            ),
+            csv,
+        )
     if not csv.is_file():
         raise ValueError(f"csv '{csv}' not found")
     df = pd.read_csv(csv)

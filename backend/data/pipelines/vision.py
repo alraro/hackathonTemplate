@@ -54,7 +54,9 @@ def _task(cfg: RunConfig) -> str:
     if task not in ("classify", "detect"):
         raise ValueError(f"task '{task}' unknown; options: classify, detect")
     if task != MODELS[cfg.model]:
-        raise ValueError(f"model '{cfg.model}' does not do task '{task}'; use task '{MODELS[cfg.model]}'")
+        raise ValueError(
+            f"model '{cfg.model}' does not do task '{task}'; use task '{MODELS[cfg.model]}'"
+        )
     return task
 
 
@@ -62,7 +64,9 @@ def _require_vision():
     try:
         import torch  # noqa: F401
     except ImportError as e:
-        raise RuntimeError("the vision pipeline needs the [vision] extra: set VISION=true in .env and restart the backend") from e
+        raise RuntimeError(
+            "the vision pipeline needs the [vision] extra: set VISION=true in .env and restart the backend"
+        ) from e
 
 
 def load(cfg: RunConfig):
@@ -90,7 +94,9 @@ def _embed(paths: list[Path]) -> np.ndarray:
     out = []
     with torch.no_grad():
         for i in range(0, len(paths), 32):
-            batch = torch.stack([preprocess(Image.open(p).convert("RGB")) for p in paths[i : i + 32]])
+            batch = torch.stack(
+                [preprocess(Image.open(p).convert("RGB")) for p in paths[i : i + 32]]
+            )
             f = model.encode_image(batch)
             out.append((f / f.norm(dim=-1, keepdim=True)).numpy())
     return np.concatenate(out)
@@ -179,7 +185,10 @@ def _detect(model, X, cfg: RunConfig) -> list[list[tuple[str, float]]]:
             outputs, target_sizes=model.torch.tensor([img.size[::-1]]), threshold=threshold
         )[0]
         found.append(
-            [(model.net.config.id2label[int(l)], float(s)) for l, s in zip(res["labels"], res["scores"])]
+            [
+                (model.net.config.id2label[int(l)], float(s))
+                for l, s in zip(res["labels"], res["scores"])
+            ]
         )
     return found
 
@@ -213,7 +222,11 @@ def report(cfg: RunConfig, model, X, metrics: dict[str, float]) -> Report:
             data=[{"label": k, "count": v} for k, v in counts.most_common()],
         )
         return Report(
-            run=cfg.name, pipeline=cfg.pipeline, model=cfg.model, metrics=metrics, charts=[chart],
+            run=cfg.name,
+            pipeline=cfg.pipeline,
+            model=cfg.model,
+            metrics=metrics,
+            charts=[chart],
             summary=f"rt-detr found {int(metrics['detections'])} objects in {int(metrics['images'])} images",
         )
     charts = []
@@ -227,7 +240,8 @@ def report(cfg: RunConfig, model, X, metrics: dict[str, float]) -> Report:
                 x="class",
                 series=[Series(key="accuracy", label="Accuracy")],
                 data=[
-                    {"class": str(c), "accuracy": round(metrics[f"accuracy_{c}"], 4)} for c in np.unique(truth)
+                    {"class": str(c), "accuracy": round(metrics[f"accuracy_{c}"], 4)}
+                    for c in np.unique(truth)
                 ],
             )
         )
@@ -253,5 +267,10 @@ def report(cfg: RunConfig, model, X, metrics: dict[str, float]) -> Report:
     if "accuracy" in metrics:
         summary += f": accuracy {metrics['accuracy']:.1%}"
     return Report(
-        run=cfg.name, pipeline=cfg.pipeline, model=cfg.model, metrics=metrics, charts=charts, summary=summary
+        run=cfg.name,
+        pipeline=cfg.pipeline,
+        model=cfg.model,
+        metrics=metrics,
+        charts=charts,
+        summary=summary,
     )

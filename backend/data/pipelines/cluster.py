@@ -24,6 +24,7 @@ class Fitted:
     labels: np.ndarray
     k: int
 
+
 # short name -> factory taking k (ignored by models that find k themselves)
 MODELS = {
     "kmeans": lambda k, **p: KMeans(n_clusters=k, n_init=10, random_state=SEED, **p),

@@ -50,7 +50,9 @@ def is_classification(y: pd.Series) -> bool:
 
 def prepare(df, cfg: RunConfig):
     if not cfg.target or cfg.target not in df.columns:
-        raise ValueError(f"set 'target' to a column of the source: {', '.join(map(str, df.columns))}")
+        raise ValueError(
+            f"set 'target' to a column of the source: {', '.join(map(str, df.columns))}"
+        )
     df = df.dropna(subset=[cfg.target])
     X, y = df.drop(columns=cfg.target), df[cfg.target]
     clf = is_classification(y)
@@ -65,7 +67,9 @@ def fit(X, cfg: RunConfig):
     kind = "classification" if X["clf"] else "regression"
     factory = make_clf if X["clf"] else make_reg
     if factory is None:
-        raise ValueError(f"model '{cfg.model}' does not support {kind}; target '{cfg.target}' is {kind}")
+        raise ValueError(
+            f"model '{cfg.model}' does not support {kind}; target '{cfg.target}' is {kind}"
+        )
     params = dict(cfg.params)
     if cfg.model in ("hgb", "random_forest"):
         params.setdefault("random_state", SEED)
