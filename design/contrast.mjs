@@ -1,9 +1,11 @@
-// WCAG contrast check for every text/background pair in theme.json (light + dark).
+// WCAG contrast check for every text/background pair in design/theme.json (light + dark). No npm deps.
 // Exits 1 with the failing pairs. Thresholds: 4.5:1 text, 3:1 large text / UI.
 import { readFileSync } from 'node:fs'
-import { formatHex, parse, rgb } from 'culori'
+import { toHex, toRgb as oklchToRgb } from './color.mjs'
 
-const theme = JSON.parse(readFileSync(new URL('../src/design/theme.json', import.meta.url), 'utf8'))
+// Optional argument: another theme or preset file to check (default design/theme.json).
+const file = process.argv[2] ?? new URL('./theme.json', import.meta.url)
+const theme = JSON.parse(readFileSync(file, 'utf8'))
 
 // [foreground, background, minimum ratio]
 const PAIRS = [
@@ -15,6 +17,7 @@ const PAIRS = [
   ['muted-foreground', 'background', 4.5],
   ['muted-foreground', 'muted', 4.5],
   ['accent-foreground', 'accent', 4.5],
+  ['destructive-foreground', 'destructive', 4.5],
   ['destructive', 'background', 3],
 ]
 
@@ -22,7 +25,7 @@ const channel = (v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
 
 // Composite over the colour underneath so alpha colours get a real luminance.
 function toRgb(value, under) {
-  const c = rgb(parse(value))
+  const c = oklchToRgb(value)
   const a = c.alpha ?? 1
   const mix = (k) => Math.min(1, Math.max(0, c[k])) * a + (under?.[k] ?? 1) * (1 - a)
   return { r: mix('r'), g: mix('g'), b: mix('b') }
@@ -44,7 +47,7 @@ for (const [mode, colors] of Object.entries(theme.colors)) {
     const fg = toRgb(colors[fgName], bg)
     const r = ratio(fg, bg)
     if (r < min) {
-      failures.push(`${mode}: ${fgName} on ${bgName} = ${r.toFixed(2)}:1 (need ${min}:1) ${formatHex(rgb(parse(colors[fgName])))} / ${formatHex(rgb(parse(colors[bgName])))}`)
+      failures.push(`${mode}: ${fgName} on ${bgName} = ${r.toFixed(2)}:1 (need ${min}:1) ${toHex(colors[fgName])} / ${toHex(colors[bgName])}`)
     }
   }
 }

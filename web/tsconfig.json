@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "paths": { "@/*": ["./src/*"], "@features": ["./features.json"] }
+    "paths": { "@/*": ["./src/*"], "@design/*": ["../design/*"], "@features": ["./features.json"] }
   },
   "include": ["src", "vite.config.ts"]
 }

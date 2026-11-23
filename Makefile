@@ -79,9 +79,8 @@ demo: ## switch to demo mode with seeded data — run before presenting
 	$(PYTHON) scripts/demo.py
 
 .PHONY: theme
-theme: ## regenerate design tokens for web, mobile, pitch — run after editing theme.json
-	@if [ -d web ]; then docker compose run --rm -T --no-deps $(foreach d,mobile pitch,$(if $(wildcard $(d)/),-v ./$(d):/$(d))) web npm run theme; \
-	else echo "theme: web/ is pruned, so the generator is gone; edit pitch/theme.css by hand"; exit 1; fi
+theme: ## regenerate design tokens for web, mobile, pitch and check contrast — run after editing design/theme.json
+	docker run --rm -u "$$(id -u):$$(id -g)" -v "$(CURDIR)":/repo -w /repo node:22-alpine sh -c "node design/gen-theme.mjs && node design/contrast.mjs"
 
 # >>> module:api
 # --- api ---
@@ -147,12 +146,10 @@ mobile-tunnel: ## start Expo through a tunnel — run when the phone is on anoth
 	$(PYTHON) scripts/mobile.py --tunnel
 # <<< module:mobile
 
-# >>> module:pitch
-# --- pitch ---
+# --- pitch (never pruned) ---
 .PHONY: slides slides-pdf
 slides: ## serve the Slidev deck — run to edit the pitch
 	cd pitch && npm install --no-audit --no-fund && npx slidev
 
 slides-pdf: ## export the deck to PDF (installs Chromium on first run) — run before submitting
 	cd pitch && npm install --no-audit --no-fund && { npx playwright-chromium install chromium || { echo "slides-pdf: Chromium install failed; run: cd pitch && npx playwright-chromium install chromium"; exit 1; }; } && npx slidev export --output slides-export.pdf
-# <<< module:pitch

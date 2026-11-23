@@ -20,7 +20,7 @@ Work top to bottom. Each item is done when its check passes.
 1. Bump the Expo SDK (Expo Go runs only the latest SDK). Done when `mobile/` opens in the current Expo Go on a real phone.
 2. Run `make sync`. Done when `git status` shows no uncommitted generated files after a second run.
 3. Check upstream skills for a new release (`upstream-skills.md`). Done when the pinned version in `.agents/skills/THIRD_PARTY.md` is current or a decision to stay is noted in the PR.
-4. Promote any team look worth keeping to a preset in `web/src/design/presets/`. Done when `make theme` succeeds with the new preset selected.
+4. Promote any team look worth keeping to a preset in `design/presets/`. Done when `make theme` succeeds with the new preset selected.
 5. Rehearse with a mid model, then tag (`release.md`). Done when the rehearsal passes and the tag exists.
 
 ## Resume point
