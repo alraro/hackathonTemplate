@@ -1,6 +1,41 @@
 {
   "components": {
     "schemas": {
+      "AskRequest": {
+        "properties": {
+          "question": {
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "title": "AskRequest",
+        "type": "object"
+      },
+      "AskResponse": {
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "title": "Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "answer",
+          "citations"
+        ],
+        "title": "AskResponse",
+        "type": "object"
+      },
       "Body_files_create": {
         "properties": {
           "file": {
@@ -13,6 +48,36 @@
           "file"
         ],
         "title": "Body_files_create",
+        "type": "object"
+      },
+      "Citation": {
+        "properties": {
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Id"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "title",
+          "snippet"
+        ],
+        "title": "Citation",
         "type": "object"
       },
       "ExampleCreate": {
@@ -1376,6 +1441,48 @@
         "summary": "Update",
         "tags": [
           "items"
+        ]
+      }
+    },
+    "/api/rag/ask": {
+      "post": {
+        "description": "Answer a question from the ingested documents, with citations.",
+        "operationId": "rag_ask",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ask",
+        "tags": [
+          "rag"
         ]
       }
     }
