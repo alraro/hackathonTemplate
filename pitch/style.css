@@ -1,0 +1,29 @@
+@import "./theme.css";
+
+/* Map the generated design tokens onto Slidev. Edit theme.json, not this mapping. */
+:root {
+  --slidev-theme-primary: var(--primary);
+  --slidev-slide-container-background: var(--background);
+}
+
+.slidev-layout {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body-family);
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3 {
+  font-family: var(--font-display-family);
+  color: var(--foreground);
+}
+
+.slidev-layout a {
+  color: var(--primary);
+}
+
+.slidev-layout code,
+.slidev-layout pre {
+  font-family: var(--font-mono-family);
+}

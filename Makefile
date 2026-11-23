@@ -146,8 +146,8 @@ mobile-tunnel: ## start Expo through a tunnel — run when the phone is on anoth
 # --- pitch ---
 .PHONY: slides slides-pdf
 slides: ## serve the Slidev deck — run to edit the pitch
-	cd pitch && npx slidev # TODO: filled by the backlog issue that creates pitch/
+	cd pitch && npm install --no-audit --no-fund && npx slidev
 
 slides-pdf: ## export the deck to PDF — run before submitting
-	cd pitch && npx slidev export # TODO: filled by the backlog issue that creates pitch/
+	cd pitch && npm install --no-audit --no-fund && npx slidev export --output slides-export.pdf
 # <<< module:pitch
