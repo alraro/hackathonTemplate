@@ -9,7 +9,7 @@ class File(SQLModel, table=True):
     mime: str
     size: int
     path: str  # relative to backend/uploads/
-    owner_id: int | None = Field(default=None, foreign_key="user.id", index=True)
+    owner_id: int | None = Field(default=None, index=True)  # no FK: the users table exists only with Feature `auth`
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 

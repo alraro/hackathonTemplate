@@ -101,10 +101,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Report
+         * Get
          * @description Serve the committed report.json of a run (read-only; no live training).
          */
-        get: operations["data_reports_get_report"];
+        get: operations["data_reports_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -334,7 +334,7 @@ export interface components {
             /** Answer */
             answer: string;
             /** Citations */
-            citations: components["schemas"]["backend__api__resources__rag__models__Citation"][];
+            citations: components["schemas"]["Citation"][];
         };
         /** Body_files_create */
         Body_files_create: {
@@ -365,6 +365,20 @@ export interface components {
             title: string;
             /** X */
             x: string;
+        };
+        /** ChatCitation */
+        ChatCitation: {
+            /**
+             * Score
+             * @default 0
+             */
+            score: number;
+            /** Source */
+            source: string;
+            /** Text */
+            text: string;
+            /** Title */
+            title?: string | null;
         };
         /** ChatError */
         ChatError: {
@@ -406,6 +420,15 @@ export interface components {
              */
             use_rag: boolean;
         };
+        /** Citation */
+        Citation: {
+            /** Document Id */
+            document_id: number | null;
+            /** Snippet */
+            snippet: string;
+            /** Title */
+            title: string;
+        };
         /** Delta */
         Delta: {
             /** Text */
@@ -422,7 +445,7 @@ export interface components {
              * Citations
              * @default []
              */
-            citations: components["schemas"]["backend__api__resources__chat__models__Citation"][];
+            citations: components["schemas"]["ChatCitation"][];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -509,7 +532,10 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** ItemCreate */
+        /**
+         * ItemCreate
+         * @description Client input. owner_id is not accepted: the server owns it.
+         */
         ItemCreate: {
             /**
              * Category
@@ -521,8 +547,6 @@ export interface components {
              * @default
              */
             description: string;
-            /** Owner Id */
-            owner_id?: number | null;
             /** @default todo */
             status: components["schemas"]["ItemStatus"];
             /** Title */
@@ -572,8 +596,6 @@ export interface components {
             category?: string | null;
             /** Description */
             description?: string | null;
-            /** Owner Id */
-            owner_id?: number | null;
             status?: components["schemas"]["ItemStatus"] | null;
             /** Title */
             title?: string | null;
@@ -709,29 +731,6 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
-        };
-        /** Citation */
-        backend__api__resources__chat__models__Citation: {
-            /**
-             * Score
-             * @default 0
-             */
-            score: number;
-            /** Source */
-            source: string;
-            /** Text */
-            text: string;
-            /** Title */
-            title?: string | null;
-        };
-        /** Citation */
-        backend__api__resources__rag__models__Citation: {
-            /** Document Id */
-            document_id: number | null;
-            /** Snippet */
-            snippet: string;
-            /** Title */
-            title: string;
         };
     };
     responses: never;
@@ -1009,7 +1008,7 @@ export interface operations {
             };
         };
     };
-    data_reports_get_report: {
+    data_reports_get: {
         parameters: {
             query?: never;
             header?: never;

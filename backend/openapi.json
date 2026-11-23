@@ -23,7 +23,7 @@
           },
           "citations": {
             "items": {
-              "$ref": "#/components/schemas/backend__api__resources__rag__models__Citation"
+              "$ref": "#/components/schemas/Citation"
             },
             "title": "Citations",
             "type": "array"
@@ -114,6 +114,40 @@
           "data"
         ],
         "title": "Chart",
+        "type": "object"
+      },
+      "ChatCitation": {
+        "properties": {
+          "score": {
+            "default": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "source",
+          "text"
+        ],
+        "title": "ChatCitation",
         "type": "object"
       },
       "ChatError": {
@@ -223,6 +257,36 @@
         "title": "ChatRequest",
         "type": "object"
       },
+      "Citation": {
+        "properties": {
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Id"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "title",
+          "snippet"
+        ],
+        "title": "Citation",
+        "type": "object"
+      },
       "Delta": {
         "properties": {
           "text": {
@@ -247,7 +311,7 @@
           "citations": {
             "default": [],
             "items": {
-              "$ref": "#/components/schemas/backend__api__resources__chat__models__Citation"
+              "$ref": "#/components/schemas/ChatCitation"
             },
             "title": "Citations",
             "type": "array"
@@ -426,6 +490,7 @@
         "type": "object"
       },
       "ItemCreate": {
+        "description": "Client input. owner_id is not accepted: the server owns it.",
         "properties": {
           "category": {
             "default": "",
@@ -436,17 +501,6 @@
             "default": "",
             "title": "Description",
             "type": "string"
-          },
-          "owner_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Owner Id"
           },
           "status": {
             "$ref": "#/components/schemas/ItemStatus",
@@ -565,17 +619,6 @@
               }
             ],
             "title": "Description"
-          },
-          "owner_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Owner Id"
           },
           "status": {
             "anyOf": [
@@ -905,70 +948,6 @@
           "type"
         ],
         "title": "ValidationError",
-        "type": "object"
-      },
-      "backend__api__resources__chat__models__Citation": {
-        "properties": {
-          "score": {
-            "default": 0.0,
-            "title": "Score",
-            "type": "number"
-          },
-          "source": {
-            "title": "Source",
-            "type": "string"
-          },
-          "text": {
-            "title": "Text",
-            "type": "string"
-          },
-          "title": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Title"
-          }
-        },
-        "required": [
-          "source",
-          "text"
-        ],
-        "title": "Citation",
-        "type": "object"
-      },
-      "backend__api__resources__rag__models__Citation": {
-        "properties": {
-          "document_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Document Id"
-          },
-          "snippet": {
-            "title": "Snippet",
-            "type": "string"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string"
-          }
-        },
-        "required": [
-          "document_id",
-          "title",
-          "snippet"
-        ],
-        "title": "Citation",
         "type": "object"
       }
     },
@@ -1329,7 +1308,7 @@
     "/api/data/reports/{run}": {
       "get": {
         "description": "Serve the committed report.json of a run (read-only; no live training).",
-        "operationId": "data_reports_get_report",
+        "operationId": "data_reports_get",
         "parameters": [
           {
             "in": "path",
@@ -1363,7 +1342,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Get Report",
+        "summary": "Get",
         "tags": [
           "data_reports"
         ]

@@ -18,7 +18,7 @@ from typing import Any
 from faker import Faker
 from pydantic.fields import FieldInfo
 
-from backend.api.core.seed import RESOURCES_DIR, _import, _read_schema, _table_model
+from backend.api.core.seed import RESOURCES_DIR, import_resource_module, read_schema, table_model
 
 LOCALES = {
     "en": "en_US", "english": "en_US", "fr": "fr_FR", "french": "fr_FR", "francais": "fr_FR",
@@ -105,11 +105,11 @@ def make_row(read: type, f: Faker, overrides: dict[str, Any] | None = None) -> d
 
 def resolve(resource: str) -> tuple[type, type]:
     """(table model, Read schema) of a resource."""
-    models = _import(resource, "models")
-    model = _table_model(models) if models is not None else None
+    models = import_resource_module(resource, "models")
+    model = table_model(models) if models is not None else None
     if model is None:
         raise SystemExit(f"fake: resource '{resource}' has no table model")
-    return model, _read_schema(resource, models, model)
+    return model, read_schema(resource, models, model)
 
 
 def main() -> None:

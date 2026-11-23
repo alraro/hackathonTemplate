@@ -24,7 +24,7 @@ def _token(user: User) -> TokenResponse:
     return TokenResponse(access_token=create_token(user.id), user=_public(user))
 
 
-@router.post("/login")
+@router.post("/login", name="login")
 def login(body: LoginRequest, session: SessionDep) -> TokenResponse:
     user = session.exec(select(User).where(User.email == body.email.lower())).first()
     if user is None or not verify_password(body.password, user.password_hash):
@@ -32,7 +32,7 @@ def login(body: LoginRequest, session: SessionDep) -> TokenResponse:
     return _token(user)
 
 
-@router.post("/signup", status_code=201)
+@router.post("/signup", name="signup", status_code=201)
 def signup(body: SignupRequest, session: SessionDep) -> TokenResponse:
     email = body.email.lower()
     if session.exec(select(User).where(User.email == email)).first():
@@ -44,12 +44,12 @@ def signup(body: SignupRequest, session: SessionDep) -> TokenResponse:
     return _token(user)
 
 
-@router.get("/me")
+@router.get("/me", name="me")
 def me(user: CurrentUser) -> UserPublic:
     return _public(user)
 
 
-@router.patch("/me")
+@router.patch("/me", name="update_me")
 def update_me(body: UserUpdate, user: CurrentUser, session: SessionDep) -> UserPublic:
     for key, value in body.model_dump(exclude_unset=True, exclude_none=True).items():
         setattr(user, key, value)

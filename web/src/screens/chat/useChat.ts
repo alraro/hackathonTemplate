@@ -4,7 +4,7 @@ import type { components } from "@/lib/api/schema"
 import { useSocket } from "@/lib/realtime/useSocket"
 
 type Schemas = components["schemas"]
-export type Citation = Schemas["backend__api__resources__chat__models__Citation"]
+export type Citation = Schemas["ChatCitation"]
 type ServerFrame = Schemas["ChatFrames"]["server"]
 
 export type Message = {

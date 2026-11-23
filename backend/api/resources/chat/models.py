@@ -26,7 +26,7 @@ ClientFrame = Stop | ChatRequest  # ChatRequest carries no `type`, as in the Con
 client_frame = TypeAdapter(ClientFrame)
 
 
-class Citation(BaseModel):
+class ChatCitation(BaseModel):
     source: str
     title: str | None = None
     text: str
@@ -40,7 +40,7 @@ class Delta(BaseModel):
 
 class Done(BaseModel):
     type: Literal["done"] = "done"
-    citations: list[Citation] = []
+    citations: list[ChatCitation] = []
 
 
 class ChatError(BaseModel):

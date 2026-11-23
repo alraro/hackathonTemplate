@@ -7,6 +7,7 @@ and may not publish on any `notifications:` topic (use `notify()` server-side).
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect, status
 from pydantic import ValidationError
 
+from backend.api.core.features import enabled
 from backend.api.resources.auth.deps import OptionalUser
 from backend.api.resources.auth.security import decode_token
 from backend.api.resources.ws.hub import hub, publish
@@ -23,9 +24,7 @@ router = APIRouter(prefix="/api/ws", tags=["ws"])
 
 
 def _auth_on() -> bool:
-    from backend.api.core.app import FEATURES  # lazy: app imports this router
-
-    return bool(FEATURES.get("auth"))
+    return enabled("auth")
 
 
 def _allowed(user_id: int | None, topic: str, publishing: bool) -> bool:
@@ -34,7 +33,7 @@ def _allowed(user_id: int | None, topic: str, publishing: bool) -> bool:
     return not publishing and topic == f"{NOTIFICATIONS_PREFIX}{user_id}"
 
 
-@router.websocket("")
+@router.websocket("", name="socket")
 async def socket(ws: WebSocket, token: str | None = None) -> None:
     user_id = decode_token(token) if token else None
     if _auth_on() and user_id is None:
@@ -64,7 +63,7 @@ async def socket(ws: WebSocket, token: str | None = None) -> None:
         await hub.disconnect(ws)
 
 
-@router.post("/publish", status_code=status.HTTP_202_ACCEPTED)
+@router.post("/publish", name="publish_event", status_code=status.HTTP_202_ACCEPTED)
 def publish_event(body: PublishRequest, user: OptionalUser) -> ServerMessage:
     """Publish from outside the process (e.g. `make simulate`). Sync, like any router."""
     if _auth_on() and user is None:
