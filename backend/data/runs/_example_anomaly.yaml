@@ -1,0 +1,5 @@
+pipeline: anomaly
+source: datasets/transactions.csv
+model: isolation_forest
+params:
+  contamination: 0.05

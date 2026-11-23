@@ -1,0 +1,5 @@
+pipeline: forecast
+source: datasets/monthly_sales.csv
+model: auto_ets
+params:
+  horizon: 12

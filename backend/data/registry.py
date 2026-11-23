@@ -9,8 +9,8 @@ PIPELINES: tuple[str, ...] = ("tabular", "cluster", "forecast", "anomaly", "visi
 MODELS: dict[str, tuple[str, ...]] = {
     "tabular": ("hgb", "random_forest", "logistic", "linear", "knn"),
     "cluster": ("kmeans", "hdbscan", "gmm"),
-    "forecast": (),  # TODO(#63)
-    "anomaly": (),  # TODO(#64)
+    "forecast": ("auto_ets", "auto_arima", "naive"),
+    "anomaly": ("isolation_forest", "lof"),
     "vision": (),  # TODO(#65)
     "_example": ("example",),
 }
