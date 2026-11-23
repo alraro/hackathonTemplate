@@ -38,6 +38,15 @@ def make_faker(language: str | None = None) -> Faker:
     return Faker(LOCALES.get(key, "en_US"))
 
 
+# Fake coordinates cluster around one city so the map shows a useful view (not the whole planet).
+# Override with FAKE_CENTER="lat,lng" in .env; the default matches the items seed (Málaga).
+_CENTER = tuple(float(v) for v in (os.environ.get("FAKE_CENTER") or "36.7213,-4.4214").split(","))
+
+
+def _near(axis: int) -> float:
+    return round(_CENTER[axis] + random.uniform(-0.04, 0.04), 6)
+
+
 # field name (lowercase) -> generator(faker). Checked before the type fallback.
 HINTS: dict[str, Any] = {
     "name": lambda f: f.name(),
@@ -49,11 +58,11 @@ HINTS: dict[str, Any] = {
     "city": lambda f: f.city(),
     "country": lambda f: f.country(),
     "address": lambda f: f.address().replace("\n", ", "),
-    "lat": lambda f: float(f.latitude()),
-    "latitude": lambda f: float(f.latitude()),
-    "lng": lambda f: float(f.longitude()),
-    "lon": lambda f: float(f.longitude()),
-    "longitude": lambda f: float(f.longitude()),
+    "lat": lambda f: _near(0),
+    "latitude": lambda f: _near(0),
+    "lng": lambda f: _near(1),
+    "lon": lambda f: _near(1),
+    "longitude": lambda f: _near(1),
     "price": lambda f: round(random.uniform(1, 500), 2),
     "amount": lambda f: round(random.uniform(1, 500), 2),
     "title": lambda f: f.sentence(nb_words=4).rstrip("."),

@@ -3,6 +3,7 @@ from sqlmodel import col, func, or_, select
 
 from backend.api.core.crud import get_or_404
 from backend.api.core.deps import SessionDep
+from backend.api.resources.auth.deps import OptionalUser
 from backend.api.resources.items.models import (
     Item,
     ItemCreate,
@@ -34,7 +35,7 @@ def list_items(
     if category:
         stmt = stmt.where(Item.category == category)
     total = session.exec(select(func.count()).select_from(stmt.subquery())).one()
-    rows = session.exec(stmt.order_by(col(Item.id)).offset(offset).limit(limit)).all()
+    rows = session.exec(stmt.order_by(col(Item.id).desc()).offset(offset).limit(limit)).all()  # newest first
     return ItemList(items=[ItemRead.model_validate(r) for r in rows], total=total)
 
 
@@ -44,8 +45,8 @@ def get_item(item_id: int, session: SessionDep) -> ItemRead:
 
 
 @router.post("", name="create", status_code=201)
-def create_item(body: ItemCreate, session: SessionDep) -> ItemRead:
-    item = Item.model_validate(body)
+def create_item(body: ItemCreate, session: SessionDep, user: OptionalUser) -> ItemRead:
+    item = Item.model_validate(body, update={"owner_id": user.id if user else None})
     session.add(item)
     session.commit()
     session.refresh(item)

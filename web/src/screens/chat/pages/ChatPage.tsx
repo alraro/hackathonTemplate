@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { Send, Square, TriangleAlert } from "lucide-react"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Button } from "@/components/ui/button"
+import { VoiceButton } from "@/components/common/VoiceButton"
+import features from "@features"
 import { Markdown } from "../components/Markdown"
 import { useChat } from "../useChat"
 
@@ -90,6 +92,7 @@ export default function ChatPage() {
             aria-label="Message"
             className="min-h-10 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
+          {features.voice && <VoiceButton onText={(t) => setDraft((d) => (d ? `${d} ${t}` : t))} />}
           {streaming ? (
             <Button type="button" variant="outline" onClick={stop}>
               <Square aria-hidden /> Stop

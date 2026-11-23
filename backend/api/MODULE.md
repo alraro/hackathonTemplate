@@ -48,7 +48,7 @@ Run `make help` for the rest. Done when `make check` is green.
 | `make seed` | load every `resources/*/seed.json` | after `up` or `db-reset` |
 | `make db-reset` | drop and recreate tables, then seed | models changed, migrations messy |
 | `make openapi api-client` | export `openapi.json`, regenerate the typed client and fixtures | after any route or schema change |
-| `make fake resource=<id> n=20` | rewrite that resource's `seed.json` with fake rows | the UI needs data |
+| `make fake resource=<id> n=20` | rewrite that resource's `seed.json` with fake rows (lat/lng near `FAKE_CENTER="lat,lng"`, default Málaga) | the UI needs data |
 | `make simulate scenario=<name>` | stream rows from `scenarios/<name>.yaml` over realtime | demo a live view |
 | `make add-py pkg=<name>` | add a Python package | instead of `pip install` |
 | `make logs svc=backend` | follow backend logs | debug a request |
@@ -75,7 +75,7 @@ Run `make help` for the rest. Done when `make check` is green.
 - Raise `HTTPException`; clients see `{detail}`.
 - Call external APIs with `fetch_json` (`core/fetch.py`): cached on disk, `HTTP_OFFLINE=1` serves the cache when venue wifi fails. `geocode(query)` in `core/geo.py` (Nominatim, 1 req/s, cached) turns an address into `{lat, lng, display_name}`.
 - The API seeds empty tables on startup and refuses to start with an empty `SECRET_KEY` when `auth` is on (`make setup` writes one).
-- Push live updates with `publish(topic, data)` from `resources/ws/hub.py`, sync and thread-safe; `notify(user_id, title, body)` targets one user.
+- Push live updates with `publish(topic, data)` from `resources/ws/hub.py`, sync and thread-safe; `notify(user_id, title, body)` targets one user. To ring the bell in a demo without code, an admin can `POST /api/ws/publish` with topic `notifications:<user_id>` and data `{title, body}` (from `/api/docs`).
 - Protect routes with `CurrentUser`, `OptionalUser` or `AdminUser` from `resources/auth/deps.py`.
 - Contract change protocol: an additive change is yours as producer Lane (`make openapi api-client`, then a Change log line in `hackathon/08-contracts.md`); a breaking change (rename, remove, retype) stops you: ask the human.
 

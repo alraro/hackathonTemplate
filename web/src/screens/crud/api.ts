@@ -80,6 +80,8 @@ export function useDeleteItem() {
       const res = await api.DELETE("/api/items/{item_id}", { params: { path: { item_id: id } } })
       if (res.error !== undefined) throw new Error("Delete failed")
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["items"] }),
+    // Refresh lists only: invalidating the open detail page would refetch the deleted item (404)
+    // before the page navigates away. The stale detail entry is garbage-collected once unused.
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["items", "list"] }),
   })
 }

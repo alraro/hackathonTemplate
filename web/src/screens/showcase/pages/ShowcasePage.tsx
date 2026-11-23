@@ -10,6 +10,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { effects } from "@/components/effects"
+import { FileDrop } from "@/components/common/FileDrop"
+import { QrCode } from "@/components/common/QrCode"
+import { QrScanner } from "@/components/common/QrScanner"
+import features from "@features"
 import { applyPreset, type Preset } from "@/lib/applyPreset"
 import identity from "@design/identity.json"
 import theme from "@design/theme.json"
@@ -181,6 +185,48 @@ export default function ShowcasePage() {
           </Card>
         </div>
       </Section>
+
+      {(features.upload || features.qr) && (
+        <Section title="Building blocks">
+          <p className="text-sm text-muted-foreground">Ready-made widgets. Mount them in your screens (see web/MODULE.md, Building blocks).</p>
+          <div className="grid gap-4 md:grid-cols-2">
+            {features.upload && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>File upload</CardTitle>
+                  <CardDescription>FileDrop: POST /api/files with progress.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FileDrop onUploaded={(files) => toast.success(`Uploaded ${files.map((f) => f.name).join(", ")}`)} />
+                </CardContent>
+              </Card>
+            )}
+            {features.qr && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>QR code</CardTitle>
+                  <CardDescription>QrCode renders a link; QrScanner reads one with the camera.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-wrap items-center gap-4">
+                  <QrCode value={window.location.origin} size={128} />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">Scan a QR</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Scan a QR code</DialogTitle>
+                        <DialogDescription>Allow camera access when the browser asks.</DialogDescription>
+                      </DialogHeader>
+                      <QrScanner onScan={(v) => toast.success(`Scanned: ${v}`)} />
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </Section>
+      )}
 
       <Section title="Signature effects">
         {shown.effects.length === 0 ? (
