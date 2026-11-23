@@ -1,0 +1,17 @@
+/* PDF export = browser print. Chrome (sidebar, bottom bar, buttons) is marked data-no-print. */
+@media print {
+  [data-no-print] {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  tr,
+  .recharts-wrapper {
+    break-inside: avoid;
+  }
+}

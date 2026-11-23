@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router"
+import { CommandPalette } from "@/components/common/CommandPalette"
 import { cn } from "@/lib/utils"
 import { navItems } from "../routes"
 
@@ -8,7 +9,7 @@ export const APP_NAME: string = import.meta.env.VITE_APP_NAME ?? "Hackathon App"
 export function AppLayout() {
   return (
     <div className="flex min-h-svh">
-      <aside className="hidden w-56 shrink-0 flex-col gap-1 border-r p-3 md:flex">
+      <aside data-no-print className="hidden w-56 shrink-0 flex-col gap-1 border-r p-3 md:flex">
         <Link to="/" className="mb-3 px-2 font-semibold">{APP_NAME}</Link>
         {navItems.map(({ id, to, label, icon: Icon }) => (
           <NavLink
@@ -28,14 +29,14 @@ export function AppLayout() {
         ))}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center border-b px-4">
+        <header data-no-print className="flex h-14 items-center border-b px-4">
           <Link to="/" className="truncate font-semibold md:hidden">{APP_NAME}</Link>
         </header>
         <main className="flex-1 p-4 pb-20 md:p-6 md:pb-6">
           <Outlet />
         </main>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t bg-background md:hidden" aria-label="Primary">
+      <nav data-no-print className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t bg-background md:hidden" aria-label="Primary">
         {navItems.map(({ id, to, label, icon: Icon }) => (
           <NavLink
             key={id}
@@ -53,6 +54,7 @@ export function AppLayout() {
           </NavLink>
         ))}
       </nav>
+      <CommandPalette />
     </div>
   )
 }
