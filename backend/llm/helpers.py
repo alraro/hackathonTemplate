@@ -3,16 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from pydantic import BaseModel, create_model
 
 from backend.llm import cache, settings
 from backend.llm.render import render
-
-if TYPE_CHECKING:
-    from backend.llm.providers.base import Provider
-
 
 def _model(model: str | None, tier: settings.Tier) -> str:
     """A tier name, an explicit model id, or the tier default."""
