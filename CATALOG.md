@@ -31,7 +31,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
 | `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | off |
 | `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | off |
-| `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | off |
+| `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | on |
 | `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | off |
 | `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | off |
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
@@ -41,7 +41,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
 | `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | off |
 | `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | off |
-| `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | off |
+| `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | on |
 | `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | off |
 | `auth` | `api` | users, JWT login, demo users | backend/api/resources/auth | the product has accounts or roles | on |
 | `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |

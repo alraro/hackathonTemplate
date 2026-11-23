@@ -1,0 +1,17 @@
+[
+  {"title": "Central Library", "category": "culture", "lat": 41.3874, "lng": 2.1686},
+  {"title": "Harbour Cafe", "category": "food", "lat": 41.3755, "lng": 2.1901},
+  {"title": "Riverside Park", "category": "outdoors", "lat": 41.3958, "lng": 2.1740},
+  {"title": "Tech Hub", "category": "work", "lat": 41.3979, "lng": 2.1900},
+  {"title": "Old Market", "category": "food", "lat": 41.3818, "lng": 2.1715},
+  {"title": "Sunset Viewpoint", "category": "outdoors", "lat": 41.4145, "lng": 2.1527},
+  {"title": "City Museum", "category": "culture", "lat": 41.3851, "lng": 2.1734},
+  {"title": "Bike Station", "category": "transport", "lat": 41.3912, "lng": 2.1805},
+  {"title": "Coworking Loft", "category": "work", "lat": 41.4036, "lng": 2.1744},
+  {"title": "Night Bakery", "category": "food", "lat": 41.3790, "lng": 2.1620},
+  {"title": "Botanic Garden", "category": "outdoors", "lat": 41.3640, "lng": 2.1590},
+  {"title": "Art Gallery", "category": "culture", "lat": 41.3930, "lng": 2.1640},
+  {"title": "Central Station", "category": "transport", "lat": 41.3792, "lng": 2.1405},
+  {"title": "Rooftop Bar", "category": "food", "lat": 41.3830, "lng": 2.1770},
+  {"title": "Maker Space", "category": "work", "lat": 41.4100, "lng": 2.1870}
+]
