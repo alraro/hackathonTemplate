@@ -18,7 +18,7 @@ export default function DetailPage() {
 
   return (
     <QueryState query={query} empty={{ title: "Item not found", description: "It may have been deleted.", action: <Button asChild variant="outline"><Link to="/items">Back to items</Link></Button> }}>
-      {(item) => (
+      {(item) => item && (
         <>
           <PageHeader
             title={item.title}

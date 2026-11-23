@@ -29,7 +29,7 @@ export default function FormPage() {
   if (id === undefined) return <ItemForm title={title} />
   return (
     <QueryState query={existing} empty={{ title: "Item not found", description: "It may have been deleted.", action: <Button asChild variant="outline"><Link to="/items">Back to items</Link></Button> }}>
-      {(item) => <ItemForm key={item.id} title={title} id={id} initial={item as Values} />}
+      {(item) => item && <ItemForm key={item.id} title={title} id={id} initial={item as Values} />}
     </QueryState>
   )
 }

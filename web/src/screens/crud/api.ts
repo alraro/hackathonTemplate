@@ -9,6 +9,8 @@ export type ItemInput = components["schemas"]["ItemCreate"]
 export type ItemStatus = components["schemas"]["ItemStatus"]
 export const STATUSES: ItemStatus[] = ["todo", "doing", "done"]
 export const PAGE_SIZE = 10
+/** Page size for the export loop: the backend maximum. */
+const EXPORT_PAGE_SIZE = 200
 
 export type ItemFilters = { q?: string; status?: ItemStatus; category?: string; offset?: number }
 
@@ -39,7 +41,7 @@ export async function fetchAllItems(f: Omit<ItemFilters, "offset">): Promise<Ite
   for (;;) {
     const page = check(
       await api.GET("/api/items", {
-        params: { query: { q: f.q || undefined, status: f.status, category: f.category || undefined, limit: PAGE_SIZE, offset: rows.length } },
+        params: { query: { q: f.q || undefined, status: f.status, category: f.category || undefined, limit: EXPORT_PAGE_SIZE, offset: rows.length } },
       }),
     )
     rows.push(...page.items)
@@ -51,7 +53,12 @@ export function useItem(id: number | undefined) {
   return useQuery({
     queryKey: ["items", "detail", id],
     enabled: id !== undefined,
-    queryFn: async () => check(await api.GET("/api/items/{item_id}", { params: { path: { item_id: id! } } })),
+    // A missing item resolves to null (the pages render "Item not found"); other errors throw.
+    queryFn: async () => {
+      const res = await api.GET("/api/items/{item_id}", { params: { path: { item_id: id! } } })
+      if (res.response.status === 404) return null
+      return check(res)
+    },
   })
 }
 

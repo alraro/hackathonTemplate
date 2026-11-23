@@ -1,3 +1,5 @@
+import { getToken } from "@/lib/api/client"
+
 /** `browser` (default): speechSynthesis. Anything else: the server TTS at /api/llm/speak. Mirrors TTS_PROVIDER. */
 const TTS_PROVIDER: string = import.meta.env.VITE_TTS_PROVIDER ?? "browser"
 
@@ -11,9 +13,10 @@ function speakInBrowser(text: string) {
 export async function speak(text: string): Promise<void> {
   if (!text.trim()) return
   if (TTS_PROVIDER === "browser") return speakInBrowser(text)
+  const token = getToken()
   const res = await fetch("/api/llm/speak", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     body: JSON.stringify({ text }),
   })
   // 204: the server has no TTS (it is set to browser): fall back to speechSynthesis.
