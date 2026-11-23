@@ -5,7 +5,7 @@
   "crud": true,
   "settings": true,
   "showcase": true,
-  "chat": false,
+  "chat": true,
   "rag": true,
   "upload": true,
   "realtime": true,

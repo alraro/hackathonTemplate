@@ -220,6 +220,26 @@ export interface paths {
         patch: operations["items_update"];
         trace?: never;
     };
+    "/api/llm/chat/frames": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Frames
+         * @description Schema-only: exports the socket frames to openapi.json. Connect to `/ws` instead.
+         */
+        get: operations["chat_frames"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/llm/speak": {
         parameters: {
             query?: never;
@@ -314,7 +334,7 @@ export interface components {
             /** Answer */
             answer: string;
             /** Citations */
-            citations: components["schemas"]["Citation"][];
+            citations: components["schemas"]["backend__api__resources__rag__models__Citation"][];
         };
         /** Body_files_create */
         Body_files_create: {
@@ -346,14 +366,68 @@ export interface components {
             /** X */
             x: string;
         };
-        /** Citation */
-        Citation: {
-            /** Document Id */
-            document_id: number | null;
-            /** Snippet */
-            snippet: string;
-            /** Title */
-            title: string;
+        /** ChatError */
+        ChatError: {
+            /** Detail */
+            detail: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "error";
+        };
+        /**
+         * ChatFrames
+         * @description Not a payload: exports the socket frames to openapi.json for typed clients.
+         */
+        ChatFrames: {
+            /** Client */
+            client: components["schemas"]["Stop"] | components["schemas"]["ChatRequest"];
+            /** Server */
+            server: components["schemas"]["Delta"] | components["schemas"]["Done"] | components["schemas"]["ChatError"];
+        };
+        /** ChatMessage */
+        ChatMessage: {
+            /** Content */
+            content: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "assistant";
+        };
+        /** ChatRequest */
+        ChatRequest: {
+            /** Messages */
+            messages: components["schemas"]["ChatMessage"][];
+            /**
+             * Use Rag
+             * @default false
+             */
+            use_rag: boolean;
+        };
+        /** Delta */
+        Delta: {
+            /** Text */
+            text: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "delta";
+        };
+        /** Done */
+        Done: {
+            /**
+             * Citations
+             * @default []
+             */
+            citations: components["schemas"]["backend__api__resources__chat__models__Citation"][];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "done";
         };
         /**
          * ExampleCreate
@@ -569,6 +643,14 @@ export interface components {
             /** Text */
             text: string;
         };
+        /** Stop */
+        Stop: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "stop";
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -627,6 +709,29 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** Citation */
+        backend__api__resources__chat__models__Citation: {
+            /**
+             * Score
+             * @default 0
+             */
+            score: number;
+            /** Source */
+            source: string;
+            /** Text */
+            text: string;
+            /** Title */
+            title?: string | null;
+        };
+        /** Citation */
+        backend__api__resources__rag__models__Citation: {
+            /** Document Id */
+            document_id: number | null;
+            /** Snippet */
+            snippet: string;
+            /** Title */
+            title: string;
         };
     };
     responses: never;
@@ -1260,6 +1365,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_frames: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            426: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatFrames"];
                 };
             };
         };

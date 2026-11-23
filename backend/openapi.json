@@ -23,7 +23,7 @@
           },
           "citations": {
             "items": {
-              "$ref": "#/components/schemas/Citation"
+              "$ref": "#/components/schemas/backend__api__resources__rag__models__Citation"
             },
             "title": "Citations",
             "type": "array"
@@ -116,34 +116,150 @@
         "title": "Chart",
         "type": "object"
       },
-      "Citation": {
+      "ChatError": {
         "properties": {
-          "document_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Document Id"
-          },
-          "snippet": {
-            "title": "Snippet",
+          "detail": {
+            "title": "Detail",
             "type": "string"
           },
-          "title": {
-            "title": "Title",
+          "type": {
+            "const": "error",
+            "default": "error",
+            "title": "Type",
             "type": "string"
           }
         },
         "required": [
-          "document_id",
-          "title",
-          "snippet"
+          "detail"
         ],
-        "title": "Citation",
+        "title": "ChatError",
+        "type": "object"
+      },
+      "ChatFrames": {
+        "description": "Not a payload: exports the socket frames to openapi.json for typed clients.",
+        "properties": {
+          "client": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stop"
+              },
+              {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            ],
+            "title": "Client"
+          },
+          "server": {
+            "discriminator": {
+              "mapping": {
+                "delta": "#/components/schemas/Delta",
+                "done": "#/components/schemas/Done",
+                "error": "#/components/schemas/ChatError"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Delta"
+              },
+              {
+                "$ref": "#/components/schemas/Done"
+              },
+              {
+                "$ref": "#/components/schemas/ChatError"
+              }
+            ],
+            "title": "Server"
+          }
+        },
+        "required": [
+          "client",
+          "server"
+        ],
+        "title": "ChatFrames",
+        "type": "object"
+      },
+      "ChatMessage": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ],
+        "title": "ChatMessage",
+        "type": "object"
+      },
+      "ChatRequest": {
+        "properties": {
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "minItems": 1,
+            "title": "Messages",
+            "type": "array"
+          },
+          "use_rag": {
+            "default": false,
+            "title": "Use Rag",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "messages"
+        ],
+        "title": "ChatRequest",
+        "type": "object"
+      },
+      "Delta": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "type": {
+            "const": "delta",
+            "default": "delta",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Delta",
+        "type": "object"
+      },
+      "Done": {
+        "properties": {
+          "citations": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/backend__api__resources__chat__models__Citation"
+            },
+            "title": "Citations",
+            "type": "array"
+          },
+          "type": {
+            "const": "done",
+            "default": "done",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "Done",
         "type": "object"
       },
       "ExampleCreate": {
@@ -635,6 +751,20 @@
         "title": "SpeakRequest",
         "type": "object"
       },
+      "Stop": {
+        "properties": {
+          "type": {
+            "const": "stop",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "Stop",
+        "type": "object"
+      },
       "TokenResponse": {
         "properties": {
           "access_token": {
@@ -775,6 +905,70 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "backend__api__resources__chat__models__Citation": {
+        "properties": {
+          "score": {
+            "default": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "source",
+          "text"
+        ],
+        "title": "Citation",
+        "type": "object"
+      },
+      "backend__api__resources__rag__models__Citation": {
+        "properties": {
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Id"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "title",
+          "snippet"
+        ],
+        "title": "Citation",
         "type": "object"
       }
     },
@@ -1671,6 +1865,28 @@
         "summary": "Update",
         "tags": [
           "items"
+        ]
+      }
+    },
+    "/api/llm/chat/frames": {
+      "get": {
+        "description": "Schema-only: exports the socket frames to openapi.json. Connect to `/ws` instead.",
+        "operationId": "chat_frames",
+        "responses": {
+          "426": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatFrames"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Frames",
+        "tags": [
+          "chat"
         ]
       }
     },
