@@ -14,7 +14,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `mobile` | mobile | - | ['a Gate or Rubric asks for an app', 'a Beat needs a device capability a PWA does badly', 'the idea is mobile-first'] |
 | `api` | api | - | ['the product needs persistence, accounts or server-side logic', 'a Gate or Rubric asks for a real backend'] |
 | `llm` | llm | api | ['the product calls a language model, embeddings or speech'] |
-| `data` | data | api | ['the product analyses tabular data, forecasts or classifies images'] **(no Feature implemented yet: Prune may drop it)** |
+| `data` | data | api | ['the product analyses tabular data, forecasts or classifies images'] |
 | `pitch` | pitch | - | never pruned |
 
 ## Features
@@ -23,7 +23,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 |---|---|---|---|---|---|
 | `landing` | `web` | public landing page with hero, value props and call to action | web/src/features/landing/ | the product needs a public front door | on |
 | `auth` | `web` | login, signup and protected routes | web/src/features/auth/ | users have accounts or roles | on |
-| `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | off |
+| `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | on |
 | `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
 | `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
 | `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
@@ -56,4 +56,4 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `anomaly` | `data` | anomaly detection | backend/data | the idea flags unusual records | off |
 | `vision` | `data` | image embeddings and classification (heavy install) | backend/data | the idea works on images | off |
 | `eda` | `data` | exploratory data analysis helpers | backend/data | the team must understand a dataset first | off |
-| `reports` | `data` | run reports served at /api/data/reports/{run} | backend/api/resources/data_reports | the UI shows analysis results | off |
+| `reports` | `data` | run reports served at /api/data/reports/{run} | backend/api/resources/data_reports | the UI shows analysis results | on |

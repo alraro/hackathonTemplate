@@ -1,7 +1,7 @@
 {
   "landing": true,
   "auth": true,
-  "dashboard": false,
+  "dashboard": true,
   "crud": true,
   "settings": true,
   "showcase": true,
@@ -14,5 +14,5 @@
   "qr": false,
   "voice": false,
   "vision": false,
-  "reports": false
+  "reports": true
 }
