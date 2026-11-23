@@ -24,6 +24,7 @@ class Fitted:
     outlier: np.ndarray  # bool per record
     scores: np.ndarray  # higher = more unusual
 
+
 # short name -> factory taking the contamination share
 MODELS = {
     "isolation_forest": lambda c, **p: IsolationForest(contamination=c, random_state=SEED, **p),

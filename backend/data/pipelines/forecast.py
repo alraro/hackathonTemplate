@@ -31,6 +31,7 @@ class Fitted:
     holdout: pd.DataFrame
     future: pd.DataFrame
 
+
 # short name -> statsforecast model factory taking season_length
 MODELS = {
     "auto_ets": lambda m, **p: AutoETS(season_length=m, **p),
