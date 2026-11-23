@@ -71,7 +71,7 @@ The only skill teammates know. You read the recorded state, never the previous c
 | 10 | Task split | `hackathon-split` | `hackathon/09-split.md` | 5 |
 | 11 | Build | `hackathon-build` | GitHub issues and PRs | 6 (one fresh session per issue) |
 | 12 | Integrate & Polish | `hackathon-polish` | `hackathon/10-polish.md` | 7 |
-| 13 | Demo | `hackathon-demo` (pending) | `hackathon/11-demo.md` | 8 |
+| 13 | Demo | `hackathon-demo` | `hackathon/11-demo.md` | 8 |
 
 `done` and `skipped` both count as finished; a Phase marks itself `skipped` with a one-line reason. `stale` means a Pivot reopened an earlier Phase: redo it in order, using the stale artifact as reference.
 
