@@ -79,12 +79,30 @@ def desired_files(root: Path = ROOT) -> dict[Path, str]:
     return want
 
 
+def _skill_dir(root: Path, t: Path, p: Path) -> Path:
+    return t / p.relative_to(t).parts[0]
+
+
 def stale_copies(root: Path, want: dict[Path, str]) -> list[Path]:
-    """Files in target dirs that no longer have a canonical source."""
+    """Template-generated files in target dirs that no longer have a canonical source.
+
+    A skill folder counts as generated only if its SKILL.md carries the footer marker, so a
+    team's hand-made skill (no marker) is never removed.
+    """
     stale = []
     for t in (root / ".claude" / "skills", root / ".github" / "skills"):
-        if t.is_dir():
-            stale += [p for p in t.rglob("*") if p.is_file() and p not in want]
+        if not t.is_dir():
+            continue
+        generated: dict[Path, bool] = {}
+        for p in t.rglob("*"):
+            if not p.is_file() or p in want:
+                continue
+            d = _skill_dir(root, t, p)
+            if d not in generated:
+                md = d / "SKILL.md"
+                generated[d] = md.is_file() and START in md.read_text(encoding="utf-8")
+            if generated[d]:
+                stale.append(p)
     return stale
 
 

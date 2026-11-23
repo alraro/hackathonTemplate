@@ -6,7 +6,6 @@ Exposes only `edge` (built web, /api proxied to the backend). Ctrl+C closes the 
 Quick tunnels do not support SSE: the template streams only over WebSocket.
 Host-side, stdlib only. Tunnel containers come from the official cloudflared/ngrok images.
 """
-import json
 import os
 import re
 import shutil
@@ -14,30 +13,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _env import ROOT, read_env, vision  # noqa: E402
 URL_RE = {
     "cloudflared": re.compile(r"https://[a-z0-9-]+\.trycloudflare\.com"),
     "ngrok": re.compile(r"url=(https://\S+)"),
 }
 PUBLIC_SERVICES = ["cloudflared", "ngrok", "edge", "preview"]  # never stop the backend: the stack stays up
-
-
-def read_env():
-    env = {}
-    path = ROOT / ".env"
-    if path.exists():
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if "=" in line and not line.lstrip().startswith("#"):
-                k, v = line.split("=", 1)
-                env[k.strip()] = v.strip()
-    return env
-
-
-def vision():
-    try:
-        return str(json.loads((ROOT / "features.json").read_text()).get("vision", False)).lower()
-    except (OSError, ValueError):
-        return "false"
 
 
 def print_qr(url):
@@ -97,7 +79,7 @@ def main(argv):
     finally:
         if proc and proc.poll() is None:
             proc.terminate()
-        print("\nshare: closing the tunnel...", flush=True)
+        print("\nshare: closing the tunnel... (`make up` brings the web dev server back)", flush=True)
         subprocess.run(dc + ["stop"] + PUBLIC_SERVICES, cwd=ROOT, env=cenv, capture_output=True)
         subprocess.run(dc + ["rm", "-f"] + PUBLIC_SERVICES, cwd=ROOT, env=cenv, capture_output=True)
     return 0
