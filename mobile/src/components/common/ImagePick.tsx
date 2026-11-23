@@ -5,6 +5,7 @@ import { API_MODE, API_URL, getToken } from "../../lib/api/client"
 import type { components } from "../../lib/api/schema"
 import { Button } from "../ui/Button"
 import { Text } from "../ui/Text"
+import { useTheme } from "../ui/useTheme"
 
 export type FileRecord = components["schemas"]["FileRead"]
 export type PickedFile = { uri: string; name: string; mime: string; size?: number }
@@ -46,6 +47,7 @@ export async function uploadFile(file: PickedFile): Promise<FileRecord> {
 }
 
 export function ImagePick({ onPicked, onUploaded, source = "both", upload }: ImagePickProps) {
+  const { radius } = useTheme()
   const [preview, setPreview] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [denied, setDenied] = useState(false)
@@ -93,7 +95,7 @@ export function ImagePick({ onPicked, onUploaded, source = "both", upload }: Ima
         <Image
           source={{ uri: preview }}
           accessibilityLabel="Selected image preview"
-          style={{ width: 160, height: 160, borderRadius: 12 }}
+          style={{ width: 160, height: 160, borderRadius: radius }}
         />
       ) : null}
       {busy ? <ActivityIndicator accessibilityLabel="Uploading" /> : null}

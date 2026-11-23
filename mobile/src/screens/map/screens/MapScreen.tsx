@@ -13,9 +13,13 @@ const label = (p: Place) => p.name ?? p.title ?? `#${p.id ?? ""}`
 async function loadPlaces(): Promise<Place[]> {
   if (API_MODE === "fixtures") return fixtures
   const { data, error } = await api.GET("/api/items")
-  if (error) throw new Error("Could not load places")
-  const rows = ((data as { items?: unknown[] } | undefined)?.items ?? []) as Partial<Place>[]
-  return rows.filter((r): r is Place => typeof r.lat === "number" && typeof r.lng === "number")
+  if (error || !data) throw new Error("Could not load places")
+  // ItemRead carries optional lat/lng; only items with both become markers.
+  return data.items.flatMap((i) =>
+    typeof i.lat === "number" && typeof i.lng === "number"
+      ? [{ id: i.id, title: i.title, description: i.description, lat: i.lat, lng: i.lng }]
+      : [],
+  )
 }
 
 export default function MapScreen() {
