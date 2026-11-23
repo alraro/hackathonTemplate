@@ -4,7 +4,7 @@
   "dashboard": false,
   "crud": true,
   "settings": true,
-  "showcase": false,
+  "showcase": true,
   "chat": false,
   "rag": false,
   "upload": true,

@@ -26,7 +26,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | off |
 | `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
 | `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
-| `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | off |
+| `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
 | `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | off |
 | `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
 | `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | off |
@@ -37,7 +37,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
 | `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
 | `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
-| `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | off |
+| `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | on |
 | `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
 | `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | off |
 | `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | off |
