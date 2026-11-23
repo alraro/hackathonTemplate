@@ -12,8 +12,8 @@ from sklearn.preprocessing import StandardScaler
 from skrub import TableVectorizer
 
 from backend.data.config import RunConfig
-from backend.data.pipelines.tabular import read_table
 from backend.data.report import Chart, Report, Series
+from backend.data.tables import read_table
 
 SEED = 0
 K_RANGE = range(2, 9)

@@ -3,9 +3,9 @@
   "pipeline": "forecast",
   "model": "auto_ets",
   "metrics": {
-    "mae": 5.82806918284732,
-    "rmse": 6.770226026571051,
-    "mape": 1.368451434311808
+    "mae": 5.8280691828473055,
+    "rmse": 6.770226026571081,
+    "mape": 1.3684514343117877
   },
   "charts": [
     {
@@ -494,5 +494,5 @@
       ]
     }
   ],
-  "summary": "auto_ets forecasts 12 steps, holdout MAE=5.83, MAPE=1.4%"
+  "summary": "mae 5.83, rmse 6.77, mape 1.37"
 }

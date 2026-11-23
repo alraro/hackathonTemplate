@@ -24,12 +24,12 @@ def build_summary(report: Report, explain: bool = False) -> str:
     if not explain:
         return text
     try:
-        from backend.llm.helpers import summarize  # llm pruned -> ImportError
+        from backend.llm.helpers import summarize  # module:llm (pruned -> ImportError)
 
         narration = summarize(
             f"Explain these model results to a non-technical audience, in the event language: {text}",
             max_words=80,
         )
         return f"{text}\n\n{narration}"
-    except (ImportError, NotImplementedError):
+    except Exception:  # noqa: BLE001 - ImportError when llm is pruned, provider errors offline
         return text  # data never hard-depends on llm

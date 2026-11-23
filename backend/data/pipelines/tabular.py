@@ -1,7 +1,5 @@
 """tabular pipeline: classification or regression, detected from the target column."""
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import (
@@ -25,31 +23,19 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from skrub import TableVectorizer
 
-from backend.data.config import DATA_DIR, RunConfig, source_path
+from backend.data.config import RunConfig
 from backend.data.report import Chart, Report, Series
+from backend.data.tables import read_table
 
-# short name -> (classifier factory, regressor factory, needs scaling)
+# short name -> (classifier factory, regressor factory, needs scaling); None = task not supported
 MODELS = {
     "hgb": (HistGradientBoostingClassifier, HistGradientBoostingRegressor, False),
     "random_forest": (RandomForestClassifier, RandomForestRegressor, False),
-    "logistic": (LogisticRegression, LinearRegression, True),
-    "linear": (LogisticRegression, LinearRegression, True),
+    "logistic": (LogisticRegression, None, True),  # classification only
+    "linear": (None, LinearRegression, True),  # regression only
     "knn": (KNeighborsClassifier, KNeighborsRegressor, True),
 }
 SEED = 0
-
-
-def read_table(cfg: RunConfig) -> pd.DataFrame:
-    """Read cfg.source (csv, parquet or xlsx) into a DataFrame."""
-    path: Path | None = source_path(cfg)
-    if path is None:
-        raise ValueError("this pipeline reads 'source' files only; 'sql' is not supported yet")
-    if not path.is_file():
-        raise ValueError(f"source '{cfg.source}' not found under {DATA_DIR}")
-    readers = {".csv": pd.read_csv, ".parquet": pd.read_parquet, ".xlsx": pd.read_excel}
-    if path.suffix not in readers:
-        raise ValueError(f"source type '{path.suffix}' unsupported; use csv, parquet or xlsx")
-    return readers[path.suffix](path)
 
 
 def load(cfg: RunConfig):
@@ -76,11 +62,15 @@ def prepare(df, cfg: RunConfig):
 
 def fit(X, cfg: RunConfig):
     make_clf, make_reg, scale = MODELS[cfg.model]
+    kind = "classification" if X["clf"] else "regression"
+    factory = make_clf if X["clf"] else make_reg
+    if factory is None:
+        raise ValueError(f"model '{cfg.model}' does not support {kind}; target '{cfg.target}' is {kind}")
     params = dict(cfg.params)
     if cfg.model in ("hgb", "random_forest"):
         params.setdefault("random_state", SEED)
     steps = [TableVectorizer()] + ([StandardScaler()] if scale else [])
-    est = (make_clf if X["clf"] else make_reg)(**params)
+    est = factory(**params)
     return make_pipeline(*steps, est).fit(X["X_train"], X["y_train"])
 
 
@@ -93,6 +83,13 @@ def evaluate(model, X, cfg: RunConfig) -> dict[str, float]:
             "f1_macro": float(f1_score(y, pred, average="macro")),
         }
     return {"r2": float(r2_score(y, pred)), "mae": float(mean_absolute_error(y, pred))}
+
+
+def predictions(model, X) -> pd.DataFrame:
+    """Held-out rows with actual and predicted target, for outputs/<run>/predictions.csv."""
+    out = X["X_test"].copy()
+    out["actual"], out["predicted"] = X["y_test"], model.predict(X["X_test"])
+    return out
 
 
 def report(cfg: RunConfig, model, X, metrics: dict[str, float]) -> Report:
@@ -120,7 +117,7 @@ def report(cfg: RunConfig, model, X, metrics: dict[str, float]) -> Report:
             Chart(
                 id="confusion",
                 kind="bar",
-                title="Confusion matrix (rows: actual, series: predicted)",
+                title="Predictions per actual class (grouped bars, one group per actual label)",
                 x="actual",
                 series=[Series(key=f"pred_{c}", label=f"Predicted {c}") for c in labels],
                 data=[

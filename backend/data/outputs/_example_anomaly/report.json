@@ -1281,5 +1281,5 @@
       ]
     }
   ],
-  "summary": "isolation_forest flagged 15 of 300 records (5.0%)"
+  "summary": "records 300, outliers 15, outlier_rate 5 %"
 }

@@ -11,8 +11,8 @@ from sklearn.preprocessing import StandardScaler
 from skrub import TableVectorizer
 
 from backend.data.config import RunConfig
-from backend.data.pipelines.tabular import read_table
 from backend.data.report import Chart, Report, Series
+from backend.data.tables import read_table
 
 SEED = 0
 CONTAMINATION = 0.05  # expected share of outliers; override with params.contamination

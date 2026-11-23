@@ -8,8 +8,8 @@ from statsforecast import StatsForecast
 from statsforecast.models import AutoARIMA, AutoETS, Naive
 
 from backend.data.config import RunConfig
-from backend.data.pipelines.tabular import read_table
 from backend.data.report import Chart, Report, Series
+from backend.data.tables import read_table
 
 LEVEL = 95
 HORIZON = 12
