@@ -6,7 +6,7 @@ import time
 from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any
 
-from backend.llm.errors import LLMError
+from backend.llm.errors import LLMError, fail
 from backend.llm.providers.openai_compat import (
     MAX_RETRIES,
     TIMEOUT_S,
@@ -54,9 +54,7 @@ class AnthropicProvider:
         return "".join(b.text for b in r.content if getattr(b, "type", "") == "text")
 
     def _fail(self, exc: Exception) -> LLMError:
-        if isinstance(exc, LLMError):
-            return exc
-        return LLMError(f"claude call failed: {type(exc).__name__}: {exc}")
+        return fail("claude", exc)
 
     def complete(
         self, messages: list[dict], *, model: str | None = None, system: str | None = None

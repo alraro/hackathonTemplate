@@ -17,6 +17,10 @@ env:
   - STT_PROVIDER
   - TTS_PROVIDER
   - ELEVENLABS_API_KEY
+  - ELEVENLABS_VOICE_ID
+  - OLLAMA_URL
+  - SPEACHES_URL
+  - OUTPUT_LANGUAGE
 paths:
   - backend/llm
   - backend/api/resources/chat
@@ -70,7 +74,7 @@ Read `helpers.py` for the helper signatures, `settings.py` for the provider and 
 
 Only `GROQ_API_KEY` is required to start. `GEMINI_API_KEY` serves embeddings only (`EMBED_PROVIDER=gemini`, the default); `ollama` needs no key. `STT_PROVIDER` (default `groq`, reuses `GROQ_API_KEY`) and `TTS_PROVIDER` (default `browser`: the web app speaks, the backend returns nothing) switch to `elevenlabs` with `ELEVENLABS_API_KEY`, or to `speaches` with the `speech` profile.
 
-Groq's free tier (8K tokens per minute) is the real ceiling: a long prompt or a burst of calls returns a rate-limit `LLMError`. Keep prompts short, give `rag.search` a small `k`, and keep `LLM_CACHE=on` (default): identical calls are answered from `backend/llm/.cache/llm.sqlite`,. Set `LLM_CACHE=off` only to see fresh output, and delete the cache file after changing a prompt.
+Groq's free tier (8K tokens per minute) is the real ceiling: a long prompt or a burst of calls returns a rate-limit `LLMError`. Keep prompts short, give `rag.search` a small `k`, and keep `LLM_CACHE=on` (default): identical calls are answered from `backend/llm/.cache/llm.sqlite`. Set `LLM_CACHE=off` only to see fresh output, and delete the cache file after changing a prompt.
 
 Missing keys raise `LLMError` with the variable to set; the API returns it as the `detail`.
 

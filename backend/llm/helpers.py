@@ -1,4 +1,4 @@
-"""Sync LLM helpers. All take an optional `model=` (a tier name or model id)."""
+"""Sync LLM helpers. All but `embed` take an optional `model=` (a tier name or model id)."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def classify(
     msgs = [{"role": "user", "content": prompt}]
 
     def call() -> str:
-        return settings.get_provider().complete_json(msgs, Result, model=m).label  # type: ignore[attr-defined]
+        return settings.get_provider().complete_json(msgs, Result, model=m).label
 
     return cache.cached_call(_key("classify", m, {"prompt": prompt, "labels": labels}), call)
 
@@ -98,6 +98,17 @@ def chat(
     return cache.cached_stream(key, gen)
 
 
-def embed(texts: list[str], *, model: str | None = None) -> list[list[float]]:
-    """Embed texts with the configured EMBED_PROVIDER (768 dimensions)."""
-    return settings.embed_backend().embed(texts)
+def embed(texts: list[str]) -> list[list[float]]:
+    """Embed texts with the configured EMBED_PROVIDER (768 dimensions), cached per text."""
+    if not texts:
+        return []
+    name, model = settings.embed_provider(), settings.EMBED_MODELS[settings.embed_provider()]
+    keys = [cache.key_for(name, model, {"op": "embed", "text": t}) for t in texts]
+    found = [cache.get(k) for k in keys]
+    missing = [i for i, v in enumerate(found) if v is None]
+    if missing:
+        fresh = settings.embed_backend().embed([texts[i] for i in missing])
+        for i, vec in zip(missing, fresh, strict=True):
+            found[i] = vec
+            cache.put(keys[i], vec)
+    return found  # type: ignore[return-value]

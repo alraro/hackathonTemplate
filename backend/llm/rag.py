@@ -9,8 +9,9 @@ from pathlib import Path
 from pydantic import BaseModel
 from sqlmodel import Session, col, delete, select
 
-from backend.llm import settings
+from backend.llm import cache, settings
 from backend.llm.helpers import embed
+from backend.llm.render import render
 
 CORPUS_DIR = Path(__file__).parent / "corpus"
 SUPPORTED = {".md", ".txt", ".pdf"}
@@ -19,16 +20,6 @@ CHUNK_CHARS = 3200
 OVERLAP_CHARS = 400
 EMBED_BATCH = 32
 SNIPPET_CHARS = 240
-
-ANSWER_PROMPT = """Answer the question using ONLY the numbered excerpts below. \
-Answer in {output_language}. If the excerpts do not contain the answer, say so.
-Return the excerpt numbers you relied on in "citations" (at least one when you answer).
-
-Excerpts:
-{context}
-
-Question: {question}"""
-
 
 @dataclass
 class Chunk:
@@ -40,9 +31,26 @@ class Chunk:
 
 
 @dataclass
+class Citation:
+    """An excerpt an answer relied on: {document_id, title, snippet} (#57)."""
+
+    document_id: int | None
+    title: str
+    snippet: str
+
+    @property
+    def text(self) -> str:  # alias so routers can treat it like a Chunk
+        return self.snippet
+
+    @property
+    def source(self) -> str:
+        return self.title
+
+
+@dataclass
 class Answer:
     answer: str
-    citations: list[Chunk] = field(default_factory=list)
+    citations: list[Citation] = field(default_factory=list)
 
 
 class _Cited(BaseModel):
@@ -56,14 +64,21 @@ def _session() -> Session:
     return Session(engine)
 
 
+_schema_ready = False
+
+
 def ensure_schema() -> None:
-    """Create the vector extension and RAG tables if missing (idempotent)."""
+    """Create the vector extension and RAG tables if missing (once per process)."""
+    global _schema_ready
+    if _schema_ready:
+        return
     from backend.api.core.db import engine
     from backend.llm import rag_models
 
     rag_models.SQLModel.metadata.create_all(
         engine, tables=[rag_models.RagDocument.__table__, rag_models.RagChunk.__table__]
     )
+    _schema_ready = True
 
 
 def read_text(path: Path) -> str:
@@ -105,7 +120,11 @@ def _ingest(path: Path, title: str, force: bool) -> int:
 
     ensure_schema()
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    source = path.name
+    # Relative to the corpus when inside it, so same-named files in subfolders differ.
+    try:
+        source = path.resolve().relative_to(CORPUS_DIR.resolve()).as_posix()
+    except ValueError:
+        source = path.name
     with _session() as session:
         existing = session.exec(select(RagDocument).where(RagDocument.source == source)).all()
         if not force and any(d.hash == digest for d in existing):
@@ -173,16 +192,25 @@ def answer(question: str) -> Answer:
     if not hits:
         return Answer(answer="No documents are ingested yet; run `make rag-ingest`.")
     context = "\n\n".join(f"[{i}] ({h.title}) {h.text}" for i, h in enumerate(hits, 1))
-    prompt = ANSWER_PROMPT.format(
+    prompt = render(
+        "rag_answer",
         context=context,
         question=question,
         output_language=settings.output_language() or "the language of the question",
     )
-    result = settings.get_provider().complete_json(  # type: ignore[attr-defined]
-        [{"role": "user", "content": prompt}], _Cited, model=settings.model_for("smart")
-    )
+    model = settings.model_for("smart")
+    msgs = [{"role": "user", "content": prompt}]
+
+    def call() -> dict:
+        return settings.get_provider().complete_json(msgs, _Cited, model=model).model_dump()
+
+    key = cache.key_for(settings.provider(), model, {"op": "rag_answer", "prompt": prompt})
+    result = _Cited.model_validate(cache.cached_call(key, call))
     cited = [hits[n - 1] for n in dict.fromkeys(result.citations) if 1 <= n <= len(hits)]
-    return Answer(answer=result.answer, citations=cited or hits[:1])
+    return Answer(
+        answer=result.answer,
+        citations=[Citation(h.document_id, h.title or h.source, snippet(h.text)) for h in cited],
+    )
 
 
 def snippet(text: str) -> str:

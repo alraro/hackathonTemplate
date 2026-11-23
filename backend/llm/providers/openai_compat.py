@@ -8,7 +8,7 @@ import time
 from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any
 
-from backend.llm.errors import LLMError
+from backend.llm.errors import LLMError, fail
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
@@ -85,9 +85,7 @@ class OpenAICompatProvider:
         return chosen
 
     def _fail(self, exc: Exception) -> LLMError:
-        if isinstance(exc, LLMError):
-            return exc
-        return LLMError(f"{self.name} call failed: {type(exc).__name__}: {exc}")
+        return fail(self.name, exc)
 
     def complete(
         self, messages: list[dict], *, model: str | None = None, system: str | None = None

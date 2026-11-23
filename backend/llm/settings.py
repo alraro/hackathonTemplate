@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import os
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from backend.llm.errors import LLMError, missing_key
+
+if TYPE_CHECKING:
+    from backend.llm.providers.base import Provider
 
 Tier = Literal["fast", "smart"]
 
@@ -93,7 +96,7 @@ class _LazyEmbedder:
         return embed_backend().embed(texts)
 
 
-def get_provider():
+def get_provider() -> Provider:
     """Build the configured provider; raises LLMError with a friendly message if no key."""
     from backend.llm.providers.anthropic import AnthropicProvider
     from backend.llm.providers.openai_compat import OpenAICompatProvider
