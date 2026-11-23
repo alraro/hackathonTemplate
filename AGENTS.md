@@ -54,7 +54,7 @@ Only `/hackathon` is user-facing. All skills live in `.agents/skills/<name>/SKIL
 | `hackathon-split` | `.agents/skills/hackathon-split/` | Task split |
 | `hackathon-build` | `.agents/skills/hackathon-build/` | Build |
 | `hackathon-polish` | `.agents/skills/hackathon-polish/` | Integrate & Polish |
-| `hackathon-demo` | `.agents/skills/hackathon-demo/` | Demo (pending) |
+| `hackathon-demo` | `.agents/skills/hackathon-demo/` | Demo |
 | `hackathon-grilling`, `-prototype`, `-tickets`, `-questionnaire`, `-diagnose`, `-wait-what` | `.agents/skills/<name>/` | Tools, called by Phase skills |
 | `slidev` | `.agents/skills/slidev/` | Tool, called by Demo |
 
