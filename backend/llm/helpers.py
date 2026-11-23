@@ -10,6 +10,7 @@ from pydantic import BaseModel, create_model
 from backend.llm import cache, settings
 from backend.llm.render import render
 
+
 def _model(model: str | None, tier: settings.Tier) -> str:
     """A tier name, an explicit model id, or the tier default."""
     if model in ("fast", "smart"):
