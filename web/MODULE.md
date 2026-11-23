@@ -76,7 +76,7 @@ Run `make help` for the rest.
 | --- | --- |
 | `make up only=web` | you start work; Vite serves on `WEB_PORT` |
 | `make api-client` | after `make openapi`: rewrites `src/lib/api/schema.d.ts` and each `src/screens/<x>/fixtures.json` |
-| `make theme` | after editing `src/design/theme.json`: rewrites `src/design/generated/` |
+| `make theme` | after editing the root `design/theme.json`: rewrites `src/design/generated/` and `public/icon.svg` |
 | `make design-lint` | after a theme or style change; warn-only (tokens, contrast, emoji) |
 | `make add-web pkg=<name>` | you need an npm package; check `CATALOG.md` first |
 | `make logs svc=web` | the page is blank or Vite errors |
@@ -92,7 +92,7 @@ Data mode: `VITE_API_MODE=fixtures` (default) starts MSW in the browser and answ
 - `src/screens/<x>/`: `pages/`, `api.ts` (queries), `fixtures.json`, optional `mocks.ts` (MSW handlers, auto-loaded by `src/mocks/handlers.ts`). `crud/api.ts` is the full data-layer reference; `_example/` is the copy-me skeleton.
 - `src/components/ui/`: shadcn primitives. `common/`: building blocks. `effects/`: decorative motion.
 - `src/lib/`: `api/client.ts` (typed `api`, token), `session.tsx`, `realtime/`, `speak.ts`.
-- `src/design/`: `theme.json` and `presets/` feed the tokens.
+- `src/design/generated/`: tokens generated from the root `design/` folder (`theme.json`, `presets/`, `identity.json`); import those as `@design/...`.
 
 ## Add a page
 

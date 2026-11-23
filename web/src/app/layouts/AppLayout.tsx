@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet } from "react-router"
 import features from "@features"
 import { CommandPalette } from "@/components/common/CommandPalette"
 import { NotificationBell } from "@/components/common/NotificationBell"
-import identity from "@/design/identity.json"
+import identity from "@design/identity.json"
 import { cn } from "@/lib/utils"
 import { navItems } from "../routes"
 

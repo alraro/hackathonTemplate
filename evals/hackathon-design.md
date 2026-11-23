@@ -3,7 +3,7 @@
 ## Starting state
 
 - A repo with `hackathon/05-pitch.md` (done) whose Identity is name `Pulse` and tagline `Live crowd mood for event hosts`, and whose Demo script has a Beat at 00:30 on the web Module.
-- `hackathon/06-prune.md` (done) keeps `web`; `web/src/design/presets/` holds the 5 presets.
+- `hackathon/06-prune.md` (done) keeps `web`; `design/presets/` holds the 5 presets.
 - Kickoff lists no sponsor brand.
 - The Driver runs `/hackathon`.
 
@@ -20,9 +20,9 @@
 - [ ] The four questions arrived in one message.
 - [ ] `hackathon/07-design.md` exists with frontmatter `status: done` and every checklist item ticked.
 - [ ] `## Base` names a preset and level 2; `## Changes from the preset` gives a reason per change.
-- [ ] `web/src/design/identity.json` holds `Pulse` and its tagline.
-- [ ] `web/src/design/theme.json` is valid against `preset.schema.json` and `make theme` exits 0.
-- [ ] `make design-lint` reports no failing contrast pair.
+- [ ] `design/identity.json` holds `Pulse` and its tagline.
+- [ ] `design/theme.json` is valid against `preset.schema.json` and `make theme` exits 0.
+- [ ] `make theme` prints `contrast: all theme.json pairs pass`.
 - [ ] `## Never` lists the AI-look clichés and `## Always` lists focus, labels, alt, colour not alone, real buttons, 24px targets and reduced motion.
 - [ ] `## Effects` lists 2-4 preset effects.
 - [ ] The final output is the exact Handoff line: `Design is done. Open a fresh session and run /hackathon.`

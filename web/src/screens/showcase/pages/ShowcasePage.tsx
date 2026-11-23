@@ -11,11 +11,11 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { effects } from "@/components/effects"
 import { applyPreset, type Preset } from "@/lib/applyPreset"
-import identity from "@/design/identity.json"
-import theme from "@/design/theme.json"
+import identity from "@design/identity.json"
+import theme from "@design/theme.json"
 import "@/design/generated/preset-fonts.css" // fonts of every preset, so the switch shows each look
 
-const modules = import.meta.glob<Preset>("/src/design/presets/*.json", { eager: true, import: "default" })
+const modules = import.meta.glob<Preset>("@design/presets/*.json", { eager: true, import: "default" })
 const presets: Record<string, Preset> = Object.fromEntries(Object.values(modules).map((p) => [p.name, p]))
 
 const SWATCHES = ["background", "foreground", "primary", "secondary", "muted", "accent", "destructive", "border"]

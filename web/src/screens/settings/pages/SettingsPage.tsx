@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { errorText } from "@/lib/errors"
 import { useSession } from "@/lib/session"
-import theme from "@/design/theme.json"
+import theme from "@design/theme.json"
 
 const schema = z.object({ name: z.string().trim().min(1, "Enter your name").max(100) })
 type Values = z.infer<typeof schema>

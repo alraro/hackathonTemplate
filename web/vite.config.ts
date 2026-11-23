@@ -12,17 +12,16 @@ const featuresPath = [path.resolve(import.meta.dirname, "features.json"), path.r
   fs.existsSync(p),
 )
 
-// PWA: name from identity.json, colours from theme.json. icon.svg is rewritten on every config load
-// (monogram of the Identity initial on `primary`); pwaAssets turns it into PNG 192/512 + maskable at build.
-const readJson = (p: string) => JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, p), "utf8"))
-const identity = readJson("src/design/identity.json")
-const light = readJson("src/design/theme.json").colors.light
+// Theme sources live in the root design/ folder (never pruned). docker-compose mounts it at /design, which is
+// ../design from /app, the same relative path as on the host. Import it in code as `@design/...`.
+const designDir = path.resolve(import.meta.dirname, "../design")
+
+// PWA: name from identity.json, colours from theme.json. `make theme` writes public/icon.svg (monogram of the
+// Identity initial on `primary`); pwaAssets turns it into PNG 192/512 + maskable at build.
+const readJson = (p: string) => JSON.parse(fs.readFileSync(path.join(designDir, p), "utf8"))
+const identity = readJson("identity.json")
+const light = readJson("theme.json").colors.light
 const hex = (c: string) => formatHex(parse(c)) ?? "#000000"
-const initial = (Array.from(String(identity.name).trim())[0] ?? "A").toUpperCase().replace(/[<>&]/g, "")
-fs.writeFileSync(
-  path.resolve(import.meta.dirname, "public/icon.svg"),
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="${hex(light.primary)}"/><text x="256" y="256" fill="${hex(light["primary-foreground"])}" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="300" text-anchor="middle" dominant-baseline="central">${initial}</text></svg>\n`,
-)
 
 export default defineConfig({
   plugins: [
@@ -50,6 +49,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
+      "@design": designDir,
       ...(featuresPath ? { "@features": featuresPath } : {}),
     },
   },

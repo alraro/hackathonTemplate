@@ -2,7 +2,7 @@ import { Link } from "react-router"
 import features from "@features"
 import { Button } from "@/components/ui/button"
 import { APP_NAME } from "@/app/layouts/AppLayout"
-import identity from "@/design/identity.json"
+import identity from "@design/identity.json"
 
 // Edit these to fit the pitch. Sections render as numbered rows, not icon cards.
 const SECTIONS = [

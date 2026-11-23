@@ -48,7 +48,7 @@ Offered from the Polish checkpoint to whoever runs `/hackathon` and has tokens. 
 
 ### 5. Visual QA
 
-**Read**: `hackathon/07-design.md` (Never and Always lists), `web/src/design/`.
+**Read**: `hackathon/07-design.md` (Never and Always lists), `design/theme.json`.
 **Do**: Run `make design-lint` (warn-only), then check each Never and Always item by eye with the human. Check every QueryState (loading, empty, error, success) on each Beat's screen. Note unbelievable seed rows from `make db-reset`. Screenshots are an optional bonus.
 **Done when**: `## Visual QA`, `## QueryState` and `## Seed rows` each hold findings or an explicit "none found".
 **Ask**: does anything look off against Never and Always?
