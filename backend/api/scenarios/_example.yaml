@@ -1,0 +1,6 @@
+# Scenario for `make simulate scenario=_example`. Copy to <name>.yaml and edit.
+resource: items        # resource id (backend/api/resources/<id>); rows are published on realtime topic <id>
+rate: 1                # rows per second
+duration: 30           # seconds; omit to run until Ctrl+C
+fields:                # fixed values overriding the generated ones
+  status: todo

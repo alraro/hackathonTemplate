@@ -99,11 +99,11 @@ db-reset: ## drop and recreate the database schema — run when migrations get m
 openapi: ## export backend/openapi.json — run after changing API routes
 	docker compose run --rm -T backend python -m backend.api.openapi
 
-fake: ## generate fake records — run to fill the UI with data
-	docker compose exec backend python -m backend.fake # TODO: filled by the backlog issue that creates backend/fake.py
+fake: ## regenerate seed.json with fake rows: resource= [n=20] — run to fill the UI with data
+	docker compose exec backend python -m backend.api.fake --resource $(resource) --n $(or $(n),20)
 
-simulate: ## stream simulated realtime events — run to demo realtime and notifications
-	docker compose exec backend python -m backend.simulate # TODO: filled by the backlog issue that creates backend/simulate.py
+simulate: ## stream simulated rows over realtime: scenario= — run to demo live dashboards
+	docker compose exec backend python -m backend.api.simulate --scenario $(scenario)
 # <<< module:api
 
 # >>> module:web
