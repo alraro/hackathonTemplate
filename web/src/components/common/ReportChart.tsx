@@ -14,8 +14,11 @@ export type ReportChartModel = {
 
 // Colours come from the chart tokens --chart-1..5, handed to shadcn's ChartContainer through a ChartConfig.
 const color = (i: number) => `var(--chart-${(i % 5) + 1})`
-const configOf = (series: ReportChartModel["series"]): ChartConfig =>
-  Object.fromEntries(series.map((s, i) => [s.key, { label: s.label, color: color(i) }]))
+const configOf = (chart: ReportChartModel): ChartConfig =>
+  chart.kind === "pie"
+    ? // Pie legends/tooltips are keyed by category, not by series.
+      Object.fromEntries(chart.data.map((d, i) => [String(d[chart.x]), { label: String(d[chart.x]), color: color(i) }]))
+    : Object.fromEntries(chart.series.map((s, i) => [s.key, { label: s.label, color: color(i) }]))
 
 function Plot({ chart }: { chart: ReportChartModel }) {
   const { kind, x, series, data } = chart
@@ -47,7 +50,7 @@ function Plot({ chart }: { chart: ReportChartModel }) {
       <ScatterChart>
         {axes}
         {series.map((s, i) => (
-          <Scatter key={s.key} name={s.label} data={data.map((d) => ({ [x]: d[x], y: d[s.key] }))} dataKey="y" fill={color(i)} />
+          <Scatter key={s.key} name={s.label} data={data.map((d) => ({ [x]: d[x], [s.key]: d[s.key] }))} dataKey={s.key} fill={color(i)} />
         ))}
       </ScatterChart>
     )
@@ -81,7 +84,7 @@ export function ReportChart({ chart }: { chart: ReportChartModel }) {
         {empty ? (
           <EmptyState title="No data" description="This chart has no points yet." />
         ) : (
-          <ChartContainer config={configOf(chart.series)} className="aspect-auto h-64 w-full" role="img" aria-label={chart.title}>
+          <ChartContainer config={configOf(chart)} className="aspect-auto h-64 w-full" role="img" aria-label={chart.title}>
             {Plot({ chart })}
           </ChartContainer>
         )}
