@@ -72,3 +72,10 @@ Free-form Changes to this artifact are applied here. Any other Change points to 
 3. Print the Handoff line, spoken in the teammate's chat language (`/hackathon` stays literal): "Requirements are recorded. Open a fresh session and run `/hackathon`."
 **Done when**: `status: done`, the push succeeded, and the Handoff line is the last output.
 **Ask**: "Ok to finalise these Requirements? yes / changes".
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

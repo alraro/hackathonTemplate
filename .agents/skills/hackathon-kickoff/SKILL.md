@@ -84,3 +84,10 @@ Accept free-form changes to this artifact in place (for example "Ben has a GPU",
 Handoffs:
 - Brief available: `✅ Kickoff saved to hackathon/00-kickoff.md. Reply "ok" to continue with Brief in this session.`
 - Brief missing: `✅ Kickoff saved to hackathon/00-kickoff.md. When you have the Brief, run /hackathon.`
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

@@ -47,3 +47,10 @@ If the question is ambiguous and the user is away, take UI for a page or compone
 ## Fallback without subagents
 
 Draft each UI variant yourself in sequence; redo any variant that reuses another's layout.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

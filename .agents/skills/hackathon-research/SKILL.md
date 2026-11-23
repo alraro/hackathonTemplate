@@ -112,3 +112,10 @@ Steps for a teammate whose agent found assigned `research` issues.
 **Ask**: none.
 
 Handoff: `Research question done and pushed. Tell the Driver; nothing else to do.`
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

@@ -57,3 +57,10 @@ Announce what you will do and what you will ask before step 1, and accept free-f
 **Ask**: none.
 
 Handoff: tell the calling Phase skill the frontier and stop; it prints the Handoff line.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

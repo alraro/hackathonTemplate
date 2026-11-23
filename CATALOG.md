@@ -10,13 +10,30 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 
 | Module | Lane | Requires | Keep when |
 |---|---|---|---|
+| `web` | web | - | the product has a browser UI (works in fixtures mode without the api) |
 | `mobile` | mobile | - | ['a Gate or Rubric asks for an app', 'a Beat needs a device capability a PWA does badly', 'the idea is mobile-first'] |
+| `api` | api | - | ['the product needs persistence, accounts or server-side logic', 'a Gate or Rubric asks for a real backend'] |
+| `llm` | llm | api | ['the product calls a language model, embeddings or speech'] |
+| `data` | data | api | ['the product analyses tabular data, forecasts or classifies images'] |
 | `pitch` | pitch | - | never pruned |
 
 ## Features
 
 | Feature | Module | Gives | Entry | Keep when | State |
 |---|---|---|---|---|---|
+| `landing` | `web` | public landing page with hero, value props and call to action | web/src/features/landing/ | the product needs a public front door | on |
+| `auth` | `web` | login, signup and protected routes | web/src/features/auth/ | users have accounts or roles | on |
+| `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | on |
+| `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
+| `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
+| `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
+| `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | on |
+| `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
+| `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | on |
+| `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | on |
+| `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | on |
+| `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | on |
+| `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | on |
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
 | `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
 | `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
@@ -26,3 +43,17 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `notifications` | `mobile` | push and in-app notifications (mobile part) | mobile/src/features/notifications | the app alerts users | on |
 | `map` | `mobile` | map tab (mobile part) | mobile/src/app/(tabs)/map | the idea is location-based | on |
 | `qr` | `mobile` | QR scanning (mobile part) | mobile/src/features/qr | the flow scans or shows QR codes | on |
+| `auth` | `api` | users, JWT login, demo users | backend/api/resources/auth | the product has accounts or roles | on |
+| `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |
+| `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |
+| `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | on |
+| `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | on |
+| `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | on |
+| `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | on |
+| `tabular` | `data` | tabular models on a dataset | backend/data | the idea predicts from a table | off |
+| `cluster` | `data` | clustering of records | backend/data | the idea groups similar records | off |
+| `forecast` | `data` | time-series forecasting | backend/data | the idea predicts future values | off |
+| `anomaly` | `data` | anomaly detection | backend/data | the idea flags unusual records | off |
+| `vision` | `data` | image embeddings and classification (heavy install) | backend/data | the idea works on images | off |
+| `eda` | `data` | exploratory data analysis helpers | backend/data | the team must understand a dataset first | off |
+| `reports` | `data` | run reports served at /api/data/reports/{run} | backend/api/resources/data_reports | the UI shows analysis results | on |

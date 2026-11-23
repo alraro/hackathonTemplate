@@ -47,6 +47,8 @@ def build_checks() -> list[Check]:
     if (ROOT / "mobile").is_dir() and shutil.which("npm"):
         checks.append(Check("mobile", "tsc (npm run check)", ["npm", "--prefix", "mobile", "run", "check"], needs="mobile/package.json"))
         checks.append(Check("mobile", "expo-doctor", ["npx", "--prefix", "mobile", "expo-doctor"], blocking=False, needs="mobile/package.json"))
+    if (ROOT / "scripts" / "sync.py").exists():
+        checks.append(Check("skills", "sync --check", [sys.executable, "scripts/sync.py", "--check"]))
     if (ROOT / "scripts" / "lint_docs.py").exists():
         checks.append(Check("docs", "lint-docs", [sys.executable, "scripts/lint_docs.py"], blocking=False))
     return checks

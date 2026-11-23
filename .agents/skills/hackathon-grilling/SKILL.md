@@ -52,3 +52,10 @@ Round format:
 ## Fallback without subagents
 
 Run every fact lookup yourself, one at a time, before asking the round. A `weak` Tier agent asks at most 3 questions per round.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->
