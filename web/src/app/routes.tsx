@@ -3,6 +3,7 @@ import { createBrowserRouter, type RouteObject } from "react-router"
 import { Home, LayoutDashboard, List, MapPin, MessageSquare, Palette, Settings, type LucideIcon } from "lucide-react"
 import features from "@features"
 import { ErrorBoundary } from "@/components/common/ErrorBoundary"
+import { RequireAuth } from "@/lib/session"
 import { AppLayout } from "./layouts/AppLayout"
 import { MarketingLayout } from "./layouts/MarketingLayout"
 
@@ -54,7 +55,12 @@ const toRoute = (r: ScreenRoute): RouteObject => ({
 
 export const routes: RouteObject[] = [
   { Component: MarketingLayout, ErrorBoundary, children: enabled.filter((r) => r.layout === "marketing").map(toRoute) },
-  { Component: AppLayout, ErrorBoundary, children: enabled.filter((r) => r.layout === "app").map(toRoute) },
+  {
+    Component: AppLayout,
+    ErrorBoundary,
+    // Signed-out users are sent to /login (pass-through when the auth Feature is off).
+    children: [{ Component: RequireAuth, ErrorBoundary, children: enabled.filter((r) => r.layout === "app").map(toRoute) }],
+  },
 ]
 
 export const router = createBrowserRouter(routes)
