@@ -3,6 +3,9 @@
 from backend.data.config import RunConfig
 from backend.data.report import Report
 
+# short name -> whatever fit() needs to build it
+MODELS = {"example": None}
+
 
 def load(cfg: RunConfig):
     raise NotImplementedError("TODO(#61): read cfg.source / cfg.sql into a DataFrame")

@@ -46,7 +46,7 @@ features:
 
 Turns a dataset into a Report (metrics plus Charts) that the UI renders. A run is one YAML file; a pipeline is one plain module. Trained at Build time, committed, served read-only: no live training in the Demo.
 
-Read `registry.py` for the pipeline and model names, `report.py` for the Report and Chart shapes, `runs/_example_*.yaml` for one run per pipeline.
+Read `registry.py` for the pipeline names (each pipeline's `MODELS` dict lists its models), `report.py` for the Report and Chart shapes, `runs/_example_*.yaml` for one run per pipeline.
 
 ## Commands
 
@@ -61,8 +61,8 @@ Read `registry.py` for the pipeline and model names, `report.py` for the Report 
 
 | Pipeline | Models | Reads | Needs |
 | --- | --- | --- | --- |
-| `tabular` | `hgb`, `random_forest`, `knn`, `logistic` (classification only), `linear` (regression only) | csv, parquet, xlsx; `target:` column | `[data]` |
-| `cluster` | `kmeans`, `hdbscan`, `gmm` | table | `[data]` |
+| `tabular` | `hgb`, `random_forest`, `knn`, `logistic` (classification only), `linear` (regression only) | csv, parquet, xlsx, sql; `target:` column | `[data]` |
+| `cluster` | `kmeans`, `hdbscan`, `gmm` | table (file or sql) | `[data]` |
 | `forecast` | `auto_ets`, `auto_arima`, `naive` | table; `params.date`, `params.value`, `params.horizon` | `[data]` |
 | `anomaly` | `isolation_forest`, `lof` | table; `params.contamination` | `[data]` |
 | `vision` | `clip-vit-b32` (`task: classify`), `rt-detr` (`task: detect`) | folder of images, one sub-folder per class | `[vision]`, heavy install |
@@ -77,25 +77,32 @@ model: hgb
 params: {}                           # passed to the model
 ```
 
-Set exactly one of `source` or `sql`. `sql:` is meant to analyse the app's own Postgres; no pipeline reads it yet, each raises "sql is not supported yet". The first pipeline that needs it implements it in its `load`. Own data goes in `datasets/` (see `datasets/README.md` for licences).
+Set exactly one of `source` or `sql`. `sql:` runs one read-only `SELECT` (or `WITH ... SELECT`) against the app's own Postgres, through the API's engine (`DATABASE_URL`), so the stack must be up (`make up`, `make seed`). Anything else raises a `ValueError`, and the transaction is read-only. Every table-reading pipeline (`tabular`, `cluster`, `forecast`, `anomaly`) accepts it, because `tables.read_table` handles both. Own data goes in `datasets/` (see `datasets/README.md` for licences).
 
 Done when `make check` passes and `outputs/<name>/report.json` exists and is committed. Commit it: `GET /api/data/reports/{run}` serves it. The runner also writes `model.joblib` (and `predictions.csv` for `tabular`), both gitignored, so `api.predict(run, rows)` works for tabular runs. `summary` comes from `summary.build_summary`: a deterministic template, plus `llm.summarize` narration when the run sets `explain: true` and the llm Module is present. `outputs/_example_vision/` is not committed: vision needs the heavy `[vision]` extra and stays off by default.
 
 ## Recipes
 
+### Analyse the app's own data (sql)
+
+1. Write the query as `sql:` in a run file, for example `runs/_example_sql.yaml` (one row per `item`, flagged by `anomaly`). Table names are SQLModel's lowercase singular (`item`, `user`).
+2. Pick a pipeline that fits the columns (`anomaly` or `cluster` for features, `tabular` with `target:`, `forecast` with `params.date` and `params.value`).
+3. `make up`, `make seed`, then `make data-run run=<name>`.
+
+Done when the run writes a Report. Rows must be plentiful enough for the pipeline (`forecast` needs more than 2 x horizon points).
+
 ### Add a model
 
-1. Add the name to the pipeline's tuple in `registry.MODELS`.
-2. Add the factory to the `MODELS` dict at the top of `pipelines/<pipeline>.py` (for `vision` it maps the model to its task, `classify` or `detect`).
-3. Add the dependency to `[data]` with `make add-py`.
-4. Set `model: <name>` in a run file.
+1. Add the factory to the `MODELS` dict at the top of `pipelines/<pipeline>.py` (for `vision` it maps the model to its task, `classify` or `detect`).
+2. Add the dependency to `[data]` with `make add-py`.
+3. Set `model: <name>` in a run file.
 
 Done when `make data-run run=<name>` writes a report with that model.
 
 ### Add a pipeline
 
 1. Copy `pipelines/_example.py` to `pipelines/<name>.py`; keep the five signatures `load`, `prepare`, `fit`, `evaluate`, `report`.
-2. Add the name to `registry.PIPELINES` and its models to `registry.MODELS`.
+2. Add the name to `registry.PIPELINES` and a `MODELS` dict to the module; the registry reads it.
 3. Add `runs/<name>.yaml`.
 
 Done when the run writes a Report. Any pipeline that returns a Report has the same shape as the others, so the web side needs no change once it renders `/api/data/reports/{run}`.
@@ -106,10 +113,10 @@ Starting points, not recommendations. Research and Brainstorm pick what fits, in
 
 | Option | Use when | Install | Registry line |
 | --- | --- | --- | --- |
-| xgboost, lightgbm | `hgb` is not accurate enough on a table | `make add-py pkg=xgboost extra=data` | `"xgboost": (XGBClassifier, XGBRegressor, False)` in `tabular.MODELS` and `"xgboost"` in `registry.MODELS["tabular"]` |
-| ultralytics YOLO | RT-DETR is too slow or lacks the classes; AGPL, check the event rules first | `make add-py pkg=ultralytics extra=vision` | `"yolo"` in `registry.MODELS["vision"]`, branch on it in `vision.py` |
-| timm fine-tuning | the images need a trained classifier; GPU only if the event provides one | `make add-py pkg=timm extra=vision` | `"timm"` in `registry.MODELS["vision"]` |
-| classic OpenCV | simple image tasks (colour, edges, template match) | already in `[vision]` | `"opencv"` in `registry.MODELS["vision"]` |
-| prophet | `auto_ets` misses holidays or several seasonalities | `make add-py pkg=prophet extra=data` | `"prophet"` in `registry.MODELS["forecast"]` and `forecast.MODELS` |
+| xgboost, lightgbm | `hgb` is not accurate enough on a table | `make add-py pkg=xgboost extra=data` | `"xgboost": (XGBClassifier, XGBRegressor, False)` in `tabular.MODELS` |
+| ultralytics YOLO | RT-DETR is too slow or lacks the classes; AGPL, check the event rules first | `make add-py pkg=ultralytics extra=vision` | `"yolo"` in `vision.MODELS`, branch on it in `vision.py` |
+| timm fine-tuning | the images need a trained classifier; GPU only if the event provides one | `make add-py pkg=timm extra=vision` | `"timm"` in `vision.MODELS` |
+| classic OpenCV | simple image tasks (colour, edges, template match) | already in `[vision]` | `"opencv"` in `vision.MODELS` |
+| prophet | `auto_ets` misses holidays or several seasonalities | `make add-py pkg=prophet extra=data` | `"prophet"` in `forecast.MODELS` |
 | sentence-transformers | text embeddings; covered by `llm.embed`, use that first | `make add-py pkg=sentence-transformers extra=data` | none: call `llm.embed` |
 | ydata-profiling | a deep profile report beyond `make eda` | `make add-py pkg=ydata-profiling extra=data` | none: call it from `eda.py` |

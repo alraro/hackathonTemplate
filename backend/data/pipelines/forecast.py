@@ -1,6 +1,6 @@
 """forecast pipeline: one time series, history plus forecast with a 95% band."""
 
-from types import SimpleNamespace
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -16,6 +16,20 @@ HORIZON = 12
 # freq letter -> seasonal period
 SEASON = {"M": 12, "Q": 4, "D": 7, "H": 24, "W": 52}
 OWN_PARAMS = ("date", "value", "freq", "season_length", "horizon")
+
+
+@dataclass
+class TimeSeries:
+    ts: pd.DataFrame  # columns ds, y
+    freq: str
+    season: int
+
+
+@dataclass
+class Fitted:
+    h: int
+    holdout: pd.DataFrame
+    future: pd.DataFrame
 
 # short name -> statsforecast model factory taking season_length
 MODELS = {
@@ -43,7 +57,7 @@ def prepare(df, cfg: RunConfig):
         raise ValueError("cannot infer the frequency; set params.freq (e.g. MS, D, h)")
     letter = freq.lstrip("0123456789")[:1].upper()
     season = int(cfg.params.get("season_length") or SEASON.get(letter, 1))
-    return SimpleNamespace(ts=ts, freq=freq, season=season)
+    return TimeSeries(ts=ts, freq=freq, season=season)
 
 
 def _forecast(ts, freq, season, cfg: RunConfig, h: int) -> pd.DataFrame:
@@ -68,7 +82,7 @@ def fit(X, cfg: RunConfig):
         raise ValueError(f"series has {len(X.ts)} points; need more than 2 x horizon ({h})")
     holdout = _forecast(X.ts.iloc[:-h], X.freq, X.season, cfg, h)  # for metrics only
     future = _forecast(X.ts, X.freq, X.season, cfg, h)
-    return SimpleNamespace(h=h, holdout=holdout, future=future)
+    return Fitted(h=h, holdout=holdout, future=future)
 
 
 def evaluate(model, X, cfg: RunConfig) -> dict[str, float]:
