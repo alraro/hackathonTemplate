@@ -1,5 +1,5 @@
 import { useEffect, useMemo, type ComponentType, type ReactNode } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Button } from "@/components/ui/button"
