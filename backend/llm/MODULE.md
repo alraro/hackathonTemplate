@@ -60,7 +60,7 @@ Read `helpers.py` for the helper signatures, `settings.py` for the provider and 
 
 | Command | Use it to |
 | --- | --- |
-| `make rag-ingest` | chunk, embed and store `backend/llm/corpus/` in pgvector; run after adding documents (unchanged files are skipped) |
+| `make rag-ingest` | chunk, embed and store `backend/llm/corpus/` in pgvector; run after adding documents (unchanged files are skipped; changing the embed provider or model counts as a change and re-embeds) |
 | `EMBED_PROVIDER=ollama make up` | start the stack with the local `ollama` profile for embeddings, no Gemini key |
 | `make logs svc=backend` | follow one LLM call per line (provider, model, tokens, time) and the provider errors |
 | `make check` | lint and test the repo, run before every commit |
@@ -120,7 +120,7 @@ Done when one question needing a tool returns an answer that uses the tool's res
 
 ## Embeddings
 
-Models: `gemini-embedding-2` (Gemini, asked for 768 dims via `dimensions`/`outputDimensionality`) and `embeddinggemma` (Ollama, 768 native); both IDs checked as existing on 2026-11-23. The vector column is 768 wide for both. Switching from the older `gemini-embedding-001` / `nomic-embed-text` makes stored vectors incomparable: run `make db-reset` (or delete the rag tables) and `make rag-ingest` again. Uploads are keyed `upload:<file id>` plus content hash; corpus files by relative path plus hash.
+Models: `gemini-embedding-2` (Gemini, asked for 768 dims via `dimensions`/`outputDimensionality`) and `embeddinggemma` (Ollama, 768 native); both IDs checked as existing on 2026-11-23. The vector column is 768 wide for both. Switching from the older `gemini-embedding-001` / `nomic-embed-text` makes stored vectors incomparable: run `make db-reset` (or delete the rag tables) and `make rag-ingest` again. Uploads are keyed `upload:<file id>` plus content-and-embed-model hash; corpus files by relative path plus hash.
 
 ## Known gaps
 

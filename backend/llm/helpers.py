@@ -75,13 +75,14 @@ def summarize(
 
 
 def _limit_words(text: str, max_words: int) -> str:
-    """Cut `text` to `max_words` words: at the last sentence end inside the limit, else hard."""
+    """Cut `text` to `max_words` words: at the last sentence end if it keeps half the limit, else hard."""
     words = text.split()
     if max_words < 1 or len(words) <= max_words:
         return text
     head = " ".join(words[:max_words])
     ends = [m.end() for m in re.finditer(r"[.!?](?=\s|$)", head)]
-    if ends:
+    # Cut at a sentence end only if that keeps at least half of the allowed words.
+    if ends and len(head[: ends[-1]].split()) * 2 >= max_words:
         return head[: ends[-1]]
     return head + "…"
 
@@ -124,7 +125,7 @@ def chat(
 
         query = next((x["content"] for x in reversed(messages) if x.get("role") == "user"), "")
         found = rag.search(query)
-        context = "\n\n".join(f"[{c.source}] {c.text}" for c in found)
+        context = "\n\n".join(f"[{c.title or c.source}] {c.text}" for c in found)
         if context:
             extra += f"\nAnswer using this context and cite sources in brackets:\n{context}"
     sys_prompt = render("chat_system", extra=extra)

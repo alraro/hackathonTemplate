@@ -13,7 +13,13 @@ def check_pipeline(name: str) -> None:
 
 def models(pipeline: str) -> tuple[str, ...]:
     """Model names a pipeline accepts: the keys of its own `MODELS` dict, the single source of truth."""
-    return tuple(get_pipeline(pipeline).MODELS)
+    try:
+        return tuple(get_pipeline(pipeline).MODELS)
+    except ImportError as e:
+        raise ValueError(
+            f"pipeline '{pipeline}' needs an optional extra that is not installed ({e.name or e}); "
+            f"install the [{'vision' if pipeline == 'vision' else 'data'}] extra"
+        ) from e
 
 
 def check_model(pipeline: str, model: str) -> None:

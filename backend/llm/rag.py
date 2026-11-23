@@ -119,7 +119,9 @@ def _ingest(path: Path, title: str, force: bool, key: str | None = None) -> int:
     from backend.llm.rag_models import RagChunk, RagDocument
 
     ensure_schema()
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    # The embed model is part of the key, so switching it re-embeds unchanged files.
+    embed_id = f"{settings.embed_provider()}:{settings.EMBED_MODELS[settings.embed_provider()]}"
+    digest = hashlib.sha256(path.read_bytes() + embed_id.encode()).hexdigest()
     # Relative to the corpus when inside it, so same-named files in subfolders differ.
     source = key
     if source is None:
@@ -183,7 +185,7 @@ def search(query: str, k: int = 5) -> list[Chunk]:
             Chunk(
                 text=c.text,
                 source=d.source,
-                title=d.title,
+                title=d.title or d.source,
                 score=1.0 - float(distance),
                 document_id=d.id,
             )
