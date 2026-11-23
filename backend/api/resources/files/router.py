@@ -66,11 +66,13 @@ def create(
     if ingest:
         if not enabled("rag"):
             raise HTTPException(501, "RAG is not available")
-        try:
-            from backend.llm import rag  # module:llm
-        except ImportError:  # llm pruned
-            raise HTTPException(501, "RAG is not available") from None
-        rag.ingest_file(UPLOAD_DIR / rel, f.name)  # module:llm
+        # >>> module:llm
+        from backend.llm import rag
+
+        rag.ingest_file(UPLOAD_DIR / rel, f.name)
+        return _read(f)
+        # <<< module:llm
+        raise HTTPException(501, "RAG is not available")  # reached only when llm is pruned
     return _read(f)
 
 
