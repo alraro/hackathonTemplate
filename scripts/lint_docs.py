@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Warn-only doc size lint. Always exits 0.
+"""Doc lint. Size checks warn only; a skill name in AGENTS.md or the router without a
+.agents/skills/<name>/ folder (and not marked "pending" on its row) exits 1.
 
 Soft references: SKILL.md ~3K tokens, MODULE.md ~2K tokens, AGENTS.md ~120 lines,
 issue bodies ~1.5K tokens (--issue <file>). Tokens ~= chars / 4.
@@ -7,6 +8,7 @@ CHANGES.md, README.md and docs/**/*.md are scanned but have no reference size.
 """
 import argparse
 import pathlib
+import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SKIP_PARTS = {".claude", ".github", "node_modules", ".git", ".venv"}
@@ -42,6 +44,23 @@ def check(path: pathlib.Path, label: str, warnings: list[str]) -> None:
         warnings.append(f"⚠ {label}: ~{n} tokens (reference ~{ref}) — justify or trim")
 
 
+def check_skill_names(warnings: list[str]) -> int:
+    """Count skill names in AGENTS.md and the router that have no folder and are not marked pending."""
+    bad = 0
+    for rel in ("AGENTS.md", ".agents/skills/hackathon/SKILL.md"):
+        path = ROOT / rel
+        if not path.is_file():
+            continue
+        for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if not line.startswith("|") or "pending" in line:
+                continue
+            for name in re.findall(r"`(hackathon(?:-[a-z]+)*)`", line):
+                if not (ROOT / ".agents/skills" / name / "SKILL.md").is_file():
+                    warnings.append(f"ERROR {rel}:{i}: skill `{name}` has no folder in .agents/skills/ (rename it or mark the row pending)")
+                    bad += 1
+    return bad
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--issue", action="append", default=[], help="issue body file to check (~1.5K tokens)")
@@ -55,10 +74,11 @@ def main() -> int:
             n = tokens(p.read_text(encoding="utf-8", errors="replace"))
             if n > ISSUE_REF:
                 warnings.append(f"⚠ {f}: ~{n} tokens (reference ~{ISSUE_REF}) — justify or trim")
+    bad = check_skill_names(warnings)
     if warnings:
         print("\n".join(warnings))
-    print(f"{len(warnings)} files over reference (warn only)")
-    return 0
+    print(f"{len(warnings) - bad} files over reference (warn only), {bad} unknown skill names")
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":

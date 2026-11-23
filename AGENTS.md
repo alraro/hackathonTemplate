@@ -47,14 +47,14 @@ Only `/hackathon` is user-facing. All skills live in `.agents/skills/<name>/SKIL
 | `hackathon-requirements` | `.agents/skills/hackathon-requirements/` | Requirements |
 | `hackathon-research` | `.agents/skills/hackathon-research/` | Research |
 | `hackathon-brainstorm` | `.agents/skills/hackathon-brainstorm/` | Brainstorm |
-| `hackathon-pick-pitch` | `.agents/skills/hackathon-pick-pitch/` | Pick & Pitch |
+| `hackathon-pitch` | `.agents/skills/hackathon-pitch/` | Pick & Pitch |
 | `hackathon-prune` | `.agents/skills/hackathon-prune/` | Prune |
-| `hackathon-design` | `.agents/skills/hackathon-design/` | Design |
-| `hackathon-contracts` | `.agents/skills/hackathon-contracts/` | Contracts |
-| `hackathon-task-split` | `.agents/skills/hackathon-task-split/` | Task split |
+| `hackathon-design` | `.agents/skills/hackathon-design/` | Design (pending) |
+| `hackathon-contracts` | `.agents/skills/hackathon-contracts/` | Contracts (pending) |
+| `hackathon-split` | `.agents/skills/hackathon-split/` | Task split |
 | `hackathon-build` | `.agents/skills/hackathon-build/` | Build |
-| `hackathon-integrate-polish` | `.agents/skills/hackathon-integrate-polish/` | Integrate & Polish |
-| `hackathon-demo` | `.agents/skills/hackathon-demo/` | Demo |
+| `hackathon-polish` | `.agents/skills/hackathon-polish/` | Integrate & Polish |
+| `hackathon-demo` | `.agents/skills/hackathon-demo/` | Demo (pending) |
 | `hackathon-grilling`, `-prototype`, `-tickets`, `-questionnaire`, `-diagnose`, `-wait-what` | `.agents/skills/<name>/` | Tools, called by Phase skills |
 | `slidev` | `.agents/skills/slidev/` | Tool, called by Demo |
 
