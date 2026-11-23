@@ -13,3 +13,8 @@ backend/.cache/
 # Python bytecode
 __pycache__/
 *.py[cod]
+
+# Docker bind-mount placeholders for the root features.json
+web/features.json
+mobile/features.json
+backend/features.json
