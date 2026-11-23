@@ -10,6 +10,7 @@ export function QrCode({ value, size = 192, className }: QrCodeProps) {
       size={size}
       marginSize={2}
       level="M"
+      // Fixed black on white, not theme tokens: scanners need maximum contrast in any preset or dark mode.
       bgColor="#ffffff"
       fgColor="#000000"
       role="img"

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTheme } from "next-themes"
 import { z } from "zod"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/common/PageHeader"
@@ -9,20 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useSession } from "@/lib/session"
+import theme from "@/design/theme.json"
 
 const schema = z.object({ name: z.string().trim().min(1, "Enter your name").max(100) })
 type Values = z.infer<typeof schema>
-
-const MODE_KEY = "theme_mode"
-type Mode = "light" | "dark"
-
-function readMode(): Mode {
-  try {
-    return localStorage.getItem(MODE_KEY) === "dark" ? "dark" : "light"
-  } catch {
-    return "light"
-  }
-}
 
 function ProfileCard() {
   const { user, update } = useSession()
@@ -70,15 +60,10 @@ function ProfileCard() {
 }
 
 function PreferencesCard() {
-  const [mode, setMode] = useState<Mode>(readMode)
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", mode === "dark")
-    try {
-      localStorage.setItem(MODE_KEY, mode)
-    } catch {
-      /* storage unavailable */
-    }
-  }, [mode])
+  // next-themes owns `html.dark` and its storage; this card only asks it to switch.
+  const { resolvedTheme, setTheme } = useTheme()
+  const mode = resolvedTheme === "dark" ? "dark" : "light"
+  const modes = ("dark" in theme.colors ? ["light", "dark"] : ["light"]) as ("light" | "dark")[]
   return (
     <Card>
       <CardHeader>
@@ -89,8 +74,8 @@ function PreferencesCard() {
         <div className="space-y-2">
           <p className="text-sm font-medium">Theme</p>
           <div role="group" aria-label="Theme" className="flex gap-2">
-            {(["light", "dark"] as const).map((m) => (
-              <Button key={m} type="button" variant={mode === m ? "default" : "outline"} aria-pressed={mode === m} onClick={() => setMode(m)}>
+            {modes.map((m) => (
+              <Button key={m} type="button" variant={mode === m ? "default" : "outline"} aria-pressed={mode === m} onClick={() => setTheme(m)}>
                 {m === "light" ? "Light" : "Dark"}
               </Button>
             ))}

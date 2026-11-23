@@ -1,6 +1,7 @@
 import type { ComponentType } from "react"
 import { createBrowserRouter, type RouteObject } from "react-router"
-import { Home, LayoutDashboard, List, MapPin, MessageSquare, Palette, Settings, type LucideIcon } from "lucide-react"
+import { Home, LayoutDashboard, List, MapPin, Palette, Settings, type LucideIcon } from "lucide-react"
+import { MessageSquare } from "lucide-react" // module:llm
 import features from "@features"
 import { ErrorBoundary } from "@/components/common/ErrorBoundary"
 import { RequireAuth } from "@/lib/session"
@@ -31,7 +32,7 @@ export const screenRoutes: ScreenRoute[] = [
   { id: "crud-new", path: "/items/new", featureId: "crud", layout: "app", lazy: () => import("@/screens/crud/pages/FormPage") },
   { id: "crud-detail", path: "/items/:id", featureId: "crud", layout: "app", lazy: () => import("@/screens/crud/pages/DetailPage") },
   { id: "crud-edit", path: "/items/:id/edit", featureId: "crud", layout: "app", lazy: () => import("@/screens/crud/pages/FormPage") },
-  { id: "chat", path: "/chat", featureId: "chat", layout: "app", nav: { label: "Chat", icon: MessageSquare }, lazy: () => import("@/screens/chat/pages/ChatPage") },
+  { id: "chat", path: "/chat", featureId: "chat", layout: "app", nav: { label: "Chat", icon: MessageSquare }, lazy: () => import("@/screens/chat/pages/ChatPage") }, // module:llm
   { id: "map", path: "/map", featureId: "map", layout: "app", nav: { label: "Map", icon: MapPin }, lazy: () => import("@/screens/map/pages/MapPage") },
   { id: "settings", path: "/settings", featureId: "settings", layout: "app", nav: { label: "Settings", icon: Settings }, lazy: () => import("@/screens/settings/pages/SettingsPage") },
   { id: "showcase", path: "/showcase", featureId: "showcase", layout: "app", nav: { label: "Showcase", icon: Palette }, lazy: () => import("@/screens/showcase/pages/ShowcasePage") },

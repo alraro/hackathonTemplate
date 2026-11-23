@@ -2,6 +2,7 @@ import { Link } from "react-router"
 import features from "@features"
 import { Button } from "@/components/ui/button"
 import { APP_NAME } from "@/app/layouts/AppLayout"
+import identity from "@/design/identity.json"
 
 // Edit these to fit the pitch. Sections render as numbered rows, not icon cards.
 const SECTIONS = [
@@ -18,11 +19,8 @@ export default function LandingPage() {
         <div className="space-y-6">
           <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">{APP_NAME}</p>
           <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-            One sentence that says what this does, for whom.
+            {identity.tagline}
           </h1>
-          <p className="max-w-prose text-base text-muted-foreground md:text-lg">
-            Replace this line with the Identity of your project: the promise in plain words, no adjectives.
-          </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild size="lg">
               <Link to={cta.to}>{cta.label}</Link>

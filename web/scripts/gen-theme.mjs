@@ -45,7 +45,12 @@ const fontVars = () =>
   ].join("\n")
 
 // --- web theme.css ---
+// Self-hosted fonts (@fontsource) of the active theme; @import rules must come first.
+const fontPackages = (f) => [...new Set(Object.values(f).map((x) => x.package))]
+const fontImports = (pkgs) => pkgs.map((p) => `@import "${p}";`).join("\n")
 const themeCss = `${cssHeader}
+
+${fontImports(fontPackages(fonts))}
 
 @theme inline {
 ${semantic.map((k) => `  --color-${k}: var(--${k});`).join("\n")}
@@ -73,6 +78,14 @@ ${theme.colors.dark ? `\n.dark {\n${vars(theme.colors.dark)}\n}\n` : ""}${
   rmDuration ? `\n@media (prefers-reduced-motion: reduce) {\n  :root {\n${durations(rmDuration, "    ")}\n  }\n}\n` : ""
 }${theme.effects.length ? `\n/* effects: ${theme.effects.join(", ")} */\n` : ""}`
 write(path.join(root, "src/design/generated/theme.css"), themeCss)
+
+// --- preset-fonts.css: fonts of every preset, loaded by /showcase so the preset switch shows each look ---
+const presetDir = path.join(root, "src/design/presets")
+const presetPkgs = new Set()
+for (const f of fs.readdirSync(presetDir).filter((n) => n.endsWith(".json")).sort()) {
+  for (const p of fontPackages(JSON.parse(fs.readFileSync(path.join(presetDir, f), "utf8")).fonts)) presetPkgs.add(p)
+}
+write(path.join(root, "src/design/generated/preset-fonts.css"), `${cssHeader}\n\n${fontImports([...presetPkgs])}\n`)
 
 // --- motion.ts ---
 const seconds = (d) => Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v / 1000]))

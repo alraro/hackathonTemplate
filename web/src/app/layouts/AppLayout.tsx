@@ -2,11 +2,12 @@ import { Link, NavLink, Outlet } from "react-router"
 import features from "@features"
 import { CommandPalette } from "@/components/common/CommandPalette"
 import { NotificationBell } from "@/components/common/NotificationBell"
+import identity from "@/design/identity.json"
 import { cn } from "@/lib/utils"
 import { navItems } from "../routes"
 
-/** Identity name; the design Identity (#69) can replace this constant. */
-export const APP_NAME: string = import.meta.env.VITE_APP_NAME ?? "Hackathon App"
+/** Identity name, from design/identity.json (also the PWA name and the page title). */
+export const APP_NAME: string = identity.name
 
 export function AppLayout() {
   return (
