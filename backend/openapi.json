@@ -373,6 +373,39 @@
         "title": "LoginRequest",
         "type": "object"
       },
+      "PublishRequest": {
+        "description": "Body of `POST /api/ws/publish`, for scripts and other processes.",
+        "properties": {
+          "data": {
+            "title": "Data"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "title": "PublishRequest",
+        "type": "object"
+      },
+      "ServerMessage": {
+        "properties": {
+          "data": {
+            "title": "Data"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "title": "ServerMessage",
+        "type": "object"
+      },
       "SignupRequest": {
         "properties": {
           "email": {
@@ -1376,6 +1409,53 @@
         "summary": "Update",
         "tags": [
           "items"
+        ]
+      }
+    },
+    "/api/ws/publish": {
+      "post": {
+        "description": "Publish from outside the process (e.g. `make simulate`). Sync, like any router.",
+        "operationId": "ws_publish_event",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerMessage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Event",
+        "tags": [
+          "ws"
         ]
       }
     }
