@@ -59,5 +59,10 @@ export default defineConfig({
     strictPort: true,
     watch: { usePolling: process.env.DEV_POLLING === "true" },
     fs: { allow: [".", ".."] },
+    // Live mode calls /api on the same origin (client baseUrl ""); forward it to the backend
+    // like the Caddy edge does in demo/share. ws: true covers /api/ws and the chat socket.
+    proxy: {
+      "/api": { target: process.env.API_PROXY_TARGET ?? "http://backend:8000", changeOrigin: true, ws: true },
+    },
   },
 })
