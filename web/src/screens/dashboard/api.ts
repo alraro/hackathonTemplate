@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { api } from "@/lib/api/client"
 import type { ReportModel } from "@/components/common/ReportView"
 
 // Known runs: the committed fixtures (one JSON per run). Add runs by dropping <run>.json here
@@ -11,9 +12,10 @@ export function useReport(run: string) {
   return useQuery({
     queryKey: ["data-report", run],
     queryFn: async (): Promise<ReportModel> => {
-      const res = await fetch(`/api/data/reports/${encodeURIComponent(run)}`)
-      if (!res.ok) throw new Error(`No report for run '${run}'`)
-      return res.json()
+      // Untyped path on purpose: pruning the data Module removes this route from the Contract, and the screen must still compile.
+      const { data } = (await api.GET(`/api/data/reports/${encodeURIComponent(run)}` as never, {} as never)) as { data?: ReportModel }
+      if (!data) throw new Error(`No report for run '${run}'`)
+      return data
     },
   })
 }

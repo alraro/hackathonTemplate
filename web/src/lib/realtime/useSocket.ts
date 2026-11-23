@@ -6,6 +6,8 @@ type Options = {
   onMessage?: (data: string) => void
   /** Called on every (re)connect, e.g. to resubscribe. */
   onOpen?: (send: (data: string) => void) => void
+  /** Called when an open socket drops (not on a deliberate close). */
+  onClose?: () => void
   /** Set false to stay disconnected. */
   enabled?: boolean
 }
@@ -20,11 +22,11 @@ export function wsUrl(path: string): string {
  * Low-level WebSocket hook with auto-reconnect (exponential backoff, max 15 s).
  * Shared by `useChannel` and chat. `send` drops messages while not open.
  */
-export function useSocket(url: string, { onMessage, onOpen, enabled = true }: Options = {}) {
+export function useSocket(url: string, { onMessage, onOpen, onClose, enabled = true }: Options = {}) {
   const [status, setStatus] = useState<SocketStatus>("closed")
   const socket = useRef<WebSocket | null>(null)
-  const handlers = useRef({ onMessage, onOpen })
-  handlers.current = { onMessage, onOpen }
+  const handlers = useRef({ onMessage, onOpen, onClose })
+  handlers.current = { onMessage, onOpen, onClose }
 
   useEffect(() => {
     if (!enabled) return
@@ -46,6 +48,7 @@ export function useSocket(url: string, { onMessage, onOpen, enabled = true }: Op
         if (socket.current === ws) socket.current = null
         if (stopped) return
         setStatus("closed")
+        handlers.current.onClose?.()
         timer = setTimeout(connect, Math.min(500 * 2 ** attempt++, 15_000))
       }
     }

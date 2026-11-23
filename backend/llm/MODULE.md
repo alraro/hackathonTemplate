@@ -26,6 +26,10 @@ paths:
   - backend/api/resources/chat
   - backend/api/resources/rag
   - backend/api/resources/transcribe
+  - web/src/screens/chat
+  - web/src/components/common/VoiceButton.tsx
+  - web/src/mocks/chat.ts
+  - web/src/mocks/voice.ts
 profiles_noted:
   - ollama (local embeddings when EMBED_PROVIDER=ollama)
   - speech (local speech service)

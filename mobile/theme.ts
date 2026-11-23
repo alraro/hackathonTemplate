@@ -19,7 +19,12 @@ export const colors = {
     "destructive": "#e7000b",
     "border": "#e5e5e5",
     "input": "#e5e5e5",
-    "ring": "#a1a1a1"
+    "ring": "#a1a1a1",
+    "chart-1": "#2a8eff",
+    "chart-2": "#23ba7d",
+    "chart-3": "#dfa11a",
+    "chart-4": "#f14d4c",
+    "chart-5": "#a454d7"
   },
   "dark": {
     "background": "#0a0a0a",
@@ -39,7 +44,12 @@ export const colors = {
     "destructive": "#ff6467",
     "border": "#ffffff1a",
     "input": "#ffffff26",
-    "ring": "#737373"
+    "ring": "#737373",
+    "chart-1": "#2a8eff",
+    "chart-2": "#23ba7d",
+    "chart-3": "#dfa11a",
+    "chart-4": "#f14d4c",
+    "chart-5": "#a454d7"
   }
 } as const
 

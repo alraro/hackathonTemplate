@@ -22,6 +22,8 @@ export function useChat() {
   const [useRag, setUseRag] = useState(false)
   const history = useRef<Message[]>([])
   history.current = messages
+  const live = useRef(false)
+  live.current = streaming
 
   const patchLast = (fn: (m: Message) => Message) =>
     setMessages((all) => (all.length ? [...all.slice(0, -1), fn(all[all.length - 1])] : all))
@@ -43,7 +45,14 @@ export function useChat() {
     }
   }, [])
 
-  const { send: sendRaw, status } = useSocket(`/api/llm/chat/ws${token ? `?token=${encodeURIComponent(token)}` : ""}`, { onMessage })
+  // A dropped socket ends the stream: show an inline error (with retry) instead of hanging in "streaming".
+  const onClose = useCallback(() => {
+    if (!live.current) return
+    patchLast((m) => ({ ...m, error: "Connection lost" }))
+    setStreaming(false)
+  }, [])
+
+  const { send: sendRaw, status } = useSocket(`/api/llm/chat/ws${token ? `?token=${encodeURIComponent(token)}` : ""}`, { onMessage, onClose })
 
   /** Sends `thread` as the request and opens an empty assistant message for the answer. */
   const ask = (thread: Message[]) => {
@@ -56,14 +65,16 @@ export function useChat() {
     sendRaw(JSON.stringify(request))
   }
 
+  /** Returns true when the message was sent; false while streaming, empty or the socket is not open. */
   const send = (text: string) => {
-    if (streaming || !text.trim()) return
+    if (streaming || status !== "open" || !text.trim()) return false
     ask([...history.current, { role: "user", content: text.trim() }])
+    return true
   }
   /** Re-asks after an error frame: drops the failed assistant message and sends again. */
   const retry = () => {
     const last = history.current[history.current.length - 1]
-    if (streaming || !last?.error) return
+    if (streaming || status !== "open" || !last?.error) return
     ask(history.current.slice(0, -1))
   }
   const stop = () => sendRaw(JSON.stringify({ type: "stop" } satisfies Schemas["Stop"]))

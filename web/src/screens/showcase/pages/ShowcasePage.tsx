@@ -1,4 +1,5 @@
 import { useEffect, useMemo, type ComponentType, type ReactNode } from "react"
+import { useTheme } from "next-themes"
 import { useSearchParams } from "react-router"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/common/PageHeader"
@@ -13,6 +14,7 @@ import { effects2 } from "@/components/effects/index.2"
 import { applyPreset, type Preset } from "@/lib/applyPreset"
 import identity from "@/design/identity.json"
 import theme from "@/design/theme.json"
+import "@/design/generated/preset-fonts.css" // fonts of every preset, so the switch shows each look
 
 const modules = import.meta.glob<Preset>("/src/design/presets/*.json", { eager: true, import: "default" })
 const presets: Record<string, Preset> = Object.fromEntries(Object.values(modules).map((p) => [p.name, p]))
@@ -81,10 +83,11 @@ export default function ShowcasePage() {
   const active = requested && presets[requested] ? requested : null
   const names = useMemo(() => Object.keys(presets).sort(), [])
 
+  const { resolvedTheme } = useTheme() // re-apply when light/dark flips: the palette depends on it
   useEffect(() => {
     if (!active) return
     return applyPreset(presets[active])
-  }, [active])
+  }, [active, resolvedTheme])
 
   const choose = (name: string | null) => setParams(name ? { preset: name } : {}, { replace: true })
   const shown = active ? presets[active] : (theme as unknown as Preset)

@@ -65,10 +65,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     let cancelled = false
     api
       .GET("/api/auth/me")
-      .then(({ data }) => {
+      .then(({ data, response }) => {
         if (cancelled) return
         if (data) store(getToken(), data)
-        else store(null, null)
+        else if (response.status === 401) store(null, null) // only an auth failure ends the session; 5xx keeps it
       })
       .catch(() => {
         /* offline: keep the stored session */

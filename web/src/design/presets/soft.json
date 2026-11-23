@@ -24,7 +24,12 @@
       "destructive": "oklch(0.53 0.2 25)",
       "border": "oklch(0.9 0.03 345)",
       "input": "oklch(0.82 0.05 345)",
-      "ring": "oklch(0.62 0.19 355)"
+      "ring": "oklch(0.62 0.19 355)",
+      "chart-1": "oklch(0.62 0.17 355)",
+      "chart-2": "oklch(0.62 0.17 67)",
+      "chart-3": "oklch(0.62 0.17 139)",
+      "chart-4": "oklch(0.62 0.17 211)",
+      "chart-5": "oklch(0.62 0.17 283)"
     },
     "dark": {
       "background": "oklch(0.22 0.03 335)",
@@ -44,7 +49,12 @@
       "destructive": "oklch(0.72 0.17 22)",
       "border": "oklch(0.96 0.02 350 / 14%)",
       "input": "oklch(0.96 0.02 350 / 24%)",
-      "ring": "oklch(0.8 0.13 355)"
+      "ring": "oklch(0.8 0.13 355)",
+      "chart-1": "oklch(0.72 0.16 355)",
+      "chart-2": "oklch(0.72 0.16 67)",
+      "chart-3": "oklch(0.72 0.16 139)",
+      "chart-4": "oklch(0.72 0.16 211)",
+      "chart-5": "oklch(0.72 0.16 283)"
     }
   },
   "radius": "1.25rem",

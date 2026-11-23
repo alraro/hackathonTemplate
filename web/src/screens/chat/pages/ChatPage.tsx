@@ -18,8 +18,7 @@ export default function ChatPage() {
   }, [messages])
 
   const submit = (text = draft) => {
-    send(text)
-    setDraft("")
+    if (send(text)) setDraft("")
   }
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -37,7 +36,7 @@ export default function ChatPage() {
             <p className="text-muted-foreground">Ask anything to get started.</p>
             <div className="flex flex-wrap justify-center gap-2">
               {SUGGESTIONS.map((s) => (
-                <Button key={s} variant="outline" size="sm" className="rounded-full" onClick={() => submit(s)}>
+                <Button key={s} variant="outline" size="sm" className="rounded-full" disabled={status !== "open"} onClick={() => submit(s)}>
                   {s}
                 </Button>
               ))}

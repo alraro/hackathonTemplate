@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { API_MODE } from "@/lib/api/client"
+import { api, API_MODE } from "@/lib/api/client"
 import fixtureRows from "./fixtures.json"
 
 export type Place = { id?: number; title: string; category?: string; description?: string; lat: number; lng: number }
@@ -18,10 +18,11 @@ export function usePlaces() {
     queryKey: ["map", "places", API_MODE],
     queryFn: async (): Promise<Place[]> => {
       if (API_MODE === "fixtures") return fixtureRows as Place[]
-      const res = await fetch(`/api/${RESOURCE}?limit=200`)
-      if (!res.ok) throw new Error("Could not load places")
-      const body = await res.json()
-      return ((Array.isArray(body) ? body : body.items) as unknown[]).filter(hasLatLng)
+      // RESOURCE is a plain string, so the typed client needs a cast; the auth header still applies.
+      const { data, error } = await api.GET(`/api/${RESOURCE}` as "/api/items", { params: { query: { limit: 200 } } })
+      if (error || !data) throw new Error("Could not load places")
+      const body = data as unknown
+      return ((Array.isArray(body) ? body : (body as { items: unknown[] }).items) as unknown[]).filter(hasLatLng)
     },
   })
 }

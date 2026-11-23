@@ -139,8 +139,6 @@ Starting points, not Catalog pieces: nothing here is installed or tested. Each i
 
 ## Known gaps
 
-- `src/mocks/ws.ts` has no fake-notification or realtime handler (`wsHandlers` is empty), so `NotificationBell` and `useChannel` stay quiet in fixtures mode. Add a `cannedStream("/api/ws", [...])` entry.
-- `VITE_TTS_PROVIDER` (read by `speak.ts`, default `browser`) and `VITE_APP_NAME` are missing from `.env.example`.
 - `_example/ExamplePage.tsx` sits beside `api.ts`, not under `pages/` like the real screens.
 - The `api-client` script in `web/package.json` is a stub; use `make api-client`.
 - The `reports` Feature has blocks (`ReportView`, `ReportChart`) but no screen or frontmatter entry.

@@ -27,6 +27,8 @@ fs.writeFileSync(
 export default defineConfig({
   plugins: [
     react(),
+    // The page title comes from identity.json too.
+    { name: "identity-title", transformIndexHtml: (html: string) => html.replace(/<title>.*<\/title>/, `<title>${String(identity.name).replace(/[<>&]/g, "")}</title>`) },
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
