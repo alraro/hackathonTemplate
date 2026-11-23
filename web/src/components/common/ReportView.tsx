@@ -1,3 +1,4 @@
+import { ExportMenu } from "./ExportMenu"
 import { KpiTile } from "./KpiTile"
 import { ReportChart, type ReportChartModel } from "./ReportChart"
 
@@ -15,6 +16,15 @@ export function ReportView({ report }: { report: ReportModel }) {
   const metrics = Object.entries(report.metrics)
   return (
     <div className="space-y-6">
+      {metrics.length > 0 ? (
+        <div className="flex justify-end" data-no-print>
+          <ExportMenu
+            rows={metrics.map(([metric, value]) => ({ metric, value }))}
+            columns={[{ key: "metric", label: "Metric" }, { key: "value", label: "Value" }]}
+            filename={`report-${report.run}`}
+          />
+        </div>
+      ) : null}
       {metrics.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {metrics.map(([k, v]) => (

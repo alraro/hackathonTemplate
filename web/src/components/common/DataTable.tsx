@@ -1,6 +1,7 @@
 import { flexRender, tableFeatures, useTable, type ColumnDef, type RowData } from "@tanstack/react-table"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ExportMenu } from "./ExportMenu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 // Core features only: the server filters and paginates, the table just renders rows.
@@ -13,18 +14,30 @@ type DataTableProps<T extends RowData> = {
   data: T[]
   getRowId: (row: T) => string
   onRowClick?: (row: T) => void
+  /** Filename (no extension) for the Export button above the table; false hides it. Columns with an accessorKey and a string header are exported. */
+  exportName?: string | false
   /** Server-side pagination: pass it to show the pager. */
   pagination?: { offset: number; limit: number; total: number; onOffsetChange: (offset: number) => void }
 }
 
 /** shadcn table driven by TanStack Table. Wrap it in <QueryState> at the call site. */
-export function DataTable<T extends RowData>({ columns, data, getRowId, onRowClick, pagination }: DataTableProps<T>) {
+export function DataTable<T extends RowData>({ columns, data, getRowId, onRowClick, exportName = "export", pagination }: DataTableProps<T>) {
   const table = useTable({ features, columns, data, getRowId })
   const from = pagination && pagination.total > 0 ? pagination.offset + 1 : 0
   const to = pagination ? Math.min(pagination.offset + pagination.limit, pagination.total) : 0
 
+  const exportColumns = columns.flatMap((c) => {
+    const key = "accessorKey" in c ? String(c.accessorKey) : ""
+    return key && typeof c.header === "string" ? [{ key, label: c.header }] : []
+  })
+
   return (
     <div className="space-y-3">
+      {exportName && exportColumns.length > 0 ? (
+        <div className="flex justify-end" data-no-print>
+          <ExportMenu rows={data as Record<string, unknown>[]} columns={exportColumns} filename={exportName} />
+        </div>
+      ) : null}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
