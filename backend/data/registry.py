@@ -7,8 +7,8 @@ PIPELINES: tuple[str, ...] = ("tabular", "cluster", "forecast", "anomaly", "visi
 
 # Model names accepted per pipeline. Each pipeline issue fills its own entry.
 MODELS: dict[str, tuple[str, ...]] = {
-    "tabular": ("hgb", "random_forest", "logistic", "knn"),
-    "cluster": (),  # TODO(#62)
+    "tabular": ("hgb", "random_forest", "logistic", "linear", "knn"),
+    "cluster": ("kmeans", "hdbscan", "gmm"),
     "forecast": (),  # TODO(#63)
     "anomaly": (),  # TODO(#64)
     "vision": (),  # TODO(#65)
