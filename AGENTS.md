@@ -50,7 +50,7 @@ Only `/hackathon` is user-facing. All skills live in `.agents/skills/<name>/SKIL
 | `hackathon-pitch` | `.agents/skills/hackathon-pitch/` | Pick & Pitch |
 | `hackathon-prune` | `.agents/skills/hackathon-prune/` | Prune |
 | `hackathon-design` | `.agents/skills/hackathon-design/` | Design (pending) |
-| `hackathon-contracts` | `.agents/skills/hackathon-contracts/` | Contracts (pending) |
+| `hackathon-contracts` | `.agents/skills/hackathon-contracts/` | Contracts |
 | `hackathon-split` | `.agents/skills/hackathon-split/` | Task split |
 | `hackathon-build` | `.agents/skills/hackathon-build/` | Build |
 | `hackathon-polish` | `.agents/skills/hackathon-polish/` | Integrate & Polish |
