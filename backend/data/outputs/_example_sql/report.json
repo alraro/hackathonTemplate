@@ -1,0 +1,133 @@
+{
+  "run": "_example_sql",
+  "pipeline": "anomaly",
+  "model": "isolation_forest",
+  "metrics": {
+    "records": 12.0,
+    "outliers": 2.0,
+    "outlier_rate": 0.16666666666666666
+  },
+  "charts": [
+    {
+      "id": "pca",
+      "kind": "scatter",
+      "title": "PCA 2D projection, outliers flagged",
+      "x": "pc1",
+      "series": [
+        {
+          "key": "normal",
+          "label": "Normal"
+        },
+        {
+          "key": "outlier",
+          "label": "Outlier"
+        }
+      ],
+      "data": [
+        {
+          "pc1": -0.9855,
+          "normal": -2.0484
+        },
+        {
+          "pc1": -2.1975,
+          "normal": 1.101
+        },
+        {
+          "pc1": 2.0006,
+          "normal": 0.2736
+        },
+        {
+          "pc1": -1.3576,
+          "outlier": 2.5653
+        },
+        {
+          "pc1": 2.3631,
+          "outlier": 0.8613
+        },
+        {
+          "pc1": 1.6517,
+          "normal": -0.5839
+        },
+        {
+          "pc1": -2.1629,
+          "normal": -2.0276
+        },
+        {
+          "pc1": -2.3817,
+          "normal": -1.6895
+        },
+        {
+          "pc1": 1.4664,
+          "normal": 0.476
+        },
+        {
+          "pc1": -1.9519,
+          "normal": 2.3559
+        },
+        {
+          "pc1": 1.5979,
+          "normal": -0.7476
+        },
+        {
+          "pc1": 1.9574,
+          "normal": -0.5361
+        }
+      ]
+    },
+    {
+      "id": "top_scores",
+      "kind": "bar",
+      "title": "Top 10 anomaly scores (higher = more unusual)",
+      "x": "record",
+      "series": [
+        {
+          "key": "score",
+          "label": "Anomaly score"
+        }
+      ],
+      "data": [
+        {
+          "record": "#3",
+          "score": 0.5189
+        },
+        {
+          "record": "#4",
+          "score": 0.5133
+        },
+        {
+          "record": "#7",
+          "score": 0.5097
+        },
+        {
+          "record": "#6",
+          "score": 0.5014
+        },
+        {
+          "record": "#0",
+          "score": 0.4998
+        },
+        {
+          "record": "#9",
+          "score": 0.4983
+        },
+        {
+          "record": "#10",
+          "score": 0.4946
+        },
+        {
+          "record": "#1",
+          "score": 0.48
+        },
+        {
+          "record": "#2",
+          "score": 0.4746
+        },
+        {
+          "record": "#8",
+          "score": 0.4738
+        }
+      ]
+    }
+  ],
+  "summary": "records 12, outliers 2, outlier_rate 17 %"
+}

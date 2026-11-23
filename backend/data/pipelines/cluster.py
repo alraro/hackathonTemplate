@@ -1,6 +1,6 @@
 """cluster pipeline: segmentation with automatic k chosen by silhouette."""
 
-from types import SimpleNamespace
+from dataclasses import dataclass
 
 import numpy as np
 from sklearn.cluster import HDBSCAN, KMeans
@@ -17,6 +17,12 @@ from backend.data.tables import read_table
 
 SEED = 0
 K_RANGE = range(2, 9)
+
+
+@dataclass
+class Fitted:
+    labels: np.ndarray
+    k: int
 
 # short name -> factory taking k (ignored by models that find k themselves)
 MODELS = {
@@ -49,7 +55,7 @@ def fit(X, cfg: RunConfig):
     make = MODELS[cfg.model]
     if cfg.model == "hdbscan":
         labels = np.asarray(make(None, **params).fit_predict(X))
-        return SimpleNamespace(labels=labels, k=len(set(labels) - {-1}))
+        return Fitted(labels=labels, k=len(set(labels) - {-1}))
     fixed = params.pop("k", None)
     best = None
     for k in [fixed] if fixed else K_RANGE:
@@ -57,7 +63,7 @@ def fit(X, cfg: RunConfig):
         score = _score(X, labels)
         if best is None or score > best[0]:
             best = (score, k, labels)
-    return SimpleNamespace(labels=best[2], k=best[1])
+    return Fitted(labels=best[2], k=best[1])
 
 
 def evaluate(model, X, cfg: RunConfig) -> dict[str, float]:

@@ -6,8 +6,9 @@ Pick the task with `params.task`: `classify` (default, model clip-vit-b32) or `d
 """
 
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
-from types import SimpleNamespace
+from typing import Any
 
 import numpy as np
 
@@ -15,7 +16,7 @@ from backend.data.config import RunConfig, source_path
 from backend.data.report import Chart, Report, Series
 
 SEED = 0
-# model name -> task it serves (add a model here and in registry.MODELS)
+# model name -> task it serves
 MODELS = {"clip-vit-b32": "classify", "rt-detr": "detect"}
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 CLIP_ARCH, CLIP_WEIGHTS = "ViT-B-32", "laion2b_s34b_b79k"
@@ -23,6 +24,29 @@ DETR_CHECKPOINT = "PekingU/rtdetr_r18vd"  # override with params.checkpoint
 TEST_SHARE = 0.3
 DETECT_THRESHOLD = 0.5  # override with params.threshold
 SAMPLES = 12
+
+
+@dataclass
+class Inputs:
+    paths: Any  # image paths
+    emb: Any = None  # embeddings (classify)
+    y: Any = None  # labels, None for zero-shot
+    train: Any = None
+    test: Any = None
+
+
+@dataclass
+class Fitted:
+    kind: str  # detect | zero_shot | logistic
+    classes: Any = None
+    clf: Any = None
+    text: Any = None
+    processor: Any = None
+    net: Any = None
+    torch: Any = None
+    found: Any = None  # filled by evaluate (detect)
+    pred: Any = None  # filled by evaluate (classify)
+    conf: Any = None
 
 
 def _task(cfg: RunConfig) -> str:
@@ -87,14 +111,14 @@ def prepare(df, cfg: RunConfig):
     """Classify: embed images and split train/test. Detect: keep the paths."""
     _require_vision()
     if _task(cfg) == "detect":
-        return SimpleNamespace(paths=df["paths"])
+        return Inputs(paths=df["paths"])
     from sklearn.model_selection import train_test_split
 
     paths, labels = df["paths"], df["labels"]
     emb = _embed(paths)
     idx = np.arange(len(paths))
     if labels is None:  # zero-shot: nothing to train, score everything
-        return SimpleNamespace(paths=paths, emb=emb, y=None, train=idx[:0], test=idx)
+        return Inputs(paths=paths, emb=emb, y=None, train=idx[:0], test=idx)
     y = np.array(labels)
     classes, counts = np.unique(y, return_counts=True)
     if len(classes) < 2 or counts.min() < 2:
@@ -103,7 +127,7 @@ def prepare(df, cfg: RunConfig):
             + ", ".join(f"{c}: {n}" for c, n in zip(classes, counts))
         )
     train, test = train_test_split(idx, test_size=TEST_SHARE, random_state=SEED, stratify=y)
-    return SimpleNamespace(paths=paths, emb=emb, y=y, train=train, test=test)
+    return Inputs(paths=paths, emb=emb, y=y, train=train, test=test)
 
 
 def fit(X, cfg: RunConfig):
@@ -112,7 +136,7 @@ def fit(X, cfg: RunConfig):
         from transformers import AutoImageProcessor, RTDetrForObjectDetection
 
         ckpt = cfg.params.get("checkpoint", DETR_CHECKPOINT)
-        return SimpleNamespace(
+        return Fitted(
             kind="detect",
             processor=AutoImageProcessor.from_pretrained(ckpt),
             net=RTDetrForObjectDetection.from_pretrained(ckpt).eval(),
@@ -122,11 +146,11 @@ def fit(X, cfg: RunConfig):
     if X.y is None or len(X.train) == 0:
         if not labels:
             raise ValueError("no class sub-folders: set params.labels for zero-shot classification")
-        return SimpleNamespace(kind="zero_shot", classes=np.array(labels), text=_embed_text(list(labels)))
+        return Fitted(kind="zero_shot", classes=np.array(labels), text=_embed_text(list(labels)))
     from sklearn.linear_model import LogisticRegression
 
     clf = LogisticRegression(max_iter=1000, random_state=SEED).fit(X.emb[X.train], X.y[X.train])
-    return SimpleNamespace(kind="logistic", clf=clf, classes=clf.classes_)
+    return Fitted(kind="logistic", clf=clf, classes=clf.classes_)
 
 
 def _predict(model, X, idx):

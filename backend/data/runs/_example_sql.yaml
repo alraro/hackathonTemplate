@@ -1,0 +1,11 @@
+# Reads the app's own Postgres (needs `make up`). One row per item; flags unusual ones.
+pipeline: anomaly
+sql: >-
+  SELECT status, category,
+         length(title) AS title_len,
+         length(description) AS description_len,
+         (SELECT count(*) FROM item i2 WHERE i2.status = item.status) AS same_status_items
+  FROM item
+model: isolation_forest
+params:
+  contamination: 0.1

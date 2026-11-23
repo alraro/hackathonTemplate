@@ -1,19 +1,9 @@
-"""Pipeline and model registry. Pipelines are plain modules, not classes."""
+"""Pipeline registry. Pipelines are plain modules, not classes."""
 
 import importlib
 from types import ModuleType
 
 PIPELINES: tuple[str, ...] = ("tabular", "cluster", "forecast", "anomaly", "vision", "_example")
-
-# Model names accepted per pipeline. Each pipeline issue fills its own entry.
-MODELS: dict[str, tuple[str, ...]] = {
-    "tabular": ("hgb", "random_forest", "logistic", "linear", "knn"),
-    "cluster": ("kmeans", "hdbscan", "gmm"),
-    "forecast": ("auto_ets", "auto_arima", "naive"),
-    "anomaly": ("isolation_forest", "lof"),
-    "vision": ("clip-vit-b32", "rt-detr"),
-    "_example": ("example",),
-}
 
 
 def check_pipeline(name: str) -> None:
@@ -21,9 +11,14 @@ def check_pipeline(name: str) -> None:
         raise ValueError(f"pipeline '{name}' unknown; options: {', '.join(PIPELINES)}")
 
 
+def models(pipeline: str) -> tuple[str, ...]:
+    """Model names a pipeline accepts: the keys of its own `MODELS` dict, the single source of truth."""
+    return tuple(get_pipeline(pipeline).MODELS)
+
+
 def check_model(pipeline: str, model: str) -> None:
     check_pipeline(pipeline)
-    options = MODELS[pipeline]
+    options = models(pipeline)
     if model not in options:
         raise ValueError(f"model '{model}' unknown; options: {', '.join(options) or 'none yet'}")
 

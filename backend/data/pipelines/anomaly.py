@@ -1,6 +1,6 @@
 """anomaly pipeline: flag unusual records, unsupervised."""
 
-from types import SimpleNamespace
+from dataclasses import dataclass
 
 import numpy as np
 from sklearn.decomposition import PCA
@@ -17,6 +17,12 @@ from backend.data.tables import read_table
 SEED = 0
 CONTAMINATION = 0.05  # expected share of outliers; override with params.contamination
 TOP = 10
+
+
+@dataclass
+class Fitted:
+    outlier: np.ndarray  # bool per record
+    scores: np.ndarray  # higher = more unusual
 
 # short name -> factory taking the contamination share
 MODELS = {
@@ -42,7 +48,7 @@ def fit(X, cfg: RunConfig):
     est = MODELS[cfg.model](contamination, **params)
     labels = np.asarray(est.fit_predict(X))  # -1 outlier, 1 normal
     raw = est.negative_outlier_factor_ if cfg.model == "lof" else est.score_samples(X)
-    return SimpleNamespace(outlier=labels == -1, scores=-np.asarray(raw))  # higher = more unusual
+    return Fitted(outlier=labels == -1, scores=-np.asarray(raw))
 
 
 def evaluate(model, X, cfg: RunConfig) -> dict[str, float]:
