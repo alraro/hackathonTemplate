@@ -59,7 +59,7 @@ Run `make help` for the rest. Done when `make check` is green.
 ## Add an endpoint
 
 1. Copy `resources/_example/` to `resources/<name>/`; rename `Example` and `_example` in `models.py`, `router.py`, `seed.json`. Done when no `_example` or `Example` remains in the copy.
-2. Define the models in `models.py`: `Base` (client fields), the `table=True` class (server fields), `Create`, `Read`, `Update`. `Read` is also the `seed.json` row shape.
+2. Define the models in `models.py`: `Base` (client fields), the `table=True` class (server fields), `Create`, `Read`, `Update`. `Read` (no `id`, the database assigns it) is the `seed.json` row shape; keep it apart from the response model (`<Name>Read`, with `id`).
 3. Register the router in `core/app.py`, inside `# >>> routers`: one import, one `include_router`, each ending `# module:api`. Gate it on a Feature if it has one. Registration files are ownerless: during a hackathon, file a Router intake.
 4. Fill `seed.json` with rows without `id` (or `make fake resource=<name>`). Done when `make seed` reports your rows.
 5. Run `make openapi api-client`. Done when `/api/docs` lists the route and `git diff` shows the regenerated `openapi.json` and client.
@@ -70,7 +70,8 @@ Run `make help` for the rest. Done when `make check` is green.
 - Write sync endpoints. Use `async` only for streaming (WebSocket, SSE).
 - Annotate each return type: it becomes the response schema.
 - Raise `HTTPException`; clients see `{detail}`.
-- Call external APIs with `fetch_json` (`core/fetch.py`): cached on disk, `HTTP_OFFLINE=1` serves the cache when venue wifi fails.
+- Call external APIs with `fetch_json` (`core/fetch.py`): cached on disk, `HTTP_OFFLINE=1` serves the cache when venue wifi fails. `geocode(query)` in `core/geo.py` (Nominatim, 1 req/s, cached) turns an address into `{lat, lng, display_name}`.
+- The API seeds empty tables on startup and refuses to start with an empty `SECRET_KEY` when `auth` is on (`make setup` writes one).
 - Push live updates with `publish(topic, data)` from `resources/ws/hub.py`, sync and thread-safe; `notify(user_id, title, body)` targets one user.
 - Protect routes with `CurrentUser`, `OptionalUser` or `AdminUser` from `resources/auth/deps.py`.
 - Contract change protocol: an additive change is yours as producer Lane (`make openapi api-client`, then a Change log line in `hackathon/08-contracts.md`); a breaking change (rename, remove, retype) stops you: ask the human.
@@ -83,7 +84,7 @@ Switch on in `features.json`, then `make sync`.
 | --- | --- | --- |
 | `auth` | `resources/auth` | the product has accounts or roles; demo users `ana@example.com`, `luis@example.com` |
 | `crud` | `resources/items` | the product stores user-visible records; copy it for your own resource |
-| `upload` | `resources/files` | users add files or images; served at `/api/files/{id}/raw` |
+| `upload` | `resources/files` | users add files or images; served at `/api/files/{id}/raw` (only images, PDF and audio render inline; other types download). Works with `auth` off (anonymous owner) |
 | `realtime` | `resources/ws` | a Beat needs live updates; socket at `/api/ws?token=<JWT>`, topics are free-form |
 
 ## Discarded, ready to add

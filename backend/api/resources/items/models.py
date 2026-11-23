@@ -30,7 +30,7 @@ class Item(ItemBase, table=True):
 
 
 class ItemCreate(ItemBase):
-    owner_id: int | None = None
+    """Client input. owner_id is not accepted: the server owns it."""
 
 
 class ItemRead(ItemBase):
@@ -44,7 +44,6 @@ class ItemUpdate(SQLModel):
     description: str | None = None
     status: ItemStatus | None = None
     category: str | None = None
-    owner_id: int | None = None
 
 
 class ItemList(SQLModel):

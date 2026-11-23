@@ -1,14 +1,18 @@
-import json
+import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
+from sqlmodel import Session
 
-from backend.api.core.db import create_db_and_tables
+from backend.api.core.db import create_db_and_tables, engine
+from backend.api.core.features import FEATURES
+from backend.api.core.seed import import_models, seed_all
 from backend.api.core.settings import settings
+
+log = logging.getLogger(__name__)
 
 
 def generate_unique_id(route: APIRoute) -> str:
@@ -19,7 +23,14 @@ def generate_unique_id(route: APIRoute) -> str:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    if FEATURES.get("auth") and not settings.secret_key:
+        raise RuntimeError("SECRET_KEY is empty but Feature `auth` is on. Run `make setup` (it writes one to .env).")
+    import_models()
     create_db_and_tables()
+    with Session(engine) as session:  # inserts only into empty tables, so restarts are harmless
+        for name, n in seed_all(session).items():
+            if n:
+                log.info("seeded %s: %d rows", name, n)
     yield
 
 
@@ -46,7 +57,6 @@ def health() -> dict[str, str]:
 
 
 # Feature gating: features.json sits at the repo root (/app in Docker).
-FEATURES: dict[str, bool] = json.loads((Path(__file__).resolve().parents[3] / "features.json").read_text())
 
 # >>> routers
 # One import + gated include per router. Prune markers: a trailing `# module:<x>` removes one line,
@@ -84,15 +94,12 @@ if FEATURES.get("reports"):
 # <<< module:data
 # <<< routers
 
-# Global exception handler slot: LLMError -> 503 {detail}. Guarded so it works when llm is pruned.
+# Global exception handler: LLMError -> 503 {detail}. Removed with the llm Module.
 # >>> module:llm
-try:
-    from backend.llm.errors import LLMError
-except ImportError:  # errors module not built yet
-    LLMError = None
-if LLMError is not None:
+from backend.llm.errors import LLMError
 
-    @app.exception_handler(LLMError)
-    async def llm_error_handler(_: Request, exc: Exception) -> JSONResponse:
-        return JSONResponse(status_code=503, content={"detail": str(exc)})
+
+@app.exception_handler(LLMError)
+async def llm_error_handler(_: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(status_code=503, content={"detail": str(exc)})
 # <<< module:llm

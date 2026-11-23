@@ -17,12 +17,13 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect, st
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, ValidationError
 
+from backend.api.core.features import enabled
 from backend.api.resources.auth.security import decode_token
 from backend.api.resources.chat.models import (
+    ChatCitation,
     ChatError,
     ChatFrames,
     ChatRequest,
-    Citation,
     Delta,
     Done,
     Stop,
@@ -37,18 +38,15 @@ router = APIRouter(prefix="/api/llm/chat", tags=["chat"])
 _END = object()  # queue sentinel: the worker finished (normally or not)
 
 
-def _feature(name: str) -> bool:
-    from backend.api.core.app import FEATURES  # lazy: app imports this router
-
-    return bool(FEATURES.get(name))
+_feature = enabled
 
 
-def _citations(req: ChatRequest) -> list[Citation]:
+def _citations(req: ChatRequest) -> list[ChatCitation]:
     """Chunks `chat(use_rag=True)` grounds on: the same `search` of the last user message."""
     from backend.llm import rag
 
     query = next((m.content for m in reversed(req.messages) if m.role == "user"), "")
-    return [Citation(**vars(c)) for c in rag.search(query)]
+    return [ChatCitation(**vars(c)) for c in rag.search(query)]
 
 
 def _worker(req: ChatRequest, put: Any, stop: threading.Event) -> None:
@@ -120,7 +118,7 @@ async def _answer(ws: WebSocket, req: ChatRequest) -> None:
         await worker  # returns at the next chunk once `stop` is set
 
 
-@router.websocket("/ws")
+@router.websocket("/ws", name="socket")
 async def chat_socket(ws: WebSocket, token: str | None = None) -> None:
     if _feature("auth") and (not token or decode_token(token) is None):
         await ws.close(code=status.WS_1008_POLICY_VIOLATION, reason="Not authenticated")
@@ -143,7 +141,7 @@ async def chat_socket(ws: WebSocket, token: str | None = None) -> None:
         pass
 
 
-@router.get("/frames", status_code=status.HTTP_426_UPGRADE_REQUIRED)
+@router.get("/frames", name="frames", status_code=status.HTTP_426_UPGRADE_REQUIRED)
 def frames() -> ChatFrames:
     """Schema-only: exports the socket frames to openapi.json. Connect to `/ws` instead."""
     raise HTTPException(status.HTTP_426_UPGRADE_REQUIRED, "connect to /api/llm/chat/ws")

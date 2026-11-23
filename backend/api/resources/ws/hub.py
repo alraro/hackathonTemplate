@@ -5,6 +5,7 @@ thread-safe: sync routers run in a threadpool, so it hands the send off to the
 loop with `call_soon_threadsafe`.
 """
 import asyncio
+import logging
 from collections import defaultdict
 from typing import Any
 
@@ -18,6 +19,8 @@ from backend.api.resources.ws.models import (
     Presence,
     ServerMessage,
 )
+
+log = logging.getLogger(__name__)
 
 
 class Hub:
@@ -75,7 +78,8 @@ class Hub:
         """Send `{topic, data}` to every subscriber. Safe from sync code and any thread."""
         loop = self._loop
         if loop is None or loop.is_closed():
-            return  # no client ever connected: nobody to tell
+            log.debug("publish(%r) dropped: no client has connected yet, so there is no event loop", topic)
+            return
         loop.call_soon_threadsafe(self._spawn, topic, data)
 
     def _spawn(self, topic: str, data: Any) -> None:

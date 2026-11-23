@@ -27,10 +27,17 @@ def _headers() -> dict[str, str]:
     headers = {"Content-Type": "application/json"}
     from backend.api.core.app import FEATURES  # lazy: imports every router
 
-    if FEATURES.get("auth"):  # the publish endpoint needs a user; mint a token for user 1
+    if FEATURES.get("auth"):  # the publish endpoint needs a user; mint a token for the first one
+        from sqlmodel import select
+
+        from backend.api.resources.auth.models import User
         from backend.api.resources.auth.security import create_token
 
-        headers["Authorization"] = f"Bearer {create_token(1)}"
+        with Session(engine) as session:
+            user = session.exec(select(User).order_by(User.id)).first()
+        if user is None:
+            raise SystemExit("simulate: no users yet; start the API once (it seeds) or run `make seed`")
+        headers["Authorization"] = f"Bearer {create_token(user.id)}"
     return headers
 
 

@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 RESOURCES_DIR = Path(resources_pkg.__file__).resolve().parent
 
 
-def _import(name: str, sub: str):
+def import_resource_module(name: str, sub: str):
     try:
         return importlib.import_module(f"{resources_pkg.__name__}.{name}.{sub}")
     except ModuleNotFoundError as exc:
@@ -38,10 +38,10 @@ def resource_names() -> list[str]:
 def import_models() -> None:
     """Import every resource's models so SQLModel.metadata knows all tables."""
     for name in resource_names():
-        _import(name, "models")
+        import_resource_module(name, "models")
 
 
-def _table_model(models) -> type[SQLModel] | None:
+def table_model(models) -> type[SQLModel] | None:
     for obj in vars(models).values():
         if (
             isinstance(obj, type)
@@ -53,8 +53,8 @@ def _table_model(models) -> type[SQLModel] | None:
     return None
 
 
-def _read_schema(name: str, models, model: type[SQLModel]) -> type[SQLModel]:
-    for mod in (_import(name, "schemas"), models):
+def read_schema(name: str, models, model: type[SQLModel]) -> type[SQLModel]:
+    for mod in (import_resource_module(name, "schemas"), models):
         if mod is None:
             continue
         for attr in ("Read", f"{model.__name__}Read"):
@@ -65,21 +65,21 @@ def _read_schema(name: str, models, model: type[SQLModel]) -> type[SQLModel]:
 
 def seed_resource(session: Session, name: str) -> int:
     """Seed one resource; returns rows inserted (0 if table non-empty or nothing to seed)."""
-    custom = _import(name, "seed")
+    custom = import_resource_module(name, "seed")
     if custom is not None and hasattr(custom, "seed"):
         custom.seed(session)
         return 0
     path = RESOURCES_DIR / name / "seed.json"
-    models = _import(name, "models")
+    models = import_resource_module(name, "models")
     if not path.is_file() or models is None:
         return 0
-    model = _table_model(models)
+    model = table_model(models)
     if model is None:
         log.warning("seed: %s has seed.json but no table model", name)
         return 0
     if session.exec(select(func.count()).select_from(model)).one() > 0:
         return 0
-    read = _read_schema(name, models, model)
+    read = read_schema(name, models, model)
     rows = [read.model_validate(r) for r in json.loads(path.read_text(encoding="utf-8"))]
     for row in rows:
         session.add(model.model_validate(row.model_dump()))

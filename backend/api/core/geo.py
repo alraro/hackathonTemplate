@@ -3,7 +3,7 @@
 import threading
 import time
 
-from api.core.fetch import fetch_json
+from backend.api.core.fetch import fetch_json
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "hackathon-app/1.0 (geocoding)"
