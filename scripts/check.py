@@ -45,8 +45,8 @@ def build_checks() -> list[Check]:
             checks.append(Check("data", "import backend.data", in_service("backend", "python", "-c", "import backend.data"), needs="backend/data/__init__.py"))
             checks.append(Check("data", "data validate", in_service("backend", "python", "-m", "backend.data", "validate"), needs="backend/data/__main__.py"))
     if (ROOT / "mobile").is_dir() and shutil.which("npm"):
-        checks.append(Check("mobile", "tsc (npm run check)", ["npm", "--prefix", "mobile", "run", "check"], needs="mobile/package.json"))
-        checks.append(Check("mobile", "expo-doctor", ["npx", "--prefix", "mobile", "expo-doctor"], blocking=False, needs="mobile/package.json"))
+        checks.append(Check("mobile", "tsc (npm run check)", ["npm", "--prefix", "mobile", "run", "check"], needs="mobile/node_modules/.bin/tsc"))
+        checks.append(Check("mobile", "expo-doctor", ["npx", "--prefix", "mobile", "expo-doctor"], blocking=False, needs="mobile/node_modules/.bin/tsc"))
     if (ROOT / "scripts" / "sync.py").exists():
         checks.append(Check("skills", "sync --check", [sys.executable, "scripts/sync.py", "--check"]))
     if (ROOT / "scripts" / "lint_docs.py").exists():

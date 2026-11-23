@@ -18,3 +18,4 @@ __pycache__/
 web/features.json
 mobile/features.json
 backend/features.json
+web/dist/
