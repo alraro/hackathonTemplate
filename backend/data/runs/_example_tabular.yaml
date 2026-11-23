@@ -1,0 +1,4 @@
+pipeline: tabular
+source: datasets/breast_cancer.csv
+target: target
+model: hgb

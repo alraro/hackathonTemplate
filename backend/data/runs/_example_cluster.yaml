@@ -1,0 +1,3 @@
+pipeline: cluster
+source: datasets/wine.csv
+model: kmeans

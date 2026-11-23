@@ -1,0 +1,94 @@
+{
+  "run": "_example_tabular",
+  "pipeline": "tabular",
+  "model": "hgb",
+  "metrics": {
+    "accuracy": 0.9790209790209791,
+    "f1_macro": 0.9774269928966062
+  },
+  "charts": [
+    {
+      "id": "importance",
+      "kind": "bar",
+      "title": "Permutation importance (top 10)",
+      "x": "feature",
+      "series": [
+        {
+          "key": "importance",
+          "label": "Importance"
+        }
+      ],
+      "data": [
+        {
+          "feature": "worst concave points",
+          "importance": 0.03776
+        },
+        {
+          "feature": "worst perimeter",
+          "importance": 0.02937
+        },
+        {
+          "feature": "worst texture",
+          "importance": 0.02378
+        },
+        {
+          "feature": "area error",
+          "importance": 0.01958
+        },
+        {
+          "feature": "worst area",
+          "importance": 0.01818
+        },
+        {
+          "feature": "mean concave points",
+          "importance": 0.01678
+        },
+        {
+          "feature": "worst concavity",
+          "importance": 0.01259
+        },
+        {
+          "feature": "mean area",
+          "importance": 0.00979
+        },
+        {
+          "feature": "mean texture",
+          "importance": 0.00839
+        },
+        {
+          "feature": "radius error",
+          "importance": 0.00699
+        }
+      ]
+    },
+    {
+      "id": "confusion",
+      "kind": "bar",
+      "title": "Confusion matrix (rows: actual, series: predicted)",
+      "x": "actual",
+      "series": [
+        {
+          "key": "pred_benign",
+          "label": "Predicted benign"
+        },
+        {
+          "key": "pred_malignant",
+          "label": "Predicted malignant"
+        }
+      ],
+      "data": [
+        {
+          "actual": "benign",
+          "pred_benign": 89,
+          "pred_malignant": 1
+        },
+        {
+          "actual": "malignant",
+          "pred_benign": 2,
+          "pred_malignant": 51
+        }
+      ]
+    }
+  ],
+  "summary": "classification on 'target' with hgb: accuracy=0.979, f1_macro=0.977"
+}
