@@ -1,0 +1,16 @@
+[
+  {
+    "email": "ana@example.com",
+    "name": "Ana",
+    "role": "admin",
+    "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$tZDN4sq+i4ujQjleG2r+RA$nWXl2G97V20T2YJSLg6Y3I/Y8YdJdltEneNSUpLCjWk",
+    "preferences": {}
+  },
+  {
+    "email": "luis@example.com",
+    "name": "Luis",
+    "role": "user",
+    "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$tZDN4sq+i4ujQjleG2r+RA$nWXl2G97V20T2YJSLg6Y3I/Y8YdJdltEneNSUpLCjWk",
+    "preferences": {}
+  }
+]
