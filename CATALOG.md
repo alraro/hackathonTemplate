@@ -27,7 +27,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
 | `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
 | `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
-| `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | off |
+| `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | on |
 | `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
 | `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | on |
 | `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | on |
@@ -47,7 +47,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `crud` | `api` | example resource and items CRUD template | backend/api/resources/items | the product stores user-visible records | on |
 | `upload` | `api` | local file uploads with static URLs | backend/api/resources/files | users add files or images | on |
 | `realtime` | `api` | WebSocket pub/sub, presence, notify() | backend/api/resources/ws | a Beat needs live updates | on |
-| `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | off |
+| `chat` | `llm` | streaming chat over WebSocket | backend/api/resources/chat (/api/llm/chat/ws) | a Beat is a conversation with the model | on |
 | `rag` | `llm` | pgvector search and answers over ingested documents | backend/api/resources/rag (/api/rag/ask) | answers must come from the team's own documents | on |
 | `voice` | `llm` | speech-to-text and swappable TTS | backend/api/resources/transcribe (/api/llm/transcribe) | a Beat uses spoken input or output | on |
 | `tabular` | `data` | tabular models on a dataset | backend/data | the idea predicts from a table | off |
