@@ -240,6 +240,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ws/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish Event
+         * @description Publish from outside the process (e.g. `make simulate`). Sync, like any router.
+         */
+        post: operations["ws_publish_event"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -446,6 +466,16 @@ export interface components {
             /** Password */
             password: string;
         };
+        /**
+         * PublishRequest
+         * @description Body of `POST /api/ws/publish`, for scripts and other processes.
+         */
+        PublishRequest: {
+            /** Data */
+            data?: unknown;
+            /** Topic */
+            topic: string;
+        };
         /** Report */
         Report: {
             /** Charts */
@@ -472,6 +502,13 @@ export interface components {
             key: string;
             /** Label */
             label: string;
+        };
+        /** ServerMessage */
+        ServerMessage: {
+            /** Data */
+            data?: unknown;
+            /** Topic */
+            topic: string;
         };
         /** SignupRequest */
         SignupRequest: {
@@ -1192,6 +1229,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AskResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ws_publish_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublishRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerMessage"];
                 };
             };
             /** @description Validation Error */

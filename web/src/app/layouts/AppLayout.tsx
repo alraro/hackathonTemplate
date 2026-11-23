@@ -1,5 +1,7 @@
 import { Link, NavLink, Outlet } from "react-router"
+import features from "@features"
 import { CommandPalette } from "@/components/common/CommandPalette"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { cn } from "@/lib/utils"
 import { navItems } from "../routes"
 
@@ -29,8 +31,9 @@ export function AppLayout() {
         ))}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header data-no-print className="flex h-14 items-center border-b px-4">
+        <header data-no-print className="flex h-14 items-center gap-2 border-b px-4">
           <Link to="/" className="truncate font-semibold md:hidden">{APP_NAME}</Link>
+          <div className="ml-auto">{features.notifications && <NotificationBell />}</div>
         </header>
         <main className="flex-1 p-4 pb-20 md:p-6 md:pb-6">
           <Outlet />
