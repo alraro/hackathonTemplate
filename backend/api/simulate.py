@@ -74,7 +74,10 @@ def main() -> None:
                 session.commit()
                 session.refresh(obj)
                 out = {"id": getattr(obj, "id", None), **row}
-            _publish(resource, out, headers)
+            try:
+                _publish(resource, out, headers)
+            except Exception as exc:  # the row is real; keep going
+                print(f"warning: publish failed for {resource} {out['id']}: {exc}")
             sent += 1
             print(f"#{sent} {resource} {out['id']}")
             time.sleep(1 / rate)

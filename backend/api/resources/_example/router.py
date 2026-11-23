@@ -6,9 +6,10 @@ Conventions worth keeping:
 - Annotate the return type: it becomes the response schema in openapi.json.
 - Errors are `HTTPException`, which the client sees as `{detail}`.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from sqlmodel import col, select
 
+from backend.api.core.crud import get_or_404
 from backend.api.core.deps import SessionDep
 from backend.api.resources._example.models import (
     Example,
@@ -20,13 +21,6 @@ from backend.api.resources._example.models import (
 router = APIRouter(prefix="/api/_example", tags=["_example"])
 
 
-def _get_or_404(session: SessionDep, example_id: int) -> Example:
-    row = session.get(Example, example_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Not found")
-    return row
-
-
 @router.get("", name="list")
 def list_examples(session: SessionDep) -> list[ExampleRead]:
     rows = session.exec(select(Example).order_by(col(Example.id))).all()
@@ -35,7 +29,7 @@ def list_examples(session: SessionDep) -> list[ExampleRead]:
 
 @router.get("/{example_id}", name="get")
 def get_example(example_id: int, session: SessionDep) -> ExampleRead:
-    return ExampleRead.model_validate(_get_or_404(session, example_id))
+    return ExampleRead.model_validate(get_or_404(session, Example, example_id))
 
 
 @router.post("", name="create", status_code=201)
@@ -49,7 +43,7 @@ def create_example(body: ExampleCreate, session: SessionDep) -> ExampleRead:
 
 @router.patch("/{example_id}", name="update")
 def update_example(example_id: int, body: ExampleUpdate, session: SessionDep) -> ExampleRead:
-    row = _get_or_404(session, example_id)
+    row = get_or_404(session, Example, example_id)
     row.sqlmodel_update(body.model_dump(exclude_unset=True))  # only the sent fields
     session.add(row)
     session.commit()
@@ -59,5 +53,5 @@ def update_example(example_id: int, body: ExampleUpdate, session: SessionDep) ->
 
 @router.delete("/{example_id}", name="delete", status_code=204)
 def delete_example(example_id: int, session: SessionDep) -> None:
-    session.delete(_get_or_404(session, example_id))
+    session.delete(get_or_404(session, Example, example_id))
     session.commit()

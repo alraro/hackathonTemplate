@@ -335,9 +335,8 @@
             "type": "string"
           },
           "status": {
-            "default": "todo",
-            "title": "Status",
-            "type": "string"
+            "$ref": "#/components/schemas/ExampleStatus",
+            "default": "todo"
           },
           "title": {
             "title": "Title",
@@ -368,9 +367,8 @@
             "type": "integer"
           },
           "status": {
-            "default": "todo",
-            "title": "Status",
-            "type": "string"
+            "$ref": "#/components/schemas/ExampleStatus",
+            "default": "todo"
           },
           "title": {
             "title": "Title",
@@ -384,6 +382,15 @@
         ],
         "title": "ExampleRead",
         "type": "object"
+      },
+      "ExampleStatus": {
+        "enum": [
+          "todo",
+          "doing",
+          "done"
+        ],
+        "title": "ExampleStatus",
+        "type": "string"
       },
       "ExampleUpdate": {
         "description": "PATCH body: every field optional, only the sent ones are changed.",
@@ -402,13 +409,12 @@
           "status": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/ExampleStatus"
               },
               {
                 "type": "null"
               }
-            ],
-            "title": "Status"
+            ]
           },
           "title": {
             "anyOf": [
@@ -502,6 +508,28 @@
             "title": "Description",
             "type": "string"
           },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lng": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lng"
+          },
           "status": {
             "$ref": "#/components/schemas/ItemStatus",
             "default": "todo"
@@ -558,6 +586,28 @@
           "id": {
             "title": "Id",
             "type": "integer"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lng": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lng"
           },
           "owner_id": {
             "anyOf": [
@@ -619,6 +669,28 @@
               }
             ],
             "title": "Description"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lng": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lng"
           },
           "status": {
             "anyOf": [
@@ -721,6 +793,14 @@
         ],
         "title": "Report",
         "type": "object"
+      },
+      "Role": {
+        "enum": [
+          "admin",
+          "user"
+        ],
+        "title": "Role",
+        "type": "string"
       },
       "Series": {
         "properties": {
@@ -864,12 +944,7 @@
             "type": "object"
           },
           "role": {
-            "enum": [
-              "admin",
-              "user"
-            ],
-            "title": "Role",
-            "type": "string"
+            "$ref": "#/components/schemas/Role"
           }
         },
         "required": [
@@ -1907,6 +1982,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Speak",
         "tags": [
           "transcribe"
@@ -1967,6 +2047,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Transcribe",
         "tags": [
           "transcribe"
@@ -2009,6 +2094,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Ask",
         "tags": [
           "rag"

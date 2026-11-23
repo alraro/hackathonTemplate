@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from backend.api.core.deps import SessionDep
+from backend.api.core.features import enabled
 from backend.api.resources.auth.models import User
 from backend.api.resources.auth.security import decode_token
 
@@ -22,6 +23,11 @@ def current_user(user: Annotated[User | None, Depends(current_user_optional)]) -
     if user is None:
         raise HTTPException(401, "Not authenticated", headers={"WWW-Authenticate": "Bearer"})
     return user
+
+
+def login_if_auth_on(optional: Annotated[User | None, Depends(current_user_optional)]) -> User | None:
+    """Login required when Feature `auth` is on; anonymous (None) otherwise."""
+    return current_user(optional) if enabled("auth") else optional
 
 
 def require_admin(user: Annotated[User, Depends(current_user)]) -> User:

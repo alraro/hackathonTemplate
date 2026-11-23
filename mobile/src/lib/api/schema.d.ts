@@ -462,11 +462,8 @@ export interface components {
              * @default
              */
             description: string;
-            /**
-             * Status
-             * @default todo
-             */
-            status: string;
+            /** @default todo */
+            status: components["schemas"]["ExampleStatus"];
             /** Title */
             title: string;
         };
@@ -487,14 +484,16 @@ export interface components {
             description: string;
             /** Id */
             id: number;
-            /**
-             * Status
-             * @default todo
-             */
-            status: string;
+            /** @default todo */
+            status: components["schemas"]["ExampleStatus"];
             /** Title */
             title: string;
         };
+        /**
+         * ExampleStatus
+         * @enum {string}
+         */
+        ExampleStatus: "todo" | "doing" | "done";
         /**
          * ExampleUpdate
          * @description PATCH body: every field optional, only the sent ones are changed.
@@ -502,8 +501,7 @@ export interface components {
         ExampleUpdate: {
             /** Description */
             description?: string | null;
-            /** Status */
-            status?: string | null;
+            status?: components["schemas"]["ExampleStatus"] | null;
             /** Title */
             title?: string | null;
         };
@@ -547,6 +545,10 @@ export interface components {
              * @default
              */
             description: string;
+            /** Lat */
+            lat?: number | null;
+            /** Lng */
+            lng?: number | null;
             /** @default todo */
             status: components["schemas"]["ItemStatus"];
             /** Title */
@@ -578,6 +580,10 @@ export interface components {
             description: string;
             /** Id */
             id: number;
+            /** Lat */
+            lat?: number | null;
+            /** Lng */
+            lng?: number | null;
             /** Owner Id */
             owner_id?: number | null;
             /** @default todo */
@@ -596,6 +602,10 @@ export interface components {
             category?: string | null;
             /** Description */
             description?: string | null;
+            /** Lat */
+            lat?: number | null;
+            /** Lng */
+            lng?: number | null;
             status?: components["schemas"]["ItemStatus"] | null;
             /** Title */
             title?: string | null;
@@ -637,6 +647,11 @@ export interface components {
              */
             summary: string;
         };
+        /**
+         * Role
+         * @enum {string}
+         */
+        Role: "admin" | "user";
         /** Series */
         Series: {
             /** Key */
@@ -704,11 +719,7 @@ export interface components {
             preferences: {
                 [key: string]: unknown;
             };
-            /**
-             * Role
-             * @enum {string}
-             */
-            role: "admin" | "user";
+            role: components["schemas"]["Role"];
         };
         /** UserUpdate */
         UserUpdate: {

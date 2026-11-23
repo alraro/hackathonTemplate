@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 from sqlmodel import col, func, or_, select
 
+from backend.api.core.crud import get_or_404
 from backend.api.core.deps import SessionDep
 from backend.api.resources.items.models import (
     Item,
@@ -12,13 +13,6 @@ from backend.api.resources.items.models import (
 )
 
 router = APIRouter(prefix="/api/items", tags=["items"])
-
-
-def _get_or_404(session: SessionDep, item_id: int) -> Item:
-    item = session.get(Item, item_id)
-    if item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return item
 
 
 # `name=` sets the operationId: <tag>_<name>, e.g. items_list.
@@ -46,7 +40,7 @@ def list_items(
 
 @router.get("/{item_id}", name="get")
 def get_item(item_id: int, session: SessionDep) -> ItemRead:
-    return ItemRead.model_validate(_get_or_404(session, item_id))
+    return ItemRead.model_validate(get_or_404(session, Item, item_id, "Item not found"))
 
 
 @router.post("", name="create", status_code=201)
@@ -60,7 +54,7 @@ def create_item(body: ItemCreate, session: SessionDep) -> ItemRead:
 
 @router.patch("/{item_id}", name="update")
 def update_item(item_id: int, body: ItemUpdate, session: SessionDep) -> ItemRead:
-    item = _get_or_404(session, item_id)
+    item = get_or_404(session, Item, item_id, "Item not found")
     item.sqlmodel_update(body.model_dump(exclude_unset=True))
     session.add(item)
     session.commit()
@@ -70,5 +64,5 @@ def update_item(item_id: int, body: ItemUpdate, session: SessionDep) -> ItemRead
 
 @router.delete("/{item_id}", name="delete", status_code=204)
 def delete_item(item_id: int, session: SessionDep) -> None:
-    session.delete(_get_or_404(session, item_id))
+    session.delete(get_or_404(session, Item, item_id, "Item not found"))
     session.commit()
