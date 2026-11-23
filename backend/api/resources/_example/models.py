@@ -6,13 +6,19 @@ router.py, seed.json), and add the router in `core/app.py` (inside the
 `# >>> routers` block). The seed loader finds the first `table=True` class here
 and validates seed.json rows against `Read`.
 """
-from datetime import UTC, datetime
+from datetime import datetime
+from enum import Enum
 
+from sqlalchemy import Column, String
 from sqlmodel import Field, SQLModel
 
+from backend.api.core.crud import now as _now
 
-def _now() -> datetime:
-    return datetime.now(UTC)
+
+class ExampleStatus(str, Enum):
+    todo = "todo"
+    doing = "doing"
+    done = "done"
 
 
 class ExampleBase(SQLModel):
@@ -20,7 +26,7 @@ class ExampleBase(SQLModel):
 
     title: str
     description: str = ""
-    status: str = "todo"
+    status: ExampleStatus = Field(default=ExampleStatus.todo, sa_column=Column(String, nullable=False))
 
 
 class Example(ExampleBase, table=True):
@@ -48,7 +54,7 @@ class ExampleUpdate(SQLModel):
 
     title: str | None = None
     description: str | None = None
-    status: str | None = None
+    status: ExampleStatus | None = None
 
 
 class Read(ExampleBase):

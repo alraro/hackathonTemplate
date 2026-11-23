@@ -54,7 +54,10 @@ Run `make help` for the rest. Done when `make check` is green.
 | `make logs svc=backend` | follow backend logs | debug a request |
 | `make check` | all repo checks, incl. stale `openapi.json` | before every commit |
 
-`seed` and `db-reset` are stubs on main (they call modules that do not exist). Run `docker compose exec backend python -m backend.api.seed_cli` (add `--reset` to drop tables first) until the Makefile is fixed.
+## Known gaps
+
+- `/api/files/{id}/raw` is public on purpose (`<img>` and `<audio>` cannot send a bearer token).
+- `Role`, `ItemStatus` and `ExampleStatus` are enums in the API but plain string columns in the database; there are no migrations, so `make db-reset` after changing a model.
 
 ## Add an endpoint
 

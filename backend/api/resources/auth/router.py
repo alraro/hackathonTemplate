@@ -4,6 +4,7 @@ from sqlmodel import select
 from backend.api.core.deps import SessionDep
 from backend.api.resources.auth.deps import CurrentUser
 from backend.api.resources.auth.models import (
+    Role,
     LoginRequest,
     SignupRequest,
     TokenResponse,
@@ -37,7 +38,7 @@ def signup(body: SignupRequest, session: SessionDep) -> TokenResponse:
     email = body.email.lower()
     if session.exec(select(User).where(User.email == email)).first():
         raise HTTPException(409, "Email already registered")
-    user = User(email=email, name=body.name, role="user", password_hash=hash_password(body.password))
+    user = User(email=email, name=body.name, role=Role.user, password_hash=hash_password(body.password))
     session.add(user)
     session.commit()
     session.refresh(user)

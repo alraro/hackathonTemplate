@@ -1,7 +1,9 @@
-from datetime import UTC, datetime
+from datetime import datetime
 from enum import Enum
 
 from sqlmodel import Field, SQLModel
+
+from backend.api.core.crud import now as _now
 
 
 class ItemStatus(str, Enum):
@@ -10,15 +12,13 @@ class ItemStatus(str, Enum):
     done = "done"
 
 
-def _now() -> datetime:
-    return datetime.now(UTC)
-
-
 class ItemBase(SQLModel):
     title: str
     description: str = ""
     status: ItemStatus = ItemStatus.todo
     category: str = ""
+    lat: float | None = None
+    lng: float | None = None
 
 
 class Item(ItemBase, table=True):
@@ -44,6 +44,8 @@ class ItemUpdate(SQLModel):
     description: str | None = None
     status: ItemStatus | None = None
     category: str | None = None
+    lat: float | None = None
+    lng: float | None = None
 
 
 class ItemList(SQLModel):

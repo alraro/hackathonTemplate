@@ -10,7 +10,7 @@ const hasLatLng = (r: unknown): r is Place => {
 }
 
 // Live mode plots the rows of this resource that carry numeric lat/lng. Change it to your domain
-// resource (the items seed has no coordinates, so the screen shows its empty state until then).
+// resource (the items seed carries lat/lng around Málaga, so markers show out of the box).
 const RESOURCE = "items"
 
 export function usePlaces() {

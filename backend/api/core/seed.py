@@ -67,8 +67,15 @@ def seed_resource(session: Session, name: str) -> int:
     """Seed one resource; returns rows inserted (0 if table non-empty or nothing to seed)."""
     custom = import_resource_module(name, "seed")
     if custom is not None and hasattr(custom, "seed"):
+        models = import_resource_module(name, "models")
+        model = table_model(models) if models is not None else None
+
+        def count() -> int:
+            return session.exec(select(func.count()).select_from(model)).one() if model else 0
+
+        before = count()
         custom.seed(session)
-        return 0
+        return count() - before
     path = RESOURCES_DIR / name / "seed.json"
     models = import_resource_module(name, "models")
     if not path.is_file() or models is None:

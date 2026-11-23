@@ -1,9 +1,11 @@
-from typing import Literal
+from enum import Enum
 
-from sqlalchemy import JSON, Column
+from sqlalchemy import JSON, Column, String
 from sqlmodel import Field, SQLModel
 
-Role = Literal["admin", "user"]
+class Role(str, Enum):
+    admin = "admin"
+    user = "user"
 
 
 class User(SQLModel, table=True):
@@ -11,7 +13,7 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     email: str = Field(unique=True, index=True)
     name: str
-    role: str = "user"
+    role: Role = Field(default=Role.user, sa_column=Column(String, nullable=False))
     password_hash: str
     preferences: dict = Field(default_factory=dict, sa_column=Column(JSON, nullable=False))
 
