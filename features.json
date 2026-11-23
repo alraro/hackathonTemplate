@@ -10,7 +10,7 @@
   "upload": true,
   "realtime": false,
   "notifications": false,
-  "map": false,
+  "map": true,
   "qr": false,
   "voice": false,
   "vision": false,
