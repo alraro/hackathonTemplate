@@ -21,19 +21,19 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 
 | Feature | Module | Gives | Entry | Keep when | State |
 |---|---|---|---|---|---|
-| `landing` | `web` | public landing page with hero, value props and call to action | web/src/features/landing/ | the product needs a public front door | on |
-| `auth` | `web` | login, signup and protected routes | web/src/features/auth/ | users have accounts or roles | on |
-| `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | on |
-| `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
-| `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
-| `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | on |
-| `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | on |
-| `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
-| `realtime` | `web` | live updates over websocket in the UI | web/src/features/realtime/ | the demo shows data changing live | on |
-| `notifications` | `web` | toast and in-app notification center | web/src/features/notifications/ | the product alerts users to events | on |
-| `map` | `web` | interactive map with markers | web/src/features/map/ | data has a location | on |
-| `qr` | `web` | QR code generation and scanning | web/src/features/qr/ | the demo hands off to a phone or scans codes | on |
-| `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | on |
+| `landing` | `web` | public landing page with hero, value props and call to action | web/src/screens/landing/ | the product needs a public front door | on |
+| `auth` | `web` | login, signup and protected routes | web/src/screens/auth/ | users have accounts or roles | on |
+| `dashboard` | `web` | KPI tiles and charts overview page | web/src/screens/dashboard/ | the pitch shows metrics or an overview | on |
+| `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/screens/crud/ | the product manages records | on |
+| `settings` | `web` | profile, preferences and theme settings page | web/src/screens/settings/ | users configure their account or preferences | on |
+| `showcase` | `web` | component gallery of the design system | web/src/screens/showcase/ | during design phase; drop before demo if unused | on |
+| `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/screens/chat/ | the product has a conversational assistant | on |
+| `upload` | `web` | file upload with drag and drop, progress and previews | web/src/components/common/FileDrop.tsx | users submit files or images | on |
+| `realtime` | `web` | live updates over websocket in the UI | web/src/lib/realtime/ | the demo shows data changing live | on |
+| `notifications` | `web` | toast and in-app notification center | web/src/components/common/NotificationBell.tsx | the product alerts users to events | on |
+| `map` | `web` | interactive map with markers | web/src/screens/map/ | data has a location | on |
+| `qr` | `web` | QR code generation and scanning | web/src/components/common/QrCode.tsx | the demo hands off to a phone or scans codes | on |
+| `voice` | `web` | voice input and spoken output controls | web/src/components/common/VoiceButton.tsx | the product is used hands-free or by speech | on |
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
 | `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
 | `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
