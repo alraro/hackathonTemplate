@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Plaza Mayor", "description": "Central square", "lat": 40.4155, "lng": -3.7074 },
+  { "id": 2, "name": "Retiro Park", "description": "Big green park", "lat": 40.4153, "lng": -3.6844 },
+  { "id": 3, "name": "Royal Palace", "description": "Official residence", "lat": 40.418, "lng": -3.7143 }
+]
