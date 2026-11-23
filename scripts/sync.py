@@ -47,7 +47,11 @@ def generate_catalog(root: Path = ROOT) -> str:
     for m in modules:
         if m["module"] == "pitch":
             continue
-        lines.append(f"| `{_cell(m['module'])}` | {_cell(m['lane'])} | {_cell(', '.join(m.get('requires') or []) or '-')} | {_cell(m['keep_when'])} |")
+        keep = _cell(m["keep_when"])
+        feats = m.get("features") or []
+        if feats and not any(features.get(f["id"], False) for f in feats):
+            keep += " **(no Feature implemented yet: Prune may drop it)**"
+        lines.append(f"| `{_cell(m['module'])}` | {_cell(m['lane'])} | {_cell(', '.join(m.get('requires') or []) or '-')} | {keep} |")
     lines.append("| `pitch` | pitch | - | never pruned |")
     lines += ["", "## Features", "", "| Feature | Module | Gives | Entry | Keep when | State |", "|---|---|---|---|---|---|"]
     for m in modules:
