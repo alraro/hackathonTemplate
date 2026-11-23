@@ -64,7 +64,7 @@
     {
       "id": "confusion",
       "kind": "bar",
-      "title": "Confusion matrix (rows: actual, series: predicted)",
+      "title": "Predictions per actual class (grouped bars, one group per actual label)",
       "x": "actual",
       "series": [
         {
@@ -90,5 +90,5 @@
       ]
     }
   ],
-  "summary": "classification on 'target' with hgb: accuracy=0.979, f1_macro=0.977"
+  "summary": "accuracy 98 %, f1_macro 98 %; top drivers worst concave points, worst perimeter"
 }

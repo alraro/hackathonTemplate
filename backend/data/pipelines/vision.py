@@ -15,6 +15,8 @@ from backend.data.config import RunConfig, source_path
 from backend.data.report import Chart, Report, Series
 
 SEED = 0
+# model name -> task it serves (add a model here and in registry.MODELS)
+MODELS = {"clip-vit-b32": "classify", "rt-detr": "detect"}
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 CLIP_ARCH, CLIP_WEIGHTS = "ViT-B-32", "laion2b_s34b_b79k"
 DETR_CHECKPOINT = "PekingU/rtdetr_r18vd"  # override with params.checkpoint
@@ -24,11 +26,11 @@ SAMPLES = 12
 
 
 def _task(cfg: RunConfig) -> str:
-    task = cfg.params.get("task", "detect" if cfg.model == "rt-detr" else "classify")
+    task = cfg.params.get("task", MODELS[cfg.model])
     if task not in ("classify", "detect"):
         raise ValueError(f"task '{task}' unknown; options: classify, detect")
-    if (task == "detect") != (cfg.model == "rt-detr"):
-        raise ValueError("task 'detect' goes with model 'rt-detr'; task 'classify' with 'clip-vit-b32'")
+    if task != MODELS[cfg.model]:
+        raise ValueError(f"model '{cfg.model}' does not do task '{task}'; use task '{MODELS[cfg.model]}'")
     return task
 
 
@@ -36,7 +38,7 @@ def _require_vision():
     try:
         import torch  # noqa: F401
     except ImportError as e:
-        raise RuntimeError("the vision pipeline needs the [vision] extra: set vision: true in features.json and run make up") from e
+        raise RuntimeError("the vision pipeline needs the [vision] extra: set VISION=true in .env and restart the backend") from e
 
 
 def load(cfg: RunConfig):
@@ -94,6 +96,12 @@ def prepare(df, cfg: RunConfig):
     if labels is None:  # zero-shot: nothing to train, score everything
         return SimpleNamespace(paths=paths, emb=emb, y=None, train=idx[:0], test=idx)
     y = np.array(labels)
+    classes, counts = np.unique(y, return_counts=True)
+    if len(classes) < 2 or counts.min() < 2:
+        raise ValueError(
+            "each class sub-folder needs at least 2 images and there must be 2+ classes; got "
+            + ", ".join(f"{c}: {n}" for c, n in zip(classes, counts))
+        )
     train, test = train_test_split(idx, test_size=TEST_SHARE, random_state=SEED, stratify=y)
     return SimpleNamespace(paths=paths, emb=emb, y=y, train=train, test=test)
 

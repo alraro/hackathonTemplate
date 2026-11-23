@@ -768,5 +768,5 @@
       ]
     }
   ],
-  "summary": "kmeans found 3 clusters, silhouette=0.285"
+  "summary": "k 3, silhouette 28 %"
 }

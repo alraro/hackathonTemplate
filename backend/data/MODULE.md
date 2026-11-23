@@ -61,7 +61,7 @@ Read `registry.py` for the pipeline and model names, `report.py` for the Report 
 
 | Pipeline | Models | Reads | Needs |
 | --- | --- | --- | --- |
-| `tabular` | `hgb`, `random_forest`, `logistic`, `linear`, `knn` | csv, parquet, xlsx; `target:` column | `[data]` |
+| `tabular` | `hgb`, `random_forest`, `knn`, `logistic` (classification only), `linear` (regression only) | csv, parquet, xlsx; `target:` column | `[data]` |
 | `cluster` | `kmeans`, `hdbscan`, `gmm` | table | `[data]` |
 | `forecast` | `auto_ets`, `auto_arima`, `naive` | table; `params.date`, `params.value`, `params.horizon` | `[data]` |
 | `anomaly` | `isolation_forest`, `lof` | table; `params.contamination` | `[data]` |
@@ -79,14 +79,14 @@ params: {}                           # passed to the model
 
 Set exactly one of `source` or `sql`. `sql:` is meant to analyse the app's own Postgres; no pipeline reads it yet, each raises "sql is not supported yet". The first pipeline that needs it implements it in its `load`. Own data goes in `datasets/` (see `datasets/README.md` for licences).
 
-Done when `make check` passes and `outputs/<name>/report.json` exists and is committed. Commit it: `GET /api/data/reports/{run}` serves it. `model.joblib` stays gitignored, and the runner does not write it yet.
+Done when `make check` passes and `outputs/<name>/report.json` exists and is committed. Commit it: `GET /api/data/reports/{run}` serves it. The runner also writes `model.joblib` (and `predictions.csv` for `tabular`), both gitignored, so `api.predict(run, rows)` works for tabular runs. `summary` comes from `summary.build_summary`: a deterministic template, plus `llm.summarize` narration when the run sets `explain: true` and the llm Module is present. `outputs/_example_vision/` is not committed: vision needs the heavy `[vision]` extra and stays off by default.
 
 ## Recipes
 
 ### Add a model
 
 1. Add the name to the pipeline's tuple in `registry.MODELS`.
-2. Add the factory to the `MODELS` dict at the top of `pipelines/<pipeline>.py`.
+2. Add the factory to the `MODELS` dict at the top of `pipelines/<pipeline>.py` (for `vision` it maps the model to its task, `classify` or `detect`).
 3. Add the dependency to `[data]` with `make add-py`.
 4. Set `model: <name>` in a run file.
 
@@ -112,4 +112,4 @@ Starting points, not recommendations. Research and Brainstorm pick what fits, in
 | classic OpenCV | simple image tasks (colour, edges, template match) | already in `[vision]` | `"opencv"` in `registry.MODELS["vision"]` |
 | prophet | `auto_ets` misses holidays or several seasonalities | `make add-py pkg=prophet extra=data` | `"prophet"` in `registry.MODELS["forecast"]` and `forecast.MODELS` |
 | sentence-transformers | text embeddings; covered by `llm.embed`, use that first | `make add-py pkg=sentence-transformers extra=data` | none: call `llm.embed` |
-| fg-data-profiling | a deep profile report beyond `make eda` | `make add-py pkg=ydata-profiling extra=data` | none: call it from `eda.py` |
+| ydata-profiling | a deep profile report beyond `make eda` | `make add-py pkg=ydata-profiling extra=data` | none: call it from `eda.py` |
