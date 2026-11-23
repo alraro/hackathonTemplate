@@ -12,6 +12,7 @@ dependencies = [
     "pyjwt",
     "pyyaml",
     "python-multipart",
+    "faker>=40.63.0",
 ]
 
 [project.optional-dependencies]
