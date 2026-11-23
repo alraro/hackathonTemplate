@@ -12,4 +12,5 @@ One line per script. Makefile targets already call the final command lines; a mi
 - `demo.py` (`make demo`): demo mode.
 - `mobile.py` (`make mobile`, `make mobile-tunnel`): Expo launcher.
 - `setup.py invite` (`make invite users=a,b`): invite helper.
+- `api_client.py` (`make api-client`): generate `schema.d.ts` and `fixtures.json` from the Contract.
 - `theme.py` (`make theme`): generate design tokens for web, mobile, pitch.

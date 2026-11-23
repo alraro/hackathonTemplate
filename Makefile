@@ -110,7 +110,7 @@ simulate: ## stream simulated realtime events — run to demo realtime and notif
 # --- web ---
 .PHONY: api-client design-lint
 api-client: ## regenerate the typed API client and fixtures — run after make openapi
-	docker compose exec web npm run api-client # TODO: filled by the backlog issue that creates the web api-client script
+	$(PYTHON) scripts/api_client.py
 
 design-lint: ## check design tokens and contrast (warn-only) — run after editing theme.json
 	docker compose exec web npm run design-lint # TODO: filled by the backlog issue that creates the web design-lint script
