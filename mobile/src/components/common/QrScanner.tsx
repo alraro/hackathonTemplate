@@ -2,7 +2,6 @@ import { useRef, useState } from "react"
 import { Linking, Vibration, View } from "react-native"
 import { CameraView, useCameraPermissions } from "expo-camera"
 import { Button } from "../ui/Button"
-import { colors as themeColors } from "../../../theme"
 import { Text } from "../ui/Text"
 import { useTheme } from "../ui/useTheme"
 
