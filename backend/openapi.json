@@ -50,6 +50,58 @@
         "title": "Body_files_create",
         "type": "object"
       },
+      "Chart": {
+        "properties": {
+          "data": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "line",
+              "bar",
+              "area",
+              "scatter",
+              "pie"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/Series"
+            },
+            "title": "Series",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "x": {
+            "title": "X",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "x",
+          "series",
+          "data"
+        ],
+        "title": "Chart",
+        "type": "object"
+      },
       "Citation": {
         "properties": {
           "document_id": {
@@ -436,6 +488,66 @@
           "password"
         ],
         "title": "LoginRequest",
+        "type": "object"
+      },
+      "Report": {
+        "properties": {
+          "charts": {
+            "items": {
+              "$ref": "#/components/schemas/Chart"
+            },
+            "title": "Charts",
+            "type": "array"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Metrics",
+            "type": "object"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "pipeline": {
+            "title": "Pipeline",
+            "type": "string"
+          },
+          "run": {
+            "title": "Run",
+            "type": "string"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "pipeline",
+          "model"
+        ],
+        "title": "Report",
+        "type": "object"
+      },
+      "Series": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "Series",
         "type": "object"
       },
       "SignupRequest": {
@@ -942,6 +1054,49 @@
         "summary": "Signup",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/data/reports/{run}": {
+      "get": {
+        "description": "Serve the committed report.json of a run (read-only; no live training).",
+        "operationId": "data_reports_get_report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run",
+            "required": true,
+            "schema": {
+              "title": "Run",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Report",
+        "tags": [
+          "data_reports"
         ]
       }
     },

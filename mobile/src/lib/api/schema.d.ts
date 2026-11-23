@@ -93,6 +93,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/data/reports/{run}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Report
+         * @description Serve the committed report.json of a run (read-only; no live training).
+         */
+        get: operations["data_reports_get_report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/files": {
         parameters: {
             query?: never;
@@ -240,6 +260,26 @@ export interface components {
         Body_files_create: {
             /** File */
             file: string;
+        };
+        /** Chart */
+        Chart: {
+            /** Data */
+            data: {
+                [key: string]: unknown;
+            }[];
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "line" | "bar" | "area" | "scatter" | "pie";
+            /** Series */
+            series: components["schemas"]["Series"][];
+            /** Title */
+            title: string;
+            /** X */
+            x: string;
         };
         /** Citation */
         Citation: {
@@ -405,6 +445,33 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+        };
+        /** Report */
+        Report: {
+            /** Charts */
+            charts?: components["schemas"]["Chart"][];
+            /** Metrics */
+            metrics?: {
+                [key: string]: number;
+            };
+            /** Model */
+            model: string;
+            /** Pipeline */
+            pipeline: string;
+            /** Run */
+            run: string;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+        };
+        /** Series */
+        Series: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
         };
         /** SignupRequest */
         SignupRequest: {
@@ -732,6 +799,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    data_reports_get_report: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Report"];
                 };
             };
             /** @description Validation Error */
