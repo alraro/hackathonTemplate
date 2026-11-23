@@ -12,7 +12,7 @@ import os
 import time
 from typing import Any
 
-from backend.llm.errors import LLMError, missing_key
+from backend.llm.errors import LLMError, fail, missing_key
 from backend.llm.providers.openai_compat import TIMEOUT_S, log_call
 from backend.llm.settings import BASE_URLS
 
@@ -71,9 +71,7 @@ def _filename(mime: str) -> str:
 
 
 def _fail(provider: str, exc: Exception) -> LLMError:
-    if isinstance(exc, LLMError):
-        return exc
-    return LLMError(f"{provider} voice call failed: {type(exc).__name__}: {exc}")
+    return fail(f"{provider} voice", exc)
 
 
 def transcribe(audio: bytes, *, mime: str, language: str | None = None) -> str:
