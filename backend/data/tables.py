@@ -21,7 +21,8 @@ def read_sql(query: str) -> pd.DataFrame:
         raise ValueError("sql must be a single SELECT (or WITH ... SELECT) statement")
     with engine.connect() as conn:
         if engine.dialect.name == "postgresql":
-            conn.exec_driver_sql("SET TRANSACTION READ ONLY")  # a writing CTE fails instead of running
+            # a writing CTE then fails instead of running
+            conn.exec_driver_sql("SET TRANSACTION READ ONLY")
         try:
             return pd.read_sql(text(stmt), conn)
         finally:
