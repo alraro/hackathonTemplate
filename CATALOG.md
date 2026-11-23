@@ -21,11 +21,11 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 
 | Feature | Module | Gives | Entry | Keep when | State |
 |---|---|---|---|---|---|
-| `landing` | `web` | public landing page with hero, value props and call to action | web/src/features/landing/ | the product needs a public front door | off |
+| `landing` | `web` | public landing page with hero, value props and call to action | web/src/features/landing/ | the product needs a public front door | on |
 | `auth` | `web` | login, signup and protected routes | web/src/features/auth/ | users have accounts or roles | on |
 | `dashboard` | `web` | KPI tiles and charts overview page | web/src/features/dashboard/ | the pitch shows metrics or an overview | off |
 | `crud` | `web` | list, detail and form pages over a resource with table, filters and dialogs | web/src/features/crud/ | the product manages records | on |
-| `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | off |
+| `settings` | `web` | profile, preferences and theme settings page | web/src/features/settings/ | users configure their account or preferences | on |
 | `showcase` | `web` | component gallery of the design system | web/src/features/showcase/ | during design phase; drop before demo if unused | off |
 | `chat` | `web` | chat UI with streaming messages (web part of the chat Feature) | web/src/features/chat/ | the product has a conversational assistant | off |
 | `upload` | `web` | file upload with drag and drop, progress and previews | web/src/features/upload/ | users submit files or images | on |
@@ -36,7 +36,7 @@ Never pruned: `docker-compose.yml` (services by profile), `Makefile` (`make help
 | `voice` | `web` | voice input and spoken output controls | web/src/features/voice/ | the product is used hands-free or by speech | off |
 | `auth` | `mobile` | sign-in screens and session storage | mobile/src/features/auth | the app has user accounts | on |
 | `crud` | `mobile` | list, detail and edit screens for an entity | mobile/src/app/(tabs)/crud | the idea manages records | on |
-| `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | off |
+| `settings` | `mobile` | settings tab | mobile/src/app/(tabs)/settings | the app has user preferences | on |
 | `showcase` | `mobile` | demo tab of UI components | mobile/src/app/(tabs)/showcase | a demo of the design system helps the pitch | off |
 | `upload` | `mobile` | image and file picker with upload (mobile part) | mobile/src/features/upload | users add photos or files | on |
 | `realtime` | `mobile` | live updates on screen (mobile part) | mobile/src/features/realtime | the idea shows live data | off |
