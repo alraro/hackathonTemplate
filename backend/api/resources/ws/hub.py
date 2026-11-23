@@ -8,7 +8,7 @@ import asyncio
 from collections import defaultdict
 from typing import Any
 
-from fastapi import WebSocket
+from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.encoders import jsonable_encoder
 
 from backend.api.resources.ws.models import (
@@ -57,7 +57,7 @@ class Hub:
         for ws in list(self._topics.get(topic, ())):
             try:
                 await ws.send_json(message)
-            except Exception:  # client went away mid-send
+            except (WebSocketDisconnect, RuntimeError, OSError):  # client went away mid-send
                 dead.append(ws)
         for ws in dead:
             await self.disconnect(ws)
