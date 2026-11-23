@@ -100,5 +100,8 @@ Android: `scrcpy` over cable. iOS: QuickTime over cable (New Movie Recording, pi
 
 ## Known gaps
 
-- `src/screens/home/` is a placeholder (a `TODO(#92)` card). Replace it when the idea needs a home screen.
-- `NotificationBell` is mounted only in the map header; mount it in other headers yourself.
+- `HomeScreen` lists the enabled tabs from `tabs.ts`; restyle it when the idea needs a real home.
+- `NotificationBell` sits in the tab header (`app/(tabs)/_layout.tsx`) for the signed-in user; with auth off there is no user id, so no bell.
+- Fonts: `providers.tsx` loads nothing (`fontFiles` is empty), so text uses the system font. Add the `.ttf` files and map them by theme font name there (needs the files offline).
+- Live map: `ItemRead` has no `lat`/`lng`, so the map is empty against the real API until your resource has them.
+- `make mobile-tunnel` does not tunnel the API; in live mode set `EXPO_PUBLIC_API_URL` to a public URL.

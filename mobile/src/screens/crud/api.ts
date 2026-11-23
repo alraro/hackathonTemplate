@@ -71,6 +71,8 @@ export function useDeleteItem() {
       const res = await api.DELETE("/api/items/{item_id}", { params: { path: { item_id: id } } });
       if (res.error !== undefined) throw new Error("Delete failed");
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["items"] }),
+    // Skip the deleted row's own detail query: refetching it would 404 and flash the error state before we navigate back.
+    onSuccess: (_, id) =>
+      qc.invalidateQueries({ queryKey: ["items"], predicate: (q) => !(q.queryKey[1] === "detail" && q.queryKey[2] === id) }),
   });
 }

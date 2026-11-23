@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Alert, View } from "react-native"
-import { NotificationBell } from "../../../components/common/NotificationBell"
 import { QueryState } from "../../../components/common/QueryState"
 import { MapView } from "../../../components/common/MapView"
-import { Text } from "../../../components/ui/Text"
 import { useTheme } from "../../../components/ui/useTheme"
 import { API_MODE, api } from "../../../lib/api/client"
 import fixtures from "../fixtures.json"
@@ -26,10 +24,6 @@ export default function MapScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 48 }}>
-        <Text variant="title">Map</Text>
-        <NotificationBell />
-      </View>
       <QueryState query={query} emptyTitle="No places with a location">
         {(places) => (
           <MapView

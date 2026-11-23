@@ -57,6 +57,15 @@ def main() -> int:
         print("Could not detect a LAN IP; falling back to localhost (phone will not reach the API).", file=sys.stderr)
         ip = "localhost"
     api_url = f"http://{ip}:{port}"
+    override = os.environ.get("EXPO_PUBLIC_API_URL")
+    if tunnel and not override:
+        print(
+            f"warning: --tunnel does not tunnel the API; the phone will call {api_url}, which is not reachable from another network. "
+            "In live mode set EXPO_PUBLIC_API_URL to a public API URL (e.g. `make share`); fixtures mode works as is.",
+            file=sys.stderr,
+        )
+    if override:
+        api_url = override
     if not answers(f"{api_url}/api/health"):
         hint = "" if tunnel else " If the phone is on another network or the IP is wrong, use `make mobile-tunnel`."
         print(f"warning: {api_url}/api/health does not answer (is `make up` running? firewall?).{hint}", file=sys.stderr)
