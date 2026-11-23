@@ -67,3 +67,40 @@ def cache_enabled() -> bool:
 
 def output_language() -> str | None:
     return os.environ.get("OUTPUT_LANGUAGE") or None
+
+
+EMBED_MODELS = {"gemini": "gemini-embedding-001", "ollama": "nomic-embed-text"}
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+
+def embed_backend():
+    """Provider used for embeddings: Gemini (default) or local Ollama."""
+    from backend.llm.providers.openai_compat import OpenAICompatProvider, ollama_url
+
+    name = embed_provider()
+    if name == "gemini":
+        key = os.environ.get("GEMINI_API_KEY")
+        if not key:
+            raise missing_key("GEMINI_API_KEY")
+        return OpenAICompatProvider(name, GEMINI_BASE_URL, key, embed_model=EMBED_MODELS[name])
+    return OpenAICompatProvider(name, ollama_url(), "ollama", embed_model=EMBED_MODELS[name])
+
+
+class _LazyEmbedder:
+    """Defers the embed-provider key check until embed() is actually called."""
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return embed_backend().embed(texts)
+
+
+def get_provider():
+    """Build the configured provider; raises LLMError with a friendly message if no key."""
+    from backend.llm.providers.anthropic import AnthropicProvider
+    from backend.llm.providers.openai_compat import OpenAICompatProvider
+
+    name = provider()
+    key = api_key()
+    default = model_for("fast")
+    if name == "claude":
+        return AnthropicProvider(key, default, embedder=_LazyEmbedder())
+    return OpenAICompatProvider(name, BASE_URLS[name], key, default_model=default)
