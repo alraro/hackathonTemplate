@@ -112,6 +112,8 @@ Data mode: `VITE_API_MODE=fixtures` (default) starts MSW in the browser and answ
 
 ## Building blocks
 
+`/showcase` shows `FileDrop`, `QrCode` and `QrScanner` live; the chat composer mounts `VoiceButton`. Copy those usages into your screens.
+
 | Block | Use for | Needs |
 | --- | --- | --- |
 | `FileDrop` | upload with progress and preview | `POST /api/files`; fixtures via `mocks/files.ts` |

@@ -1,12 +1,16 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { createRoot, type Root } from "react-dom/client"
-import { LngLatBounds, Map as MapLibreMap, NavigationControl, Popup, type GeoJSONSource, type MapLayerMouseEvent } from "maplibre-gl"
+import { LngLatBounds, Map as MapLibreMap, NavigationControl, Popup, setWorkerUrl, type GeoJSONSource, type MapLayerMouseEvent } from "maplibre-gl"
+// MapLibre resolves its worker relative to its own module; Vite pre-bundling moves that module, so point at the real file.
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { formatHex, parse } from "culori"
 import { LocateFixed } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+
+setWorkerUrl(workerUrl)
 
 type Point = { type: "Point"; coordinates: number[] }
 type FeatureCollection = { type: "FeatureCollection"; features: { type: "Feature"; properties: { index: number }; geometry: Point }[] }
@@ -65,12 +69,21 @@ export function MapView<T>({ items, getLatLng, onSelect, center, zoom = 11 }: Ma
     }),
   })
 
+  const [failed, setFailed] = useState<string | null>(null)
+
   // Create the map once.
   useEffect(() => {
     if (!box.current) return
     const primary = token("--primary", "#4f46e5")
     const fg = token("--primary-foreground", "#ffffff")
-    const m = new MapLibreMap({ container: box.current, style: MAP_STYLE_URL, center: center ?? [0, 20], zoom: center ? zoom : 1 })
+    let m: MapLibreMap
+    try {
+      m = new MapLibreMap({ container: box.current, style: MAP_STYLE_URL, center: center ?? [0, 20], zoom: center ? zoom : 1 })
+    } catch (e) {
+      // No WebGL2 (old GPU, VM, some projector laptops): show a message instead of crashing the route.
+      setFailed(e instanceof Error ? e.message : String(e))
+      return
+    }
     map.current = m
     m.addControl(new NavigationControl({ showCompass: false }), "top-right")
     let popupRoot: Root | null = null
@@ -168,6 +181,11 @@ export function MapView<T>({ items, getLatLng, onSelect, center, zoom = 11 }: Ma
   return (
     <div className="relative h-[28rem] w-full overflow-hidden rounded-lg border">
       <div ref={box} className="absolute inset-0" />
+      {failed && (
+        <div className="absolute inset-0 grid place-items-center bg-muted p-6 text-center text-sm text-muted-foreground">
+          The map needs WebGL2, which this browser does not provide. {failed.split(".")[0]}.
+        </div>
+      )}
       <Button type="button" size="sm" variant="secondary" className="absolute left-2 top-2" onClick={locate}>
         <LocateFixed /> My location
       </Button>

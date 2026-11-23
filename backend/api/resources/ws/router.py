@@ -2,7 +2,8 @@
 
 Auth: `?token=<JWT>`. Required when Feature `auth` is on; anonymous otherwise.
 With auth on, a client may only subscribe to its own `notifications:<user_id>`
-and may not publish on any `notifications:` topic (use `notify()` server-side).
+and may not publish on any `notifications:` topic (use `notify()` server-side;
+admins may POST /api/ws/publish to any topic, e.g. to ring the bell in a demo).
 """
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect, status
 from pydantic import ValidationError
@@ -68,7 +69,9 @@ def publish_event(body: PublishRequest, user: OptionalUser) -> ServerMessage:
     """Publish from outside the process (e.g. `make simulate`). Sync, like any router."""
     if _auth_on() and user is None:
         raise HTTPException(401, "Not authenticated", headers={"WWW-Authenticate": "Bearer"})
-    if not _allowed(user.id if user else None, body.topic, publishing=True):
+    # Admins may push to any notifications topic, so a demo can ring the bell from /api/docs or a script.
+    is_admin = user is not None and user.role == "admin"
+    if not is_admin and not _allowed(user.id if user else None, body.topic, publishing=True):
         raise HTTPException(403, "Use notify() server-side for notifications")
     publish(body.topic, body.data)
     return ServerMessage(topic=body.topic, data=body.data)
