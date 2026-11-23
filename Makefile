@@ -97,7 +97,7 @@ db-reset: ## drop and recreate the database schema — run when migrations get m
 	docker compose exec backend python -m backend.db_reset # TODO: filled by the backlog issue that creates backend/db_reset.py
 
 openapi: ## export backend/openapi.json — run after changing API routes
-	docker compose exec backend python -m backend.api.openapi
+	docker compose run --rm -T backend python -m backend.api.openapi
 
 fake: ## generate fake records — run to fill the UI with data
 	docker compose exec backend python -m backend.fake # TODO: filled by the backlog issue that creates backend/fake.py

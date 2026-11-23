@@ -1,6 +1,6 @@
 #!/bin/sh
-# Dev entrypoint: sync deps only when uv.lock changed, then run uvicorn with reload.
-# Any command passed by compose is ignored: the app path lives here.
+# Dev entrypoint: sync deps only when uv.lock changed, then run the given command
+# (e.g. `docker compose run backend python -m backend.api.check`) or, with none, uvicorn with reload.
 set -e
 cd /app/backend
 
@@ -20,4 +20,5 @@ if [ ! -f "$stamp" ] || [ "$(cat "$stamp")" != "$want" ]; then
 fi
 
 cd /app
+[ "$#" -gt 0 ] && exec "$@"
 exec uvicorn backend.api.core.app:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/backend
