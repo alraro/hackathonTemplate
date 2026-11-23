@@ -17,7 +17,7 @@ export default function DetailPage() {
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <QueryState query={query}>
+    <QueryState query={query} empty={{ title: "Item not found", description: "It may have been deleted.", action: <Button asChild variant="outline"><Link to="/items">Back to items</Link></Button> }}>
       {(item) => (
         <>
           <PageHeader

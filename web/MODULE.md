@@ -96,7 +96,7 @@ Data mode: `VITE_API_MODE=fixtures` (default) starts MSW in the browser and answ
 
 ## Add a page
 
-1. Copy `src/screens/_example/` to `src/screens/<x>/` and move `ExamplePage.tsx` to `pages/<X>Page.tsx`. Done when it renders the example rows.
+1. Copy `src/screens/_example/` to `src/screens/<x>/` and rename `pages/ExamplePage.tsx` to `pages/<X>Page.tsx`. Done when it renders the example rows.
 2. Add one entry to `screenRoutes` in `src/app/routes.tsx`, with `nav` if it belongs in the menu. During a hackathon this file is ownerless: file a Router intake. Done when the route and nav entry show.
 3. Write `src/screens/<x>/api.ts` after `crud/api.ts` and put rows in `fixtures.json` (or run `make api-client` once the backend route exists). Done when the page works in both modes.
 4. Wrap every data view in `QueryState` with an `empty` call to action. Done when loading, error with retry, and empty each show.
@@ -118,7 +118,7 @@ Data mode: `VITE_API_MODE=fixtures` (default) starts MSW in the browser and answ
 | `MapView` | markers on a map, `getLatLng` per item | network for the openfreemap tile style |
 | `QrCode`, `QrScanner` | show or scan a code | camera permission to scan |
 | `VoiceButton`, `speak()` | speech in, speech out | `/api/llm/transcribe`; fixtures via `mocks/voice.ts` |
-| `ExportMenu` | CSV, XLSX, print-to-PDF of rows | nothing |
+| `ExportMenu` | CSV, XLSX, print-to-PDF of rows (`DataTable` `exportAll` exports every page) | nothing |
 | `ReportView`, `ReportChart` | render a report model | a report payload |
 | `useChannel(topic)` | live topic over `/api/ws`; invalidates queries `[topic]` | `realtime` Feature |
 | `NotificationBell`, `PresenceBadge` | in-app alerts, who is online | `notifications` / `realtime` |
@@ -139,6 +139,7 @@ Starting points, not Catalog pieces: nothing here is installed or tested. Each i
 
 ## Known gaps
 
-- `_example/ExamplePage.tsx` sits beside `api.ts`, not under `pages/` like the real screens.
 - The `api-client` script in `web/package.json` is a stub; use `make api-client`.
 - The `reports` Feature has blocks (`ReportView`, `ReportChart`) but no screen or frontmatter entry.
+- `ReportChart` shows an empty state per card, but `QueryState` wraps only the whole report: the report is one payload, not one query per chart.
+- `DataTable` export of all rows needs a loader (`exportAll`) per list; only `crud` has one (`fetchAllItems`).

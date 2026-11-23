@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { FileText, RotateCw, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getToken } from "@/lib/api/client"
+import { apiErrorMessage, errorText } from "@/lib/errors"
 import { CameraCapture } from "./CameraCapture"
 
 export type UploadedFile = { id: number; name: string; mime: string; size: number; owner_id: number | null; created_at: string; url: string }
@@ -51,14 +52,13 @@ function send(file: File, ingest: boolean, onProgress: (p: number) => void): Pro
     xhr.onerror = () => reject(new Error("Network error"))
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) return resolve(JSON.parse(xhr.responseText))
-      let msg = `Upload failed (${xhr.status})`
+      let parsed: unknown
       try {
-        const d = JSON.parse(xhr.responseText)?.detail
-        if (typeof d === "string") msg = d
+        parsed = JSON.parse(xhr.responseText)
       } catch {
-        /* keep the default message */
+        /* no JSON body: keep the default message */
       }
-      reject(new Error(msg))
+      reject(new Error(apiErrorMessage(parsed, `Upload failed (${xhr.status})`)))
     }
     const body = new FormData()
     body.append("file", file)
@@ -87,7 +87,7 @@ export function FileDrop({ onUploaded, accept = "image/*,.pdf", maxSize = 20_000
       patch(item.key, { progress: 100 })
       onUploaded([result])
     } catch (e) {
-      patch(item.key, { error: e instanceof Error ? e.message : "Upload failed" })
+      patch(item.key, { error: errorText(e, "Upload failed") })
     }
   }
 

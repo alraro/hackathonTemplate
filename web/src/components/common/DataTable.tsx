@@ -16,12 +16,14 @@ type DataTableProps<T extends RowData> = {
   onRowClick?: (row: T) => void
   /** Filename (no extension) for the Export button above the table; false hides it. Columns with an accessorKey and a string header are exported. */
   exportName?: string | false
+  /** Loads every row for the export (all pages). Without it the export covers only the rows shown. */
+  exportAll?: () => Promise<T[]>
   /** Server-side pagination: pass it to show the pager. */
   pagination?: { offset: number; limit: number; total: number; onOffsetChange: (offset: number) => void }
 }
 
 /** shadcn table driven by TanStack Table. Wrap it in <QueryState> at the call site. */
-export function DataTable<T extends RowData>({ columns, data, getRowId, onRowClick, exportName = "export", pagination }: DataTableProps<T>) {
+export function DataTable<T extends RowData>({ columns, data, getRowId, onRowClick, exportName = "export", exportAll, pagination }: DataTableProps<T>) {
   const table = useTable({ features, columns, data, getRowId })
   const from = pagination && pagination.total > 0 ? pagination.offset + 1 : 0
   const to = pagination ? Math.min(pagination.offset + pagination.limit, pagination.total) : 0
@@ -35,7 +37,7 @@ export function DataTable<T extends RowData>({ columns, data, getRowId, onRowCli
     <div className="space-y-3">
       {exportName && exportColumns.length > 0 ? (
         <div className="flex justify-end" data-no-print>
-          <ExportMenu rows={data as Record<string, unknown>[]} columns={exportColumns} filename={exportName} />
+          <ExportMenu rows={exportAll ? () => exportAll() as Promise<Record<string, unknown>[]> : (data as Record<string, unknown>[])} columns={exportColumns} filename={exportName} />
         </div>
       ) : null}
       <div className="rounded-lg border">

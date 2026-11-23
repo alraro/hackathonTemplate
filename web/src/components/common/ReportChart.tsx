@@ -1,5 +1,7 @@
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, Scatter, ScatterChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { EmptyState } from "./EmptyState"
 
 export type ReportChartModel = {
   id: string
@@ -10,9 +12,10 @@ export type ReportChartModel = {
   data: Record<string, unknown>[]
 }
 
-// Colours come from the chart tokens --chart-1..5; the fallbacks keep charts readable if a theme omits them.
-const FALLBACK = ["oklch(0.65 0.19 255)", "oklch(0.7 0.15 160)", "oklch(0.75 0.15 80)", "oklch(0.65 0.2 25)", "oklch(0.6 0.2 310)"]
-const color = (i: number) => `var(--chart-${(i % 5) + 1}, ${FALLBACK[i % 5]})`
+// Colours come from the chart tokens --chart-1..5, handed to shadcn's ChartContainer through a ChartConfig.
+const color = (i: number) => `var(--chart-${(i % 5) + 1})`
+const configOf = (series: ReportChartModel["series"]): ChartConfig =>
+  Object.fromEntries(series.map((s, i) => [s.key, { label: s.label, color: color(i) }]))
 
 function Plot({ chart }: { chart: ReportChartModel }) {
   const { kind, x, series, data } = chart
@@ -21,16 +24,16 @@ function Plot({ chart }: { chart: ReportChartModel }) {
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
       <XAxis dataKey={x} tickLine={false} axisLine={false} interval={0} angle={data.length > 6 ? -30 : 0} textAnchor={data.length > 6 ? "end" : "middle"} height={data.length > 6 ? 70 : 30} tick={{ fontSize: 11 }} />
       <YAxis tickLine={false} axisLine={false} width={44} tick={{ fontSize: 11 }} />
-      <Tooltip />
-      {series.length > 1 ? <Legend /> : null}
+      <ChartTooltip content={<ChartTooltipContent />} />
+      {series.length > 1 ? <ChartLegend content={<ChartLegendContent />} /> : null}
     </>
   )
   if (kind === "pie") {
     const s = series[0]
     return (
       <PieChart>
-        <Tooltip />
-        <Legend />
+        <ChartTooltip content={<ChartTooltipContent nameKey={x} />} />
+        <ChartLegend content={<ChartLegendContent nameKey={x} />} />
         <Pie data={data} dataKey={s.key} nameKey={x} label>
           {data.map((_, i) => (
             <Cell key={i} fill={color(i)} />
@@ -66,19 +69,22 @@ function Plot({ chart }: { chart: ReportChartModel }) {
   )
 }
 
-/** Renders any report Chart (line|bar|area|scatter|pie) with no per-chart code. */
+/** Renders any report Chart (line|bar|area|scatter|pie) with no per-chart code, inside shadcn's ChartContainer. */
 export function ReportChart({ chart }: { chart: ReportChartModel }) {
+  const empty = chart.data.length === 0 || chart.series.length === 0
   return (
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{chart.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-64 w-full" role="img" aria-label={chart.title}>
-          <ResponsiveContainer width="100%" height="100%">
+        {empty ? (
+          <EmptyState title="No data" description="This chart has no points yet." />
+        ) : (
+          <ChartContainer config={configOf(chart.series)} className="aspect-auto h-64 w-full" role="img" aria-label={chart.title}>
             {Plot({ chart })}
-          </ResponsiveContainer>
-        </div>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   )

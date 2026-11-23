@@ -1,5 +1,4 @@
-import { useEffect } from "react"
-import { useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -29,8 +28,8 @@ export default function FormPage() {
 
   if (id === undefined) return <ItemForm title={title} />
   return (
-    <QueryState query={existing}>
-      {(item) => <ItemForm title={title} id={id} initial={item as Values} />}
+    <QueryState query={existing} empty={{ title: "Item not found", description: "It may have been deleted.", action: <Button asChild variant="outline"><Link to="/items">Back to items</Link></Button> }}>
+      {(item) => <ItemForm key={item.id} title={title} id={id} initial={item as Values} />}
     </QueryState>
   )
 }
@@ -39,7 +38,6 @@ function ItemForm({ title, id, initial = blank }: { title: string; id?: number; 
   const navigate = useNavigate()
   const save = useSaveItem(id)
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: initial })
-  useEffect(() => form.reset(initial), [form, initial])
 
   const onSubmit = form.handleSubmit((values) =>
     save.mutate(values as Parameters<typeof save.mutate>[0], {

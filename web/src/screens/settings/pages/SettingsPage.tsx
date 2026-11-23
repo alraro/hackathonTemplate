@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { errorText } from "@/lib/errors"
 import { useSession } from "@/lib/session"
 import theme from "@/design/theme.json"
 
@@ -22,7 +23,7 @@ function ProfileCard() {
       await update({ name })
       toast.success("Profile saved")
     } catch (e) {
-      form.setError("root", { message: e instanceof Error ? e.message : "Could not save" })
+      form.setError("root", { message: errorText(e, "Could not save") })
     }
   })
   const rootError = form.formState.errors.root?.message

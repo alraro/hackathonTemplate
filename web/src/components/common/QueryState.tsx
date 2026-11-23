@@ -3,6 +3,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { TriangleAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { errorText } from "@/lib/errors"
 import { EmptyState } from "./EmptyState"
 
 type QueryStateProps<T> = {
@@ -31,7 +32,7 @@ export function QueryState<T>({ query, empty, children }: QueryStateProps<T>) {
       <EmptyState
         icon={TriangleAlert}
         title="Something went wrong"
-        description={query.error instanceof Error ? query.error.message : "Please try again."}
+        description={errorText(query.error, "Please try again.")}
         action={
           <Button variant="outline" onClick={() => void query.refetch()}>
             Retry

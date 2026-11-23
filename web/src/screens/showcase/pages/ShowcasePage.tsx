@@ -1,4 +1,4 @@
-import { useEffect, useMemo, type ComponentType, type ReactNode } from "react"
+import { useEffect, useMemo, type ReactNode } from "react"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "react-router"
 import { toast } from "sonner"
@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { effects } from "@/components/effects"
-import { effects2 } from "@/components/effects/index.2"
 import { applyPreset, type Preset } from "@/lib/applyPreset"
 import identity from "@/design/identity.json"
 import theme from "@/design/theme.json"
@@ -18,8 +17,6 @@ import "@/design/generated/preset-fonts.css" // fonts of every preset, so the sw
 
 const modules = import.meta.glob<Preset>("/src/design/presets/*.json", { eager: true, import: "default" })
 const presets: Record<string, Preset> = Object.fromEntries(Object.values(modules).map((p) => [p.name, p]))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const registry: Record<string, ComponentType<any>> = { ...effects, ...effects2 }
 
 const SWATCHES = ["background", "foreground", "primary", "secondary", "muted", "accent", "destructive", "border"]
 const SCALE = [
@@ -41,7 +38,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 /** Demo for one preset effect; each effect has its own props. */
 function EffectDemo({ name }: { name: string }) {
-  const C = registry[name]
+  const C = effects[name]
   if (!C) return <p className="text-sm text-muted-foreground">Unknown effect: {name}</p>
   switch (name) {
     case "SplitTextReveal":

@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router"
 import features from "@features"
 import { api, getToken, setToken } from "@/lib/api/client"
 import type { components } from "@/lib/api/schema"
+import { apiErrorMessage } from "@/lib/errors"
 
 export type SessionUser = components["schemas"]["UserPublic"]
 type UserUpdate = components["schemas"]["UserUpdate"]
@@ -36,13 +37,6 @@ function writeUser(user: SessionUser | null) {
   } catch {
     /* storage unavailable */
   }
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  const detail = (error as { detail?: unknown } | undefined)?.detail
-  if (typeof detail === "string") return detail
-  if (Array.isArray(detail) && typeof detail[0]?.msg === "string") return detail[0].msg
-  return fallback
 }
 
 const SessionContext = createContext<Session | null>(null)
@@ -84,7 +78,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const signIn = useCallback<Session["signIn"]>(
     async (email, password) => {
       const { data, error } = await api.POST("/api/auth/login", { body: { email, password } })
-      if (!data) throw new Error(errorMessage(error, "Invalid email or password"))
+      if (!data) throw new Error(apiErrorMessage(error, "Invalid email or password"))
       store(data.access_token, data.user)
     },
     [store],
@@ -93,7 +87,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const signUp = useCallback<Session["signUp"]>(
     async (body) => {
       const { data, error } = await api.POST("/api/auth/signup", { body })
-      if (!data) throw new Error(errorMessage(error, "Could not create the account"))
+      if (!data) throw new Error(apiErrorMessage(error, "Could not create the account"))
       store(data.access_token, data.user)
     },
     [store],
@@ -104,7 +98,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const update = useCallback<Session["update"]>(
     async (changes) => {
       const { data, error } = await api.PATCH("/api/auth/me", { body: changes })
-      if (!data) throw new Error(errorMessage(error, "Could not update the profile"))
+      if (!data) throw new Error(apiErrorMessage(error, "Could not update the profile"))
       store(getToken(), data)
     },
     [store],

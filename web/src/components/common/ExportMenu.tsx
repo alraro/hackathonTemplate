@@ -1,12 +1,19 @@
 import { Download } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { errorText } from "@/lib/errors"
 import "@/styles/print.css"
 
 export type ExportColumn = { key: string; label: string }
 export type ExportRow = Record<string, unknown>
 
-type ExportMenuProps = { rows: ExportRow[]; columns: ExportColumn[]; filename: string }
+type ExportMenuProps = {
+  /** The rows, or a loader called on export (use it to fetch every page, not only the visible one). */
+  rows: ExportRow[] | (() => Promise<ExportRow[]>)
+  columns: ExportColumn[]
+  filename: string
+}
 
 const cellText = (v: unknown) => (v === null || v === undefined ? "" : typeof v === "object" ? JSON.stringify(v) : String(v))
 
@@ -40,6 +47,14 @@ async function exportXlsx(rows: ExportRow[], columns: ExportColumn[], filename: 
 
 /** Client-side export of the given rows: CSV, XLSX, or PDF through the browser print dialog (see styles/print.css). */
 export function ExportMenu({ rows, columns, filename }: ExportMenuProps) {
+  const resolve = async () => (typeof rows === "function" ? await rows() : rows)
+  const run = (job: (all: ExportRow[]) => void | Promise<void>) => async () => {
+    try {
+      await job(await resolve())
+    } catch (e) {
+      toast.error(errorText(e, "Export failed"))
+    }
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,10 +64,10 @@ export function ExportMenu({ rows, columns, filename }: ExportMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" data-no-print>
         {/* BOM so Excel reads the CSV as UTF-8. */}
-        <DropdownMenuItem onSelect={() => download(new Blob(["﻿" + toCsv(rows, columns)], { type: "text/csv;charset=utf-8" }), `${filename}.csv`)}>
+        <DropdownMenuItem onSelect={() => void run((all) => download(new Blob(["﻿" + toCsv(all, columns)], { type: "text/csv;charset=utf-8" }), `${filename}.csv`))()}>
           CSV
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => void exportXlsx(rows, columns, filename)}>XLSX</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => void run((all) => exportXlsx(all, columns, filename))()}>XLSX</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => window.print()}>PDF (print)</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

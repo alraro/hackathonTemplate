@@ -5,6 +5,7 @@ import type { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { errorText } from "@/lib/errors"
 
 export type AuthField<T extends FieldValues> = { name: Path<T>; label: string; type?: string; autoComplete?: string }
 
@@ -29,7 +30,7 @@ export function AuthForm<T extends FieldValues>({
     try {
       await onSubmit(values)
     } catch (e) {
-      form.setError("root", { message: e instanceof Error ? e.message : "Something went wrong" })
+      form.setError("root", { message: errorText(e, "Something went wrong") })
     }
   })
   const rootError = form.formState.errors.root?.message
