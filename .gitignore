@@ -9,3 +9,7 @@ backend/data/outputs/*/predictions.csv
 .expo/
 mobile/.expo/
 backend/.cache/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
