@@ -1,9 +1,9 @@
 {
-  "landing": false,
+  "landing": true,
   "auth": true,
   "dashboard": false,
   "crud": true,
-  "settings": false,
+  "settings": true,
   "showcase": false,
   "chat": false,
   "rag": false,
