@@ -11,7 +11,7 @@ MODELS: dict[str, tuple[str, ...]] = {
     "cluster": ("kmeans", "hdbscan", "gmm"),
     "forecast": ("auto_ets", "auto_arima", "naive"),
     "anomaly": ("isolation_forest", "lof"),
-    "vision": (),  # TODO(#65)
+    "vision": ("clip-vit-b32", "rt-detr"),
     "_example": ("example",),
 }
 

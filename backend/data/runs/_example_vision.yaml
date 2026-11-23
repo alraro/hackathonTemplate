@@ -1,0 +1,6 @@
+pipeline: vision
+source: datasets/vision_sample
+model: clip-vit-b32
+params:
+  task: classify
+  # labels: [a photo of a circle, a photo of a square]  # zero-shot when the folder has no class sub-folders
