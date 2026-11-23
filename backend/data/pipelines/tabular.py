@@ -12,7 +12,13 @@ from sklearn.ensemble import (
 )
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, mean_absolute_error, r2_score
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    f1_score,
+    mean_absolute_error,
+    r2_score,
+)
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.pipeline import make_pipeline

@@ -9,6 +9,7 @@ ENV VISION=${VISION} \
     UV_LINK_MODE=copy \
     PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
     PATH=/app/backend/.venv/bin:$PATH
 
 COPY . /app/backend

@@ -7,7 +7,8 @@
                                                       bring a Module back from the pre-Prune SHA
 
 Manifest keys used: `module`, `lane`, `requires`, `profile` (str, list or null; defaults to the
-module name), optional `paths` (defaults to the Module directory) and optional
+module name), optional `paths` (defaults to the Module directory), optional `extras`/`extra` (pyproject
+extras, default the module name) and optional
 `npm_deps` ({package.json path: [names]}). `pitch` is never pruned. Features are never pruned.
 """
 from __future__ import annotations
@@ -135,10 +136,18 @@ def extra_span(lines: list[str], name: str) -> tuple[int, int] | None:
     return None
 
 
-def flags_for_file(rel: str, lines: list[str], names: list[str]) -> tuple[list[str | None], list[str]]:
+def module_extras(m: dict) -> list[str]:
+    """pyproject extras a Module owns: `extras` (list), `extra` (str), else its own name."""
+    e = m.get("extras", m.get("extra", m["module"]))
+    return [e] if isinstance(e, str) else list(e or [])
+
+
+def flags_for_file(
+    rel: str, lines: list[str], names: list[str], extras: list[str] | None = None
+) -> tuple[list[str | None], list[str]]:
     owner, notes = mine_flags(lines, names, rel)
     if rel == "backend/pyproject.toml":
-        for n in names:
+        for n in extras if extras is not None else names:
             if span := extra_span(lines, n):
                 for k in range(*span):
                     owner[k] = n
@@ -217,7 +226,7 @@ def build_prune_plan(names: list[str]) -> dict:
         if text is None:
             continue
         lines = text.splitlines(keepends=True)
-        owner, found = flags_for_file(rel, lines, names)
+        owner, found = flags_for_file(rel, lines, names, [e for m in gone for e in module_extras(m)])
         if not any(owner):
             continue
         edits[rel] = "".join(l for l, o in zip(lines, owner) if not o)
@@ -278,6 +287,19 @@ def write_catalog(dry: bool) -> None:
     print("  regenerated CATALOG.md")
 
 
+def remove(t: Path) -> None:
+    """Delete a file or tree. Containers leave root-owned files (__pycache__, dist/): retry in Docker."""
+    try:
+        shutil.rmtree(t) if t.is_dir() else t.unlink()
+    except PermissionError:
+        if not shutil.which("docker"):
+            raise
+        subprocess.run(
+            ["docker", "run", "--rm", "-v", f"{t.parent}:/w", "alpine", "rm", "-rf", f"/w/{t.name}"],
+            check=True,
+        )
+
+
 def prune(names: list[str], dry: bool) -> int:
     try:
         plan = build_prune_plan(names)
@@ -298,13 +320,15 @@ def prune(names: list[str], dry: bool) -> int:
         write_catalog(True)
         return 0
     for p in plan["deletes"]:
-        t = ROOT / p
-        shutil.rmtree(t) if t.is_dir() else t.unlink()
+        remove(ROOT / p)
     for rel, text in plan["edits"].items():
         (ROOT / rel).write_text(text, encoding="utf-8")
     delete_labels(plan["labels"], False)
     write_catalog(False)
-    print("done. Run `make check`.")
+    if (ROOT / "backend" / "api").is_dir():
+        print("done. Run `make openapi api-client` (pruned routes change the Contract), then `make check`.")
+    else:
+        print("done. Run `make check`.")
     return 0
 
 
@@ -361,12 +385,17 @@ def restore(name: str, sha: str, dry: bool) -> int:
     for rel in ls:
         if rel == SELF or under(rel, paths) or not (ROOT / rel).is_file():
             continue
-        shown = git("show", f"{sha}:{rel}", check=False)
         cur_text = read_text(ROOT / rel)
-        if shown.returncode != 0 or cur_text is None:
+        if cur_text is None:  # binary or unreadable: never carries markers
             continue
-        old = shown.stdout.splitlines(keepends=True)
-        owner, notes = flags_for_file(rel, old, [name])
+        shown = subprocess.run(["git", "show", f"{sha}:{rel}"], cwd=ROOT, capture_output=True)
+        try:
+            old = shown.stdout.decode("utf-8").splitlines(keepends=True)
+        except UnicodeDecodeError:
+            continue
+        if shown.returncode != 0:
+            continue
+        owner, notes = flags_for_file(rel, old, [name], module_extras(m))
         if not any(owner):
             continue
         new = "".join(merge_back(old, cur_text.splitlines(keepends=True), owner))
@@ -377,12 +406,13 @@ def restore(name: str, sha: str, dry: bool) -> int:
                 (ROOT / rel).write_text(new, encoding="utf-8")
     # COMPOSE_PROFILES
     order = profile_line_order(git("show", f"{sha}:.env.example", check=False).stdout)
+    make_order = profile_line_order(git("show", f"{sha}:Makefile", check=False).stdout)
     for rel in [*ENV_FILES, "Makefile"]:
         f = ROOT / rel
         text = read_text(f) if f.is_file() else None
         if text is None:
             continue
-        new = rewrite_profiles(text, add=module_profiles(m), order=order if rel != "Makefile" else [])
+        new = rewrite_profiles(text, add=module_profiles(m), order=make_order if rel == "Makefile" else order)
         if new != text:
             print(f"  {tag}edit {rel}: COMPOSE_PROFILES adds {', '.join(module_profiles(m))}")
             if not dry:

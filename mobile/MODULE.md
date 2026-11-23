@@ -10,39 +10,39 @@ keep_when:
 features:
   - id: auth
     gives: sign-in screens and session storage
-    entry: mobile/src/features/auth
+    entry: mobile/src/screens/auth
     keep_when: the app has user accounts
   - id: crud
     gives: list, detail and edit screens for an entity
-    entry: mobile/src/app/(tabs)/crud
+    entry: mobile/src/screens/crud
     keep_when: the idea manages records
   - id: settings
     gives: settings tab
-    entry: mobile/src/app/(tabs)/settings
+    entry: mobile/src/screens/settings
     keep_when: the app has user preferences
   - id: showcase
     gives: demo tab of UI components
-    entry: mobile/src/app/(tabs)/showcase
+    entry: mobile/src/screens/showcase
     keep_when: a demo of the design system helps the pitch
   - id: upload
     gives: image and file picker with upload (mobile part)
-    entry: mobile/src/features/upload
+    entry: mobile/src/components/common/ImagePick.tsx
     keep_when: users add photos or files
   - id: realtime
     gives: live updates on screen (mobile part)
-    entry: mobile/src/features/realtime
+    entry: mobile/src/lib/realtime
     keep_when: the idea shows live data
   - id: notifications
     gives: push and in-app notifications (mobile part)
-    entry: mobile/src/features/notifications
+    entry: mobile/src/components/common/NotificationBell.tsx
     keep_when: the app alerts users
   - id: map
     gives: map tab (mobile part)
-    entry: mobile/src/app/(tabs)/map
+    entry: mobile/src/screens/map
     keep_when: the idea is location-based
   - id: qr
     gives: QR scanning (mobile part)
-    entry: mobile/src/features/qr
+    entry: mobile/src/components/common/QrScanner.tsx
     keep_when: the flow scans or shows QR codes
 ---
 
@@ -102,4 +102,3 @@ Android: `scrcpy` over cable. iOS: QuickTime over cable (New Movie Recording, pi
 
 - `src/screens/home/` is a placeholder (a `TODO(#92)` card). Replace it when the idea needs a home screen.
 - `NotificationBell` is mounted only in the map header; mount it in other headers yourself.
-- Feature `entry` paths in the frontmatter for `auth`, `upload`, `realtime`, `notifications`, `qr` point at `src/features/`, which does not exist: the code sits in `src/screens/auth`, `src/components/common/{ImagePick,QrScanner,NotificationBell}` and `src/lib/realtime`.

@@ -43,9 +43,13 @@ def import_models() -> None:
 
 def _table_model(models) -> type[SQLModel] | None:
     for obj in vars(models).values():
-        if isinstance(obj, type) and issubclass(obj, SQLModel) and getattr(obj, "__table__", None) is not None:
-            if obj.__module__ == models.__name__:
-                return obj
+        if (
+            isinstance(obj, type)
+            and issubclass(obj, SQLModel)
+            and getattr(obj, "__table__", None) is not None
+            and obj.__module__ == models.__name__
+        ):
+            return obj
     return None
 
 

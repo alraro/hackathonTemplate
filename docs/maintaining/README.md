@@ -9,6 +9,7 @@ For template maintainers only. `make setup` deletes this folder from team repos.
 | `wayfinder-and-triage.md` | Planning template work, labelling issues, or recording domain terms and ADRs |
 | `upstream-skills.md` | Syncing adapted Matt Pocock skills |
 | `release.md` | Tagging a version, rehearsing, or setting repo settings |
+| `smoke.md` | Proving the whole template works before a release tag |
 
 `writing-for-agents` is a maintainer tool for writing skills and agent-facing docs; the template does not ship it.
 

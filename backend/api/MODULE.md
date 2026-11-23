@@ -3,6 +3,15 @@ module: api
 lane: api
 requires: []
 profile: api
+# api is the backend root: pruning it (only possible with llm and data) removes the whole backend.
+paths:
+  - backend/api
+  - backend/Dockerfile
+  - backend/__init__.py
+  - backend/entrypoint.sh
+  - backend/openapi.json
+  - backend/pyproject.toml
+  - backend/uv.lock
 keep_when:
   - the product needs persistence, accounts or server-side logic
   - a Gate or Rubric asks for a real backend

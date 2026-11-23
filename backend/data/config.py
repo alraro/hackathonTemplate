@@ -60,6 +60,6 @@ def validate_all() -> list[str]:
             p = source_path(cfg)
             if p is not None and not p.exists():
                 errors.append(f"{name}: source '{cfg.source}' not found")
-        except Exception as e:  # pydantic, yaml, registry errors
+        except Exception as e:  # noqa: BLE001 - pydantic, yaml, registry errors
             errors.append(f"{name}: {e}")
     return errors
