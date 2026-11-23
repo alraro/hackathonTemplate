@@ -113,3 +113,10 @@ Every message that is not next Phase is a Change. Name its kind, then follow `CH
 | Question | "what's left?" | answer only, write nothing |
 
 Anything matching no kind is a Question: answer it and ask the user to rephrase if they meant a Change.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

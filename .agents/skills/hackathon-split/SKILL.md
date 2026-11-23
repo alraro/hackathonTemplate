@@ -109,3 +109,10 @@ Consult these in steps 2 and 3; they are decided, apply them as written.
 3. Print the Handoff line, with `<N>` the number of Build issues, spoken in the teammate's chat language (`/hackathon` and paths stay literal): `✅ Task split saved to hackathon/09-split.md: <N> issues created. Everyone: pull main, open a fresh session and run /hackathon.`
 **Done when**: the PR is merged, `status: done` is on `main`, and the Handoff line is the last output.
 **Ask**: none.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

@@ -80,3 +80,10 @@ Handoff lines are written here in English and spoken in the teammate's chat lang
 **Ask**: none.
 
 Handoff: `✅ Brainstorm saved to hackathon/04-ideas.md. Reply "ok" to continue with Pick & Pitch in this session.`
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->

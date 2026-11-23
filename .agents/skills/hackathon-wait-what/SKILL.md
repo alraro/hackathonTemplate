@@ -23,3 +23,10 @@ A Phase skill or the Router calls this skill at an unclear moment; the user neve
 
 **Done when**: the re-pitch holds context, uses short plain sentences and carries no term outside `GLOSSARY.md` that you did not define.
 **Ask**: whether it landed. If not, repeat this step with simpler words.
+
+<!-- sync:footer:start -->
+- Hackathon mode wins: if it conflicts with this skill, follow Hackathon mode.
+- Commit after every step.
+- End with the exact Handoff line, verbatim.
+- When in doubt, ask the user.
+<!-- sync:footer:end -->
