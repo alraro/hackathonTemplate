@@ -16,6 +16,8 @@ export function crudFromFixtures(base: string, fixtures: Row[]): RequestHandler[
   const rows: Row[] = fixtures.map((r) => ({ ...r }))
   const find = (id: string) => rows.findIndex((r) => String(r.id) === id)
   let next = rows.reduce((m, r) => Math.max(m, Number(r.id) || 0), 0) + 1
+  // Seed rows carry no id (the backend assigns them): number the ones without, like the database would.
+  for (const r of rows) if (r.id === undefined) r.id = next++
 
   return [
     http.get(base, ({ request }) => {
