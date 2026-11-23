@@ -23,7 +23,7 @@ Accept free-form changes to this artifact in place (for example "Ben has a GPU",
 
 **Read**: `scripts/setup.py` (the docstring only), `.agents/skills/hackathon-kickoff/template.md`.
 **Do**:
-1. Run `make setup`. It checks `gh auth`, creates the `hackathon/setup` branch, creates `.env` with `SECRET_KEY`, creates labels, sets squash-only merges and deletes `docs/maintaining/`.
+1. Run `make setup`. It checks `gh auth`, creates the `hackathon/setup` branch, creates `.env` with `SECRET_KEY`, creates labels, sets squash-only merges and deletes the maintainer-only `docs/maintaining/` and `evals/`.
 2. On failure, show the error and its fix (for example `gh auth login`), then rerun.
 3. Create `hackathon/00-kickoff.md` from the template as `draft`.
 **Done when**: `make setup` exited 0, `git branch --show-current` prints `hackathon/setup`, and the artifact exists as `draft`.

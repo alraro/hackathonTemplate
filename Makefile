@@ -33,13 +33,13 @@ doctor: ## check Docker, ports and .env — run when something does not start
 up: ## start the stack detached and print URLs — run to begin work (only=web for one Module)
 	$(DC) up -d --wait
 	@echo "web: http://localhost:$(WEB_PORT)"
-	@echo "api: http://localhost:$(API_PORT)/docs"
+	@echo "api: http://localhost:$(API_PORT)/api/docs"
 
 down: ## stop every service incl. demo/share, keep data — run when you are done for the day
 	$(DCALL) down --remove-orphans
 
-restart: ## restart services (svc= for one) — run after changing env or compose
-	$(DCALL) restart $(svc)
+restart: ## recreate services so .env and compose changes apply (svc= for one) — run after changing env or compose
+	$(DC) up -d --force-recreate --wait $(svc)
 
 logs: ## follow logs (svc= for one) — run to debug a service
 	$(DCALL) logs -f --tail=100 $(svc)

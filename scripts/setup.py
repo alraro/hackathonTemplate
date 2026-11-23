@@ -24,6 +24,7 @@ TEMPLATE_SLUG = "alraro/hackathonTemplate"
 BRANCH = "hackathon/setup"
 LABELS_FILE = ROOT / ".github" / "labels.json"
 MAINTAINING = ROOT / "docs" / "maintaining"
+EVALS = ROOT / "evals"
 
 DRY = False
 
@@ -102,12 +103,14 @@ def setup_repo_settings() -> None:
 
 
 def remove_maintaining() -> None:
-    """Delete docs/maintaining/ in the first commit of the setup branch."""
-    if not MAINTAINING.exists():
+    """Delete maintainer-only paths (docs/maintaining/, evals/) in the first commit of the setup branch."""
+    paths = [p for p in (MAINTAINING, EVALS) if p.exists()]
+    if not paths:
         return
-    run(["git", "rm", "-rq", "docs/maintaining"])
-    if not DRY and MAINTAINING.exists():
-        shutil.rmtree(MAINTAINING)
+    run(["git", "rm", "-rq", *(str(p.relative_to(ROOT)) for p in paths)])
+    for p in paths:
+        if not DRY and p.exists():
+            shutil.rmtree(p)
     run(["git", "commit", "-q", "-m", "chore: remove maintainer docs"])
 
 
