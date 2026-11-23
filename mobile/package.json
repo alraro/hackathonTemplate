@@ -9,6 +9,8 @@
     "check": "tsc --noEmit && (npx expo-doctor || echo 'expo-doctor: warnings only')"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
     "@tanstack/react-query": "^5.107.1",
     "expo": "~58.0.26",
     "expo-camera": "~58.0.14",

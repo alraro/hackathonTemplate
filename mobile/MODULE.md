@@ -94,6 +94,10 @@ Only for a Gate that demands an installable app. Run `eas build -p android --pro
 
 `expo-audio` is not installed yet: `npx expo install expo-audio` in `mobile/`. Record, then `POST /api/llm/transcribe` (multipart `file`, optional `language`) through `api` after `make api-client`. Done when spoken text comes back in the screen.
 
+### Change fonts
+
+Fonts come from `theme.ts` `fonts` (family names from `design/theme.json`) and load through `expo-font` in `src/app/fonts.ts`. After the Design Phase changes a font: (1) `make theme`; (2) in `mobile/`, `npx expo install @expo-google-fonts/<family>` (kebab-case of the family, e.g. `@expo-google-fonts/space-grotesk`); (3) add `"<Family name from theme.ts>": <Export>_400Regular` to `available` in `src/app/fonts.ts`. A family with no mapping falls back to the system font with a console warning. Only the 400 file is loaded, so bold text is synthesized. Done when text shows the new family in Expo Go.
+
 ### Showing on stage
 
 Android: `scrcpy` over cable. iOS: QuickTime over cable (New Movie Recording, pick the phone). Keep the phone in hand as the fallback. Done when the projector shows the live app.
@@ -102,6 +106,4 @@ Android: `scrcpy` over cable. iOS: QuickTime over cable (New Movie Recording, pi
 
 - `HomeScreen` lists the enabled tabs from `tabs.ts`; restyle it when the idea needs a real home.
 - `NotificationBell` sits in the tab header (`app/(tabs)/_layout.tsx`) for the signed-in user; with auth off there is no user id, so no bell.
-- Fonts: `providers.tsx` loads nothing (`fontFiles` is empty), so text uses the system font. Add the `.ttf` files and map them by theme font name there (needs the files offline).
-- Live map: `ItemRead` has no `lat`/`lng`, so the map is empty against the real API until your resource has them.
 - `make mobile-tunnel` does not tunnel the API; in live mode set `EXPO_PUBLIC_API_URL` to a public URL.

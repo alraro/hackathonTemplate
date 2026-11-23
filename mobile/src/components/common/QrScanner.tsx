@@ -2,7 +2,9 @@ import { useRef, useState } from "react"
 import { Linking, Vibration, View } from "react-native"
 import { CameraView, useCameraPermissions } from "expo-camera"
 import { Button } from "../ui/Button"
+import { colors as themeColors } from "../../../theme"
 import { Text } from "../ui/Text"
+import { useTheme } from "../ui/useTheme"
 
 export type QrScannerProps = {
   onScan: (text: string) => void
@@ -11,6 +13,7 @@ export type QrScannerProps = {
 }
 
 export function QrScanner({ onScan, once }: QrScannerProps) {
+  const { radius } = useTheme()
   const [permission, requestPermission] = useCameraPermissions()
   const [done, setDone] = useState(false)
   const last = useRef<string | null>(null)
@@ -39,7 +42,7 @@ export function QrScanner({ onScan, once }: QrScannerProps) {
   }
 
   return (
-    <View style={{ aspectRatio: 1, width: "100%", borderRadius: 16, overflow: "hidden" }}>
+    <View style={{ aspectRatio: 1, width: "100%", borderRadius: radius, overflow: "hidden" }}>
       <CameraView
         style={{ flex: 1 }}
         facing="back"
@@ -47,7 +50,8 @@ export function QrScanner({ onScan, once }: QrScannerProps) {
         onBarcodeScanned={done ? undefined : handle}
       />
       <View pointerEvents="none" style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, alignItems: "center", justifyContent: "center" }}>
-        <View style={{ width: "65%", aspectRatio: 1, borderWidth: 3, borderColor: "#ffffff", borderRadius: 16 }} />
+        <View style={{ width: "65%", aspectRatio: 1, borderWidth: 3, // Fixed light-palette background (white): the reticle sits on the camera feed, which ignores the colour scheme.
+          borderColor: themeColors.light.background, borderRadius: radius }} />
       </View>
       {done ? (
         <View style={{ position: "absolute", bottom: 8, left: 8, right: 8 }}>

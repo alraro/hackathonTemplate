@@ -18,7 +18,7 @@ export function Button({ label, variant = "primary", loading, disabled, onPressI
   const palette = {
     primary: { bg: colors.primary, fg: colors["primary-foreground"] },
     secondary: { bg: colors.secondary, fg: colors["secondary-foreground"] },
-    destructive: { bg: colors.destructive, fg: "#ffffff" },
+    destructive: { bg: colors.destructive, fg: colors["destructive-foreground"] },
     ghost: { bg: "transparent", fg: colors.foreground },
   }[variant];
   const off = disabled || loading;

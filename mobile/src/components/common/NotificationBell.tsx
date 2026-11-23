@@ -1,15 +1,17 @@
 import { Bell } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
 import { FlatList, Modal, Pressable, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useChannel } from "../../lib/realtime/useChannel"
 import { Text } from "../ui/Text"
-import { useTheme } from "../ui/useTheme"
+import { MIN_TARGET, useTheme } from "../ui/useTheme"
 
 type Note = { id: number; title: string; body: string; read: boolean }
 
 /** Header-right bell: unread count from `notifications:<userId>`, modal list, small in-app banner for new ones. */
 export function NotificationBell({ userId = "me" }: { userId?: string | number }) {
   const { colors, radius } = useTheme()
+  const insets = useSafeAreaInsets()
   const [notes, setNotes] = useState<Note[]>([])
   const [open, setOpen] = useState(false)
   const [banner, setBanner] = useState<Note | null>(null)
@@ -52,14 +54,14 @@ export function NotificationBell({ userId = "me" }: { userId?: string | number }
               right: 2,
               minWidth: 18,
               height: 18,
-              borderRadius: 9,
+              borderRadius: radius,
               paddingHorizontal: 4,
               backgroundColor: colors.primary,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Text style={{ color: colors["primary-foreground"], fontSize: 11 }}>{unread > 99 ? "99+" : unread}</Text>
+            <Text variant="caption" style={{ color: colors["primary-foreground"] }}>{unread > 99 ? "99+" : unread}</Text>
           </View>
         )}
       </Pressable>
@@ -70,7 +72,7 @@ export function NotificationBell({ userId = "me" }: { userId?: string | number }
           accessibilityLiveRegion="polite"
           style={{
             position: "absolute",
-            top: 48,
+            top: MIN_TARGET, // just below the bell
             right: 0,
             width: 240,
             padding: 10,
@@ -90,7 +92,7 @@ export function NotificationBell({ userId = "me" }: { userId?: string | number }
       )}
 
       <Modal visible={open} animationType="slide" onRequestClose={() => setOpen(false)}>
-        <View style={{ flex: 1, backgroundColor: colors.background, padding: 16, paddingTop: 48, gap: 12 }}>
+        <View style={{ flex: 1, backgroundColor: colors.background, padding: 16, paddingTop: insets.top + 16, gap: 12 }}>
           <Text variant="title">Notifications</Text>
           <FlatList
             data={notes}
