@@ -144,7 +144,13 @@ export const duration = ${json(motion.duration)} as const // milliseconds
 
 // --- pitch/theme.css ---
 if (fs.existsSync(path.join(repo, "pitch"))) {
+  // The deck does not install @fontsource packages, so load the same ones from the jsDelivr npm CDN.
+  const pitchFonts = [...new Set(Object.values(fonts).map((x) => x.package))]
+    .map((p) => `@import url("https://cdn.jsdelivr.net/npm/${p}/index.css");`)
+    .join("\n")
   const pitchCss = `${cssHeader}
+
+${pitchFonts}
 
 :root {
   --radius: ${theme.radius};

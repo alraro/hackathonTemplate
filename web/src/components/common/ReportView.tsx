@@ -11,7 +11,7 @@ export type ReportModel = {
   summary: string
 }
 
-/** Metrics as KPI tiles, charts in a responsive grid (1 col, 2 at md, 3 at lg), then the summary. */
+/** Metrics as KPI tiles, charts in a responsive grid (1 col, 2 at lg, 3 at 2xl), then the summary. */
 export function ReportView({ report }: { report: ReportModel }) {
   const metrics = Object.entries(report.metrics)
   return (
@@ -32,7 +32,7 @@ export function ReportView({ report }: { report: ReportModel }) {
           ))}
         </div>
       ) : null}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
         {report.charts.map((c) => (
           <ReportChart key={c.id} chart={c} />
         ))}

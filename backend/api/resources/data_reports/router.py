@@ -1,9 +1,15 @@
 from fastapi import APIRouter, HTTPException
 
 from backend.api.resources.data_reports.models import Report
-from backend.data.api import load_report
+from backend.data.api import list_runs, load_report
 
 router = APIRouter(prefix="/api/data/reports", tags=["data_reports"])
+
+
+@router.get("", name="list")
+def list_reports() -> list[str]:
+    """Runs that have a report (outputs/<run>/report.json), for the dashboard's run picker."""
+    return list_runs()
 
 
 @router.get("/{run}", name="get")

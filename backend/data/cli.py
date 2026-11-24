@@ -27,7 +27,9 @@ def main(argv: list[str] | None = None) -> int:
             report = runner.run(config.load_config(args.name))
             print(report.summary)
             return 0
-        print(eda_mod.eda(args.csv))
+        out = eda_mod.eda(args.csv)
+        # The container mounts the repo at /app: print the path the user can open on the host.
+        print(f"{str(out).removeprefix('/app/')}  (also in the web dashboard)")
         return 0
     except ValueError as e:
         print(e, file=sys.stderr)

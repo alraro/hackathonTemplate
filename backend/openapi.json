@@ -1380,6 +1380,32 @@
         ]
       }
     },
+    "/api/data/reports": {
+      "get": {
+        "description": "Runs that have a report (outputs/<run>/report.json), for the dashboard's run picker.",
+        "operationId": "data_reports_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Response Data Reports List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List",
+        "tags": [
+          "data_reports"
+        ]
+      }
+    },
     "/api/data/reports/{run}": {
       "get": {
         "description": "Serve the committed report.json of a run (read-only; no live training).",

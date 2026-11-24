@@ -27,6 +27,8 @@ data = [
 ]
 vision = [
     "torch",
+    # Explicit so it comes from the same CPU index as torch (the PyPI build mismatches: `torchvision::nms does not exist`).
+    "torchvision",
     "open_clip_torch",
     "transformers",
     "opencv-python-headless",
@@ -40,6 +42,7 @@ package = false
 
 [tool.uv.sources]
 torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
+torchvision = { index = "pytorch-cpu", marker = "sys_platform == 'linux'" }
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
