@@ -2,10 +2,12 @@ import { useState } from "react"
 import { PageHeader } from "@/components/common/PageHeader"
 import { QueryState } from "@/components/common/QueryState"
 import { ReportView } from "@/components/common/ReportView"
-import { RUNS, useReport } from "../api"
+import { useReport, useRuns } from "../api"
 
 export default function DashboardPage() {
-  const [run, setRun] = useState(RUNS[0] ?? "")
+  const runs = useRuns().data ?? []
+  const [picked, setPicked] = useState("")
+  const run = picked || runs[0] || ""
   const query = useReport(run)
   return (
     <>
@@ -16,10 +18,10 @@ export default function DashboardPage() {
           <select
             aria-label="Run"
             value={run}
-            onChange={(e) => setRun(e.target.value)}
+            onChange={(e) => setPicked(e.target.value)}
             className="h-9 rounded-md border bg-background px-3 text-sm"
           >
-            {RUNS.map((r) => (
+            {runs.map((r) => (
               <option key={r} value={r}>
                 {r}
               </option>

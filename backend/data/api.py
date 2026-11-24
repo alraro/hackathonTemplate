@@ -15,6 +15,13 @@ def _run_file(run: str, name: str) -> Path:
     return path
 
 
+def list_runs() -> list[str]:
+    """Names of the runs that have an outputs/<run>/report.json, sorted."""
+    if not OUTPUTS_DIR.is_dir():
+        return []
+    return sorted(p.parent.name for p in OUTPUTS_DIR.glob("*/report.json"))
+
+
 def load_report(run: str) -> Report:
     """Read outputs/<run>/report.json. Raises FileNotFoundError if the run has no report."""
     return Report.model_validate_json(_run_file(run, "report.json").read_text())

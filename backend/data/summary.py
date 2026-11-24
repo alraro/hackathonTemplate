@@ -1,14 +1,26 @@
 """Report summary: a deterministic template, plus optional LLM narration."""
 
+import re
+
 from backend.data.report import Report
+
+# Metrics that are fractions in [0, 1] and read better as a percentage. Counts (detections, records, k) never are.
+_RATE = re.compile(r"accuracy|f1|precision|recall|rate|auc|silhouette|r2|share|ratio", re.IGNORECASE)
+
+
+def _show(key: str, value: float) -> str:
+    if _RATE.search(key) and 0 <= value <= 1:
+        return f"{value * 100:.0f} %"
+    if float(value).is_integer():
+        return f"{int(value)}"
+    return f"{value:.3g}"
 
 
 def template_summary(report: Report) -> str:
     """Always-available summary, e.g. "accuracy 87 %; top drivers X, Y"."""
     parts = []
     for key, value in list(report.metrics.items())[:3]:
-        shown = f"{value * 100:.0f} %" if 0 <= value <= 1 else f"{value:.3g}"
-        parts.append(f"{key} {shown}")
+        parts.append(f"{key} {_show(key, value)}")
     text = ", ".join(parts) or f"{report.pipeline} run {report.run}"
     drivers = next((c for c in report.charts if c.id in ("importance", "drivers")), None)
     if drivers and drivers.data and drivers.series:

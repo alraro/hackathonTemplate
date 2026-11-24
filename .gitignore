@@ -20,3 +20,6 @@ web/features.json
 mobile/features.json
 backend/features.json
 web/dist/
+
+# make slides-pdf output
+pitch/slides-export.pdf

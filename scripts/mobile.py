@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Start Expo for a phone (`make mobile`, `make mobile-tunnel` adds --tunnel).
 
-Detects the host LAN IP, exports EXPO_PUBLIC_API_URL=http://<ip>:<API_PORT> inline (no mobile/.env),
+Detects the host LAN IP, exports EXPO_PUBLIC_API_URL=http://<ip>:<API_PORT> and EXPO_PUBLIC_API_MODE
+(= VITE_API_MODE from .env) inline (no mobile/.env),
 warns if the API doesn't answer there, then runs `npx expo start` (prints the QR).
 """
 from __future__ import annotations
@@ -70,8 +71,11 @@ def main() -> int:
         hint = "" if tunnel else " If the phone is on another network or the IP is wrong, use `make mobile-tunnel`."
         print(f"warning: {api_url}/api/health does not answer (is `make up` running? firewall?).{hint}", file=sys.stderr)
     else:
-        print(f"API reachable at {api_url}")
-    env = {**os.environ, "EXPO_PUBLIC_API_URL": api_url}
+        print(f"API reachable at {api_url}", flush=True)
+    # Same data mode as the web (VITE_API_MODE in .env) unless EXPO_PUBLIC_API_MODE is set explicitly.
+    mode = os.environ.get("EXPO_PUBLIC_API_MODE") or env_value("VITE_API_MODE", "fixtures")
+    print(f"mobile data mode: {mode}", flush=True)
+    env = {**os.environ, "EXPO_PUBLIC_API_URL": api_url, "EXPO_PUBLIC_API_MODE": mode}
     cmd = ["npx", "expo", "start", *(["--tunnel"] if tunnel else [])]
     if not (ROOT / "mobile" / "node_modules").is_dir():
         subprocess.run(["npm", "install", "--no-audit", "--no-fund"], cwd=ROOT / "mobile", check=True)

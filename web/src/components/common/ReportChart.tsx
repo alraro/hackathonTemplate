@@ -22,11 +22,27 @@ const configOf = (chart: ReportChartModel): ChartConfig =>
 
 function Plot({ chart }: { chart: ReportChartModel }) {
   const { kind, x, series, data } = chart
+  // Few categories: label every one (tilted when crowded). Many points or a numeric axis: let Recharts thin the ticks.
+  const numericX = kind === "scatter" || data.every((d) => typeof d[x] === "number")
+  const fewCategories = !numericX && data.length <= 12
+  const tilt = fewCategories && data.length > 6
   const axes = (
     <>
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
-      <XAxis dataKey={x} tickLine={false} axisLine={false} interval={0} angle={data.length > 6 ? -30 : 0} textAnchor={data.length > 6 ? "end" : "middle"} height={data.length > 6 ? 70 : 30} tick={{ fontSize: 11 }} />
-      <YAxis tickLine={false} axisLine={false} width={44} tick={{ fontSize: 11 }} />
+      <XAxis
+        dataKey={x}
+        type={numericX ? "number" : "category"}
+        domain={numericX ? ["auto", "auto"] : undefined}
+        tickLine={false}
+        axisLine={false}
+        interval={fewCategories ? 0 : "preserveStartEnd"}
+        minTickGap={16}
+        angle={tilt ? -30 : 0}
+        textAnchor={tilt ? "end" : "middle"}
+        height={tilt ? 70 : 30}
+        tick={{ fontSize: 11 }}
+      />
+      <YAxis type="number" tickLine={false} axisLine={false} width={44} tick={{ fontSize: 11 }} />
       <ChartTooltip content={<ChartTooltipContent />} />
       {series.length > 1 ? <ChartLegend content={<ChartLegendContent />} /> : null}
     </>
